@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -49,7 +50,7 @@ public class ShowAllCarsActivity extends ListActivity {
     }
 
     private class GetCar extends AsyncTask<Long, Integer, Integer>{
-        Car[] car;
+        Car[] cars;
 
 
         @Override
@@ -72,9 +73,11 @@ public class ShowAllCarsActivity extends ListActivity {
                 Gson gson = new Gson();
                 InputStream in = MyUrlConnection.getInputStream();
                 InputStreamReader is = new InputStreamReader(in);
-                car = gson.fromJson(is,Car[].class);
+                cars = gson.fromJson(is,Car[].class);
 
+                /*for(Car car : cars){
 
+                }*/
 
 
             } catch (Exception e) {
