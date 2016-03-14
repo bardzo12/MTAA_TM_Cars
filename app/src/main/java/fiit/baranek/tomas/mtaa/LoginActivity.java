@@ -95,9 +95,5 @@ public class LoginActivity extends AppCompatActivity{
         startActivity(scan);
     }
 
-
-    public void HelloWorld() {
-        System.out.println("Ojebala macka vtacka");
-    }
 }
 
