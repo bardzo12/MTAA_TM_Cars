@@ -75,9 +75,7 @@ public class ShowAllCarsActivity extends ListActivity {
                 InputStreamReader is = new InputStreamReader(in);
                 cars = gson.fromJson(is,Car[].class);
 
-                /*for(Car car : cars){
 
-                }*/
 
 
             } catch (Exception e) {
@@ -93,8 +91,10 @@ public class ShowAllCarsActivity extends ListActivity {
 
         @Override
         public void onPostExecute(Integer result) {
-            TextView t = (TextView) findViewById(R.id.textView);
-        //    t.setText(String.format("%s",car.c_location));
+          /*  ListView t = (ListView) findViewById(R.id.list);
+            for(Car car : cars){
+
+            }*/
 
         }
 
