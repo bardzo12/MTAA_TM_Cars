@@ -10,8 +10,11 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+
+import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,7 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 
-public class ShowAllCarsActivity extends Activity {
+public class ShowAllCarsActivity extends ListActivity {
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +43,17 @@ public class ShowAllCarsActivity extends Activity {
         });
     }
 
+
     public void getCars(){
         new GetCar().execute();
     }
 
-    private class GetCar extends AsyncTask<String, Void, Void>{
+    private class GetCar extends AsyncTask<Long, Integer, Integer>{
+        Car[] car;
+
 
         @Override
-        protected Void doInBackground(String... params) {
+        protected Integer doInBackground(Long... params) {
             URL url;
             HttpURLConnection MyUrlConnection = null;
             TextView t = (TextView) findViewById(R.id.button);
@@ -59,14 +65,14 @@ public class ShowAllCarsActivity extends Activity {
                 MyUrlConnection = (HttpURLConnection) url
                         .openConnection();
                 MyUrlConnection.setRequestMethod("GET");
-               MyUrlConnection.setRequestProperty("application-id", "1AF9A17F-4152-8B23-FF2C-C25040E38A00");
+                MyUrlConnection.setRequestProperty("application-id", "1AF9A17F-4152-8B23-FF2C-C25040E38A00");
                 MyUrlConnection.setRequestProperty( "secret-key","953B4A54-64D4-4FA9-FFC5-B9DA0CC18800");
-                MyUrlConnection.setRequestProperty("application-type", "application/json");
+                MyUrlConnection.setRequestProperty("application-type", "REST");
                 int code = MyUrlConnection.getResponseCode();
                 Gson gson = new Gson();
                 InputStream in = MyUrlConnection.getInputStream();
                 InputStreamReader is = new InputStreamReader(in);
-                Car car = gson.fromJson(is,Car.class);
+                car = gson.fromJson(is,Car[].class);
 
 
 
@@ -82,6 +88,14 @@ public class ShowAllCarsActivity extends Activity {
             return null;
         }
 
+        @Override
+        public void onPostExecute(Integer result) {
+            TextView t = (TextView) findViewById(R.id.textView);
+        //    t.setText(String.format("%s",car.c_location));
+
+        }
+
     }
+
 
 }
