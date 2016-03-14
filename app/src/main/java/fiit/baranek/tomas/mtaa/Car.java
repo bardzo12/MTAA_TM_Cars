@@ -168,4 +168,17 @@ public class Car {
         this.objectId = objectId;
     }
 
+
+
+    /*
+    Constructor for first view
+     */
+    public Car (String objectId, int c_categoryBrand,  String c_model, int c_price,  int c_categoryFuel){
+        this.c_price = c_price;
+        this.c_categoryBrand = c_categoryBrand;
+        this.c_model = c_model;
+        this.c_categoryFuel = c_categoryFuel;
+        this.objectId = objectId;
+    }
+
 }
