@@ -75,10 +75,10 @@ public class LoginActivity extends AppCompatActivity{
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-               // if(mEmailView.getText().equals("ProjektMTAA") && mPasswordView.getText().equals("heslo123")){
+                // if(mEmailView.getText().equals("ProjektMTAA") && mPasswordView.getText().equals("heslo123")){
 
-                    login();
-              //  }
+                login();
+                //  }
 
             }
         });
@@ -90,6 +90,7 @@ public class LoginActivity extends AppCompatActivity{
     protected void onResume() {
         super.onResume();
     }
+
     public void login(){
         Intent scan = new Intent(this,ShowAllCarsActivity.class);
         startActivity(scan);

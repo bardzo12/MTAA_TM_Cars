@@ -15,19 +15,21 @@ import java.net.URL;
 /**
  * Created by matus on 15. 3. 2016.
  */
-public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, Integer> {
+public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, String> {
 
-
+    public AsyncResponse delegate = null;
     Car cars;
 
 
 
     @Override
-    protected Integer doInBackground(RequestParameters... params){
+    protected String doInBackground(RequestParameters... params){
         URL url;
         HttpURLConnection MyUrlConnection = null;
-        String json;
+        String json = null;
         RequestParameters requestParameters = params[0];
+
+
 
         try {
             url = requestParameters.url;
@@ -55,7 +57,7 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, Integer> 
             }
         }
 
-        return null;
+        return json;
     }
 
     public String readStream(InputStream stream){
@@ -76,8 +78,8 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, Integer> 
     }
 
     @Override
-    public void onPostExecute(Integer result) {
-
+    public void onPostExecute(String result) {
+        delegate.processFinish(result);
     }
 
 }

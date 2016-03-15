@@ -36,8 +36,9 @@ import java.util.Collection;
 import java.util.List;
 
 
-public class ShowAllCarsActivity extends ListActivity {
+public class ShowAllCarsActivity extends ListActivity implements  AsyncResponse{
     LeDeviceListAdapter adapter;
+    MyAsyncTask asyncTask =new MyAsyncTask();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,17 +46,25 @@ public class ShowAllCarsActivity extends ListActivity {
         setContentView(R.layout.list_all_cars);
         this.setFinishOnTouchOutside(false);
 
+        //this to set delegate/listener back to this class
+        asyncTask.delegate = this;
+
+
         final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 RequestParameters r = null;
+                URL https = null;
                 try {
-                   r = new RequestParameters(new URL("https://api.backendless.com/v1/data/Car/2A0844D5-5C5C-90CE-FF17-806CCBA3C400"));
+                    https = new URL("https://api.backendless.com/v1/data/Car/2A0844D5-5C5C-90CE-FF17-806CCBA3C400");
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
 
-                new MyAsyncTask().execute(r);
+                r = new RequestParameters(https);
+
+
+              asyncTask.execute(r);
 
 
 
@@ -71,8 +80,12 @@ public class ShowAllCarsActivity extends ListActivity {
         adapter = new LeDeviceListAdapter();
     }
 
+    @Override
+    public void processFinish(String output) {
+        TextView t = (TextView ) findViewById(R.id.textView);
 
-
+        t.setText(output);
+    }
 
 
     private class LeDeviceListAdapter extends BaseAdapter {
