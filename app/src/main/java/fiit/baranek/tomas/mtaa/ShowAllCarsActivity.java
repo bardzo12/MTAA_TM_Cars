@@ -48,8 +48,15 @@ public class ShowAllCarsActivity extends ListActivity {
         final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                RequestParameters r = null;
+                try {
+                   r = new RequestParameters(new URL("https://api.backendless.com/v1/data/Car/2A0844D5-5C5C-90CE-FF17-806CCBA3C400"));
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
 
-                getCars();
+                new MyAsyncTask().execute(r);
+
 
 
             }
@@ -64,83 +71,9 @@ public class ShowAllCarsActivity extends ListActivity {
         adapter = new LeDeviceListAdapter();
     }
 
-    public void getCars(){
-        new GetCar().execute();
-    }
-
-    public class CarsList {
-
-        public List<Car> Movies;
-    }
-
-    private class GetCar extends AsyncTask<Long, Integer, Integer> {
-        Car cars;
 
 
 
-        @Override
-        protected Integer doInBackground(Long... params) {
-            URL url;
-            HttpURLConnection MyUrlConnection = null;
-            TextView t = (TextView) findViewById(R.id.button);
-
-            try {
-                url = new URL("https://api.backendless.com/v1/data/Car/2A0844D5-5C5C-90CE-FF17-806CCBA3C400");
-
-
-                MyUrlConnection = (HttpURLConnection) url
-                        .openConnection();
-                MyUrlConnection.setRequestMethod("GET");
-                MyUrlConnection.setRequestProperty("application-id", "1AF9A17F-4152-8B23-FF2C-C25040E38A00");
-                MyUrlConnection.setRequestProperty( "secret-key","953B4A54-64D4-4FA9-FFC5-B9DA0CC18800");
-                MyUrlConnection.setRequestProperty("application-type", "REST");
-                Gson gson = new Gson();
-                InputStream in = MyUrlConnection.getInputStream();
-
-                readStream(in);
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (MyUrlConnection != null) {
-                    MyUrlConnection.disconnect();
-                }
-            }
-
-            return null;
-        }
-
-        public String readStream(InputStream stream){
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            StringBuilder sb = new StringBuilder();
-
-            String line;
-
-            try {
-                while((line = reader.readLine()) != null){
-                    sb.append(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return sb.toString();
-        }
-
-        @Override
-        public void onPostExecute(Integer result) {
-TextView t = (TextView) findViewById(R.id.textView);
-            t.setText(cars.c_location);
-    /*        for(Car car : cars){
-
-                adapter.addDevice(car);
-
-            }
-            adapter.notifyDataSetChanged();*/
-        }
-
-    }
 
     private class LeDeviceListAdapter extends BaseAdapter {
         private ArrayList<Car> mLeDevices;
