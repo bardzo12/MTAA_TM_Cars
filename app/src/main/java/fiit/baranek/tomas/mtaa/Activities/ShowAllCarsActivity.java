@@ -1,33 +1,30 @@
-package fiit.baranek.tomas.mtaa;
+package fiit.baranek.tomas.mtaa.Activities;
 
-import android.app.Activity;
 import android.app.ListActivity;
-import android.bluetooth.BluetoothDevice;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import fiit.baranek.tomas.mtaa.AsyncResponse;
+import fiit.baranek.tomas.mtaa.Car;
+import fiit.baranek.tomas.mtaa.MyAsyncTask;
+import fiit.baranek.tomas.mtaa.R;
+import fiit.baranek.tomas.mtaa.RequestParameters;
 
 
-public class ShowAllCarsActivity extends ListActivity implements  AsyncResponse{
+public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
     LeDeviceListAdapter adapter;
     MyAsyncTask asyncTask =new MyAsyncTask();
 
@@ -47,7 +44,7 @@ public class ShowAllCarsActivity extends ListActivity implements  AsyncResponse{
                 RequestParameters r = null;
                 URL https = null;
                 try {
-                    https = new URL("https://api.backendless.com/v1/data/Car/2A0844D5-5C5C-90CE-FF17-806CCBA3C400");
+                    https = new URL("https://api.backendless.com/v1/data/Car");
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
@@ -62,20 +59,25 @@ public class ShowAllCarsActivity extends ListActivity implements  AsyncResponse{
             }
         });
 
-        setListAdapter(adapter);
+
     }
 
     @Override
     protected void onResume(){
         super.onResume();
         adapter = new LeDeviceListAdapter();
+        setListAdapter(adapter);
     }
 
     @Override
-    public void processFinish(String output) {
+    public void processFinish(List<Car> output) {
         TextView t = (TextView ) findViewById(R.id.textView);
 
-        t.setText(output);
+        t.setText(output.get(0).getC_location());
+        Log.i("Sprava", "velkost"+ output.size());
+        adapter.addList(output);
+      //  adapter.addDevice(output.get(0));
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -92,7 +94,14 @@ public class ShowAllCarsActivity extends ListActivity implements  AsyncResponse{
         public void addDevice(Car car) {
             if(!mLeDevices.contains(car)) {
                 mLeDevices.add(car);
+                Log.i("Sprava", "som tu");
             }
+        }
+
+        public void addList(List<Car> cars){
+            mLeDevices.clear();
+            mLeDevices = (ArrayList<Car>) cars;
+
         }
 
         public Car getDevice(int position) {
@@ -134,14 +143,16 @@ public class ShowAllCarsActivity extends ListActivity implements  AsyncResponse{
                 viewHolder = (ViewHolder) view.getTag();
             }
 
-          /*  Car device = mLeDevices.get(i);
-            final String deviceName = device.getName();
-            if (deviceName != null && deviceName.length() > 0)
-                viewHolder.deviceName.setText(deviceName);
-            else
-                viewHolder.deviceName.setText(R.string.unknown_device);
-            viewHolder.deviceAddress.setText(device.getAddress());
-*/
+            Car device = mLeDevices.get(i);
+            final String deviceName = device.getC_model();
+            if (deviceName != null && deviceName.length() > 0) {
+                viewHolder.car_model.setText(device.getC_model());
+                viewHolder.car_brand.setText(String.format(String.valueOf(device.getC_categoryBrand())));
+                viewHolder.car_fuel.setText(String.format(String.valueOf(device.getC_categoryFuel())));
+                viewHolder.car_price.setText(String.format(String.valueOf(device.getC_price())));
+            }
+            Log.i("Sprava", "vraciam view");
+
             return view;
         }
 
@@ -156,33 +167,7 @@ public class ShowAllCarsActivity extends ListActivity implements  AsyncResponse{
         /*
 
          */
-        public List<Car> getCarsFromString(String backenlessString) throws JSONException {
-            final List<Car> cars = new ArrayList<Car>();
-            JSONObject response = new JSONObject(backenlessString);
-            Car car = new Car();
-            JSONArray data = response.getJSONArray("data");
-            for(int i=0;i<response.length();i++) {
-                car = new Car();
-                JSONObject item = (JSONObject) data.get(1);
-                car.setC_engine(item.optString("c_engine"));
-                car.setCreated(item.optString("created"));
-                car.setC_phoneNumber(item.optString("c_phoneNumber"));
-                car.setC_price(item.optInt("c_price"));
-                car.setC_location(item.optString("c_location"));
-                car.setC_categoryBrand(item.optInt("c_categoryBrand"));
-                car.setC_yearOfProduction(item.optInt("c_yearOfProduction"));
-                car.setC_model(item.optString("c_model"));
-                car.setC_mileAge(item.optInt("c_mileAge"));
-                car.setC_photo(item.optString("c_photo"));
-                car.setC_categoryFuel(item.optInt("c_categoryFuel"));
-                car.setC_categoryTransmission(item.optInt("c_categoryTransmission"));
-                car.setC_driveType(item.optString("c_driveType"));
-                car.setC_interiorColor(item.optString("c_interiorColor"));
-                car.setObjectId(item.optString("objectId"));
-                cars.add(car);
-            }
-            return cars;
-        }
+
 
     }
 
