@@ -96,5 +96,11 @@ public class LoginActivity extends AppCompatActivity{
         startActivity(scan);
     }
 
+
+    public void Nova(View v){
+        Intent intent = new Intent(this, DetailScreen.class);
+        startActivity(intent);
+    }
+
 }
 

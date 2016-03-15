@@ -15,25 +15,16 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import org.w3c.dom.Text;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+
 
 
 public class ShowAllCarsActivity extends ListActivity implements  AsyncResponse{
@@ -157,11 +148,42 @@ public class ShowAllCarsActivity extends ListActivity implements  AsyncResponse{
 
     }
     static class ViewHolder {
-        TextView car_fuel;
         TextView car_brand;
         TextView car_model;
         TextView car_price;
+        TextView car_fuel;
+    }
+        /*
+
+         */
+        public List<Car> getCarsFromString(String backenlessString) throws JSONException {
+            final List<Car> cars = new ArrayList<Car>();
+            JSONObject response = new JSONObject(backenlessString);
+            Car car = new Car();
+            JSONArray data = response.getJSONArray("data");
+            for(int i=0;i<response.length();i++) {
+                car = new Car();
+                JSONObject item = (JSONObject) data.get(1);
+                car.setC_engine(item.optString("c_engine"));
+                car.setCreated(item.optString("created"));
+                car.setC_phoneNumber(item.optString("c_phoneNumber"));
+                car.setC_price(item.optInt("c_price"));
+                car.setC_location(item.optString("c_location"));
+                car.setC_categoryBrand(item.optInt("c_categoryBrand"));
+                car.setC_yearOfProduction(item.optInt("c_yearOfProduction"));
+                car.setC_model(item.optString("c_model"));
+                car.setC_mileAge(item.optInt("c_mileAge"));
+                car.setC_photo(item.optString("c_photo"));
+                car.setC_categoryFuel(item.optInt("c_categoryFuel"));
+                car.setC_categoryTransmission(item.optInt("c_categoryTransmission"));
+                car.setC_driveType(item.optString("c_driveType"));
+                car.setC_interiorColor(item.optString("c_interiorColor"));
+                car.setObjectId(item.optString("objectId"));
+                cars.add(car);
+            }
+            return cars;
+        }
+
     }
 
 
-}
