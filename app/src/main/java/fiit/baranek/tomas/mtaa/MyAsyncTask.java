@@ -44,7 +44,7 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, Integer> 
             InputStreamReader is = new InputStreamReader(in);
           //  cars = gson.fromJson(is,Car.class);
 
-           // json = readStream(in);
+            json = readStream(in);
 
 
         } catch (Exception e) {
