@@ -147,8 +147,8 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             final String deviceName = device.getC_model();
             if (deviceName != null && deviceName.length() > 0) {
                 viewHolder.car_model.setText(device.getC_model());
-                viewHolder.car_brand.setText(String.format(String.valueOf(device.getC_categoryBrand())));
-                viewHolder.car_fuel.setText(String.format(String.valueOf(device.getC_categoryFuel())));
+                viewHolder.car_brand.setText(device.getC_categoryBrand());
+                viewHolder.car_fuel.setText(device.getC_categoryFuel());
                 viewHolder.car_price.setText(String.format(String.valueOf(device.getC_price())));
             }
             Log.i("Sprava", "vraciam view");

@@ -89,9 +89,9 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, List<Car>
         JSONObject response = new JSONObject(backenlessString);
         Car car;
         JSONArray data = response.getJSONArray("data");
-        for(int i=0;i<response.length();i++) {
+        for(int i=0;i<data.length();i++) {
             car = new Car();
-            JSONObject item = (JSONObject) data.get(1);
+            JSONObject item = (JSONObject) data.get(i);
             car.setC_engine(item.optString("c_engine"));
             car.setCreated(item.optString("created"));
             car.setC_phoneNumber(item.optString("c_phoneNumber"));

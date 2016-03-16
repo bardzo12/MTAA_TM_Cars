@@ -1,6 +1,10 @@
 package fiit.baranek.tomas.mtaa;
 
 
+import fiit.baranek.tomas.mtaa.Enums.CategoryBrand;
+import fiit.baranek.tomas.mtaa.Enums.CategoryFuel;
+import fiit.baranek.tomas.mtaa.Enums.CategoryTransmission;
+
 public class Car {
 
     private String c_engine;
@@ -8,13 +12,16 @@ public class Car {
     private String c_phoneNumber;
     private int c_price;
     private String c_location;
-    private int c_categoryBrand;
+    private CategoryBrand c_categoryBrand;
+   // private int c_categoryBrand;
     private int c_yearOfProduction;
     private String c_model;
     private int c_mileAge;
     private String c_photo;
-    private int c_categoryFuel;
-    private int c_categoryTransmission;
+    private CategoryFuel c_categoryFuel;
+   // private int c_categoryFuel;
+    private CategoryTransmission c_categoryTransmission;
+    //private int c_categoryTransmission;
     private String c_driveType;
     private String c_interiorColor;
     private String objectId;
@@ -60,12 +67,13 @@ public class Car {
         this.c_location = c_location;
     }
 
-    public int getC_categoryBrand() {
-        return c_categoryBrand;
+    public String getC_categoryBrand() {
+        return c_categoryBrand.toString();
     }
 
     public void setC_categoryBrand(int c_categoryBrand) {
-        this.c_categoryBrand = c_categoryBrand;
+        CategoryBrand Brand = CategoryBrand.values()[c_categoryBrand-1];
+        this.c_categoryBrand = Brand;
     }
 
     public int getC_yearOfProduction() {
@@ -100,20 +108,22 @@ public class Car {
         this.c_photo = c_photo;
     }
 
-    public int getC_categoryFuel() {
-        return c_categoryFuel;
+    public String getC_categoryFuel() {
+        return c_categoryFuel.toString();
     }
 
     public void setC_categoryFuel(int c_categoryFuel) {
-        this.c_categoryFuel = c_categoryFuel;
+        CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel-1];
+        this.c_categoryFuel = Fuel;
     }
 
-    public int getC_categoryTransmission() {
-        return c_categoryTransmission;
+    public String getC_categoryTransmission() {
+        return c_categoryTransmission.toString();
     }
 
     public void setC_categoryTransmission(int c_categoryTransmission) {
-        this.c_categoryTransmission = c_categoryTransmission;
+        CategoryTransmission Transmission = CategoryTransmission.values()[c_categoryTransmission];
+        this.c_categoryTransmission = Transmission;
     }
 
     public String getC_driveType() {
@@ -156,13 +166,16 @@ public class Car {
         this.c_phoneNumber = c_phoneNumber;
         this.c_price = c_price;
         this.c_location = c_location;
-        this.c_categoryBrand = c_categoryBrand;
+        CategoryBrand Brand = CategoryBrand.values()[c_categoryBrand-1];
+        this.c_categoryBrand = Brand;
         this.c_yearOfProduction = c_yearOfProduction;
         this.c_model = c_model;
         this.c_mileAge = c_mileAge;
         this.c_photo = c_photo;
-        this.c_categoryFuel = c_categoryFuel;
-        this.c_categoryTransmission = c_categoryTransmission;
+        CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel-1];
+        this.c_categoryFuel = Fuel;
+        CategoryTransmission Transmission = CategoryTransmission.values()[c_categoryTransmission];
+        this.c_categoryTransmission = Transmission;
         this.c_driveType = c_driveType;
         this.c_interiorColor = c_interiorColor;
         this.objectId = objectId;
@@ -175,9 +188,11 @@ public class Car {
      */
     public Car (String objectId, int c_categoryBrand,  String c_model, int c_price,  int c_categoryFuel){
         this.c_price = c_price;
-        this.c_categoryBrand = c_categoryBrand;
+        CategoryBrand Brand = CategoryBrand.values()[c_categoryBrand-1];
+        this.c_categoryBrand = Brand;
         this.c_model = c_model;
-        this.c_categoryFuel = c_categoryFuel;
+        CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel-1];
+        this.c_categoryFuel = Fuel;
         this.objectId = objectId;
     }
 
