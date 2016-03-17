@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import fiit.baranek.tomas.mtaa.R;
 
-public class DetailScreen extends AppCompatActivity {
+public class DetailScreenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

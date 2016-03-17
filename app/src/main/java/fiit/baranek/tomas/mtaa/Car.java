@@ -13,15 +13,12 @@ public class Car {
     private int c_price;
     private String c_location;
     private CategoryBrand c_categoryBrand;
-   // private int c_categoryBrand;
     private int c_yearOfProduction;
     private String c_model;
     private int c_mileAge;
     private String c_photo;
     private CategoryFuel c_categoryFuel;
-   // private int c_categoryFuel;
     private CategoryTransmission c_categoryTransmission;
-    //private int c_categoryTransmission;
     private String c_driveType;
     private String c_interiorColor;
     private String objectId;
@@ -122,7 +119,7 @@ public class Car {
     }
 
     public void setC_categoryTransmission(int c_categoryTransmission) {
-        CategoryTransmission Transmission = CategoryTransmission.values()[c_categoryTransmission];
+        CategoryTransmission Transmission = CategoryTransmission.values()[c_categoryTransmission-1];
         this.c_categoryTransmission = Transmission;
     }
 
@@ -174,7 +171,7 @@ public class Car {
         this.c_photo = c_photo;
         CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel-1];
         this.c_categoryFuel = Fuel;
-        CategoryTransmission Transmission = CategoryTransmission.values()[c_categoryTransmission];
+        CategoryTransmission Transmission = CategoryTransmission.values()[c_categoryTransmission-1];
         this.c_categoryTransmission = Transmission;
         this.c_driveType = c_driveType;
         this.c_interiorColor = c_interiorColor;

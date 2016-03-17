@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity{
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view) {//inicializing action listener for login button
                 // if(mEmailView.getText().equals("ProjektMTAA") && mPasswordView.getText().equals("heslo123")){
 
                 login();
@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity{
 
 
     public void Nova(View v){
-        Intent intent = new Intent(this, DetailScreen.class);
+        Intent intent = new Intent(this, DetailScreenActivity.class);
         startActivity(intent);
     }
 

@@ -2,14 +2,10 @@ package fiit.baranek.tomas.mtaa;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.TextView;
-
 import com.google.gson.Gson;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +21,6 @@ import java.util.List;
 public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, List<Car>> {
 
     public AsyncResponse delegate = null;
-    Car cars;
 
 
 
@@ -48,11 +43,11 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, List<Car>
             MyUrlConnection.setRequestProperty("application-id", "1AF9A17F-4152-8B23-FF2C-C25040E38A00");
             MyUrlConnection.setRequestProperty( "secret-key","953B4A54-64D4-4FA9-FFC5-B9DA0CC18800");
             MyUrlConnection.setRequestProperty("application-type", "REST");
-            Gson gson = new Gson();
             InputStream in = MyUrlConnection.getInputStream();
-            InputStreamReader is = new InputStreamReader(in);
+           // InputStreamReader is = new InputStreamReader(in);
 
             jsonString = readStream(in);
+            Log.i("Sprava", jsonString);
             cars = getCarsFromString(jsonString);
 
 
@@ -67,7 +62,7 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, List<Car>
         return cars;
     }
 
-    public String readStream(InputStream stream){
+    public String readStream(InputStream stream){// Method reads stream and returns string value
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         StringBuilder sb = new StringBuilder();
 
@@ -84,7 +79,8 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, List<Car>
         return sb.toString();
     }
 
-    public List<Car> getCarsFromString(String backenlessString) throws JSONException {
+    public List<Car> getCarsFromString(String backenlessString) throws JSONException {// this method gets String value, and returns
+                                                                                        // List of Cars
         final List<Car> cars = new ArrayList<Car>();
         JSONObject response = new JSONObject(backenlessString);
         Car car;

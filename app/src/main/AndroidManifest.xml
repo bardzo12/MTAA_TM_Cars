@@ -27,7 +27,7 @@
             android:name=".Activities.ShowAllCarsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name" />
-        <activity android:name=".Activities.DetailScreen" />
+        <activity android:name=".Activities.DetailScreenActivity" />
     </application>
 
 </manifest>

@@ -7,9 +7,11 @@ import java.net.URL;
  */
 public class RequestParameters {
     public URL url;
+    public String requestType;
 
-    public RequestParameters(URL url){
+    public RequestParameters(URL url, String requestType){
         this.url = url;
+        this.requestType = requestType;
     }
 
 }
