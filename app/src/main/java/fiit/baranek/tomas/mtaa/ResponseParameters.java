@@ -9,6 +9,7 @@ public class ResponseParameters {
     private List<Car> cars;
     private String type;
 
+
     public void setListOfCars(List<Car> cars){
         this.cars = cars;
     }

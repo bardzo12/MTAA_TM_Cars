@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -61,7 +62,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         }
         r = new RequestParameters(https, "GET");
 
-        MyAsyncTask asyncTask =new MyAsyncTask();
+        MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;
         asyncTask.execute(r);
     }
@@ -70,11 +71,11 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
     @Override
     protected void onResume(){
         super.onResume();
-
         adapter = new CarsListAdapter();
         setListAdapter(adapter);
-
         getAllCars();
+
+
 
     }
 
@@ -99,7 +100,6 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
 
     public boolean deleteCarById(String CarID){
-      //  Toast.makeText(ShowAllCarsActivity.this, "toto je id" + CarID, Toast.LENGTH_SHORT).show();
 
         RequestParameters r = null;
         URL https = null;
@@ -110,9 +110,14 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         }
         r = new RequestParameters(https, "DELETE");
 
-        MyAsyncTask asyncTask =new MyAsyncTask();
+        MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;
         asyncTask.execute(r);
+
+        adapter.deleteCar(CarID);
+        adapter.notifyDataSetChanged();
+
+
         return true;
     }
 
@@ -152,6 +157,16 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             }
         }
 
+        public void deleteCar(String CarID){
+            int size = arrayListCars.size();
+
+            for(int i = 0 ; i < size ; i++){
+                if(arrayListCars.get(i).getObjectId().equals(CarID)){
+                    arrayListCars.remove(i);
+                    return;
+                }
+            }
+        }
         public void addList(List<Car> cars){
             arrayListCars.clear();
             arrayListCars = (ArrayList<Car>) cars;

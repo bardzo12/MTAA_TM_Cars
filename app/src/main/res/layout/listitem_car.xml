@@ -9,7 +9,7 @@
         android:layout_gravity="left"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_toStartOf="@+id/imageButton"
+        android:layout_toStartOf="@+id/deleteButton"
         android:layout_alignParentBottom="true">
 
         <RelativeLayout

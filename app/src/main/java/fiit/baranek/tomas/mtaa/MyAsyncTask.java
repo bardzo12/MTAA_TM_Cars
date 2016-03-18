@@ -1,7 +1,12 @@
 package fiit.baranek.tomas.mtaa;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
+
 import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,9 +26,20 @@ import java.util.List;
 public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseParameters> {
 
     public AsyncResponse delegate = null;
+    private Activity activity;
+    private ProgressDialog dialog;
+    private Context context;
 
-
-
+    public MyAsyncTask(Activity activity){
+        this.activity = activity;
+        this.context = activity;
+        this.dialog = new ProgressDialog(activity);
+        this.dialog.setTitle("Loading");
+        this.dialog.setMessage("Loading data from database ...");
+        if(!this.dialog.isShowing()){
+            this.dialog.show();
+        }
+    }
     @Override
     protected ResponseParameters doInBackground(RequestParameters... params){
         URL url;
@@ -46,17 +62,25 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
             MyUrlConnection.setRequestProperty("application-type", "REST");
             InputStream in = MyUrlConnection.getInputStream();
            // InputStreamReader is = new InputStreamReader(in);
-            if(requestParameters.requestType.equals("GET")){
-                responseParameters.setType(requestParameters.requestType);
-                jsonString = readStream(in);
-                Log.i("Sprava", jsonString);
-                responseParameters.setListOfCars(getCarsFromString(jsonString));
-            }else{
-                if(requestParameters.requestType.equals("DELETE")){
+
+            if(MyUrlConnection.getResponseCode() == 200) {
+                if(requestParameters.requestType.equals("GET")){
+
                     responseParameters.setType(requestParameters.requestType);
+                    jsonString = readStream(in);
+                    Log.i("Sprava", jsonString);
+                    responseParameters.setListOfCars(getCarsFromString(jsonString));
+
+                }else{
+                    if(requestParameters.requestType.equals("DELETE")){
+                        responseParameters.setType(requestParameters.requestType);
+                    }
+                }
+            }else{
+                if(MyUrlConnection.getResponseCode() == 204) {
+
                 }
             }
-
 
 
 
@@ -119,7 +143,11 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
     }
     @Override
     public void onPostExecute(ResponseParameters result) {
+
+        this.dialog.dismiss();
+
         delegate.processFinish(result);
+
     }
 
 }
