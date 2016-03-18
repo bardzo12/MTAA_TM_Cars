@@ -18,17 +18,18 @@ import java.util.List;
 /**
  * Created by matus on 15. 3. 2016.
  */
-public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, List<Car>> {
+public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseParameters> {
 
     public AsyncResponse delegate = null;
 
 
 
     @Override
-    protected List<Car> doInBackground(RequestParameters... params){
+    protected ResponseParameters doInBackground(RequestParameters... params){
         URL url;
         HttpURLConnection MyUrlConnection = null;
         String jsonString = null;
+        ResponseParameters responseParameters = new ResponseParameters();
         RequestParameters requestParameters = params[0];
         List<Car> cars = null;
 
@@ -39,16 +40,24 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, List<Car>
 
             MyUrlConnection = (HttpURLConnection) url
                     .openConnection();
-            MyUrlConnection.setRequestMethod("GET");
+            MyUrlConnection.setRequestMethod(requestParameters.requestType);
             MyUrlConnection.setRequestProperty("application-id", "1AF9A17F-4152-8B23-FF2C-C25040E38A00");
             MyUrlConnection.setRequestProperty( "secret-key","953B4A54-64D4-4FA9-FFC5-B9DA0CC18800");
             MyUrlConnection.setRequestProperty("application-type", "REST");
             InputStream in = MyUrlConnection.getInputStream();
            // InputStreamReader is = new InputStreamReader(in);
+            if(requestParameters.requestType.equals("GET")){
+                responseParameters.setType(requestParameters.requestType);
+                jsonString = readStream(in);
+                Log.i("Sprava", jsonString);
+                responseParameters.setListOfCars(getCarsFromString(jsonString));
+            }else{
+                if(requestParameters.requestType.equals("DELETE")){
+                    responseParameters.setType(requestParameters.requestType);
+                }
+            }
 
-            jsonString = readStream(in);
-            Log.i("Sprava", jsonString);
-            cars = getCarsFromString(jsonString);
+
 
 
         } catch (Exception e) {
@@ -59,7 +68,7 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, List<Car>
             }
         }
 
-        return cars;
+        return responseParameters;
     }
 
     public String readStream(InputStream stream){// Method reads stream and returns string value
@@ -109,7 +118,7 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, List<Car>
         return cars;
     }
     @Override
-    public void onPostExecute(List<Car> result) {
+    public void onPostExecute(ResponseParameters result) {
         delegate.processFinish(result);
     }
 
