@@ -10,10 +10,20 @@ public class ResponseParameters {
     private String type;
     private int responseCode;
 
-
-    public void setListOfCars(List<Car> cars){
-        this.cars = cars;
+    public Car getCar() {
+        return car;
     }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
+    private  Car car;
+
+
+    public void setListOfCars(List<Car> cars){this.cars = cars;
+    }
+
 
     public void setType(String type){
         this.type = type;
@@ -26,6 +36,8 @@ public class ResponseParameters {
     public List<Car> getListOfCars(){
         return this.cars;
     }
+
+
 
     public String getType(){
         return this.type;

@@ -124,7 +124,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Žilina Košická 5"
-        android:id="@+id/textView3"
+        android:id="@+id/textViewAddressEdit"
         android:layout_below="@+id/textViewBrand"
         android:layout_alignParentEnd="true" />
 
@@ -133,8 +133,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="2010"
-        android:id="@+id/textView4"
-        android:layout_below="@+id/textView3"
+        android:id="@+id/textViewYearEdit"
+        android:layout_below="@+id/textViewAddressEdit"
         android:layout_alignParentEnd="true" />
 
     <TextView
@@ -142,17 +142,17 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="120 000"
-        android:id="@+id/textViewMile"
-        android:layout_below="@+id/textView4"
-        android:layout_alignEnd="@+id/textView4" />
+        android:id="@+id/textViewMileEdit"
+        android:layout_below="@+id/textViewYearEdit"
+        android:layout_alignEnd="@+id/textViewYearEdit" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="manuálna"
-        android:id="@+id/textView5"
-        android:layout_below="@+id/textViewMile"
+        android:id="@+id/textViewTransmissionEdit"
+        android:layout_below="@+id/textViewMileEdit"
         android:layout_alignParentEnd="true" />
 
     <TextView
@@ -160,8 +160,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="hnedá"
-        android:id="@+id/textView6"
-        android:layout_below="@+id/textView5"
+        android:id="@+id/textViewColorEdit"
+        android:layout_below="@+id/textViewTransmissionEdit"
         android:layout_alignParentEnd="true" />
 
     <TextView
@@ -169,8 +169,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="1,2 TSI"
-        android:id="@+id/textView7"
-        android:layout_below="@+id/textView6"
+        android:id="@+id/textViewEngineEngineEdit"
+        android:layout_below="@+id/textViewColorEdit"
         android:layout_alignParentEnd="true" />
 
     <TextView
@@ -178,17 +178,17 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="4x4"
-        android:id="@+id/textView8"
-        android:layout_below="@+id/textView7"
-        android:layout_alignEnd="@+id/textView7" />
+        android:id="@+id/textViewDriveTypEdit"
+        android:layout_below="@+id/textViewEngineEngineEdit"
+        android:layout_alignEnd="@+id/textViewEngineEngineEdit" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Nafta"
-        android:id="@+id/textView9"
-        android:layout_below="@+id/textView8"
+        android:id="@+id/textViewFuelEdit"
+        android:layout_below="@+id/textViewDriveTypEdit"
         android:layout_alignParentEnd="true" />
 
     <TextView
@@ -196,7 +196,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="+421 918 573 3335"
-        android:id="@+id/textView10"
+        android:id="@+id/textViewPhoneEdit"
         android:layout_alignTop="@+id/textViewTelephone"
         android:layout_alignParentEnd="true" />
 
@@ -205,8 +205,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="12 300€"
-        android:id="@+id/textView11"
-        android:layout_below="@+id/textView10"
+        android:id="@+id/textViewPriceEdit"
+        android:layout_below="@+id/textViewPhoneEdit"
         android:layout_alignParentEnd="true" />
 
     <ImageView
@@ -215,5 +215,12 @@
         android:id="@+id/imageView"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/textViewPrice" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ImageView"
+        android:layout_below="@+id/imageView"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

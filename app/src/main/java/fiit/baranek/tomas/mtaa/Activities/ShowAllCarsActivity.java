@@ -3,6 +3,7 @@ package fiit.baranek.tomas.mtaa.Activities;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +45,13 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
      //   requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.list_all_cars);
         this.setFinishOnTouchOutside(false);
+        /*ListView klikajuci = (ListView) findViewById(R.id.);
+        klikajuci.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
 
+                System.out.println("Klikol som");
+            }
+        });*/
         //this to set delegate/listener back to this class
 
 
@@ -61,12 +70,13 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        r = new RequestParameters(https, "GET");
+        r = new RequestParameters(https, "GET", 1);
 
         MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;
         asyncTask.execute(r);
     }
+
 
 
     @Override
@@ -104,10 +114,14 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
          }
 
     }
+
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
 
-        getListView().getItemAtPosition(position);
+        DetailScreenActivity news = (DetailScreenActivity) getListAdapter().getItem(position);
+        Intent i = new Intent(getApplicationContext(), DetailScreenActivity.class);
+
+        startActivity(i);
 
     }
 
@@ -123,7 +137,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        r = new RequestParameters(https, "DELETE");
+        r = new RequestParameters(https, "DELETE", 1);
 
         MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;
@@ -151,9 +165,21 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
         }
 
+    private void showDetail(String CarID) {
+        Intent intent = new Intent(this, DetailScreenActivity.class);
+        intent.putExtra("CarID",CarID);
+        startActivity(intent);
+    }
+
     private class CarsListAdapter extends BaseAdapter {// adapter for ListView showing all cars
         private ArrayList<Car> arrayListCars;
         private LayoutInflater mInflator;
+
+
+        @Override
+        public boolean isEnabled(int position) {
+            return true;
+        }
 
         public CarsListAdapter() {
             super();
@@ -235,6 +261,13 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             }
 
 
+            TextView space = (TextView) view.findViewById(R.id.car_brand);
+            space.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+
+                   showDetail(device.getObjectId());
+                }
+            });
 
             ImageButton deleteImageView = (ImageButton) view.findViewById(R.id.deleteButton);
             deleteImageView.setOnClickListener(new View.OnClickListener() {

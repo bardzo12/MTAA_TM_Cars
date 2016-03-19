@@ -8,10 +8,12 @@ import java.net.URL;
 public class RequestParameters {
     public URL url;
     public String requestType;
+    public int Type;
 
-    public RequestParameters(URL url, String requestType){
+    public RequestParameters(URL url, String requestType, int Type){
         this.url = url;
         this.requestType = requestType;
+        this.Type = Type;
     }
 
 }

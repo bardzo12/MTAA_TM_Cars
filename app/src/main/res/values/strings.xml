@@ -2,6 +2,8 @@
     <string name="app_name">MTAA</string>
 
     <!-- Strings related to login -->
+    <string name="card_one">This is First card</string>
+    <string name="card_two">This is two card</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Log in</string>

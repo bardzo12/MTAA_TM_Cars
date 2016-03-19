@@ -66,11 +66,17 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
             Log.i("Sprava",""+MyUrlConnection.getResponseCode());
             if(MyUrlConnection.getResponseCode() == 200) {
                 if(requestParameters.requestType.equals("GET")){
-                    InputStream in = MyUrlConnection.getInputStream();
-                    responseParameters.setType(requestParameters.requestType);
-                    jsonString = readStream(in);
-                    responseParameters.setListOfCars(getCarsFromString(jsonString));
-
+                    if(requestParameters.Type == 1) {
+                        InputStream in = MyUrlConnection.getInputStream();
+                        responseParameters.setType(requestParameters.requestType);
+                        jsonString = readStream(in);
+                        responseParameters.setListOfCars(getCarsFromString(jsonString));
+                    }else{
+                        InputStream in = MyUrlConnection.getInputStream();
+                        responseParameters.setType(requestParameters.requestType);
+                        jsonString = readStream(in);
+                        responseParameters.setCar(getCarFromString(jsonString));
+                    }
                 }else if(requestParameters.requestType.equals("DELETE")){
                         responseParameters.setType(requestParameters.requestType);
                         }
@@ -137,6 +143,35 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
 
         return cars;
     }
+
+    public Car getCarFromString(String backenlessString) throws JSONException {// this method gets String value, and returns
+        // List of Cars
+
+        JSONObject response = new JSONObject(backenlessString);
+        Car car = new Car();
+
+            //System.out.println("Tu som");
+
+            car.setC_engine(response.optString("c_engine"));
+            car.setCreated(response.optString("created"));
+            car.setC_phoneNumber(response.optString("c_phoneNumber"));
+            car.setC_price(response.optInt("c_price"));
+            car.setC_location(response.optString("c_location"));
+            car.setC_categoryBrand(response.optInt("c_categoryBrand"));
+            car.setC_yearOfProduction(response.optInt("c_yearOfProduction"));
+            car.setC_model(response.optString("c_model"));
+            car.setC_mileAge(response.optInt("c_mileAge"));
+            car.setC_photo(response.optString("c_photo"));
+            car.setC_categoryFuel(response.optInt("c_categoryFuel"));
+            car.setC_categoryTransmission(response.optInt("c_categoryTransmission"));
+            car.setC_driveType(response.optString("c_driveType"));
+            car.setC_interiorColor(response.optString("c_interiorColor"));
+            car.setObjectId(response.optString("objectId"));
+
+
+        return car;
+    }
+
     @Override
     public void onPostExecute(ResponseParameters result) {
 
