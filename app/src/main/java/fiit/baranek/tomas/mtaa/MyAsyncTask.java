@@ -60,27 +60,23 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
             MyUrlConnection.setRequestProperty("application-id", "1AF9A17F-4152-8B23-FF2C-C25040E38A00");
             MyUrlConnection.setRequestProperty( "secret-key","953B4A54-64D4-4FA9-FFC5-B9DA0CC18800");
             MyUrlConnection.setRequestProperty("application-type", "REST");
-            InputStream in = MyUrlConnection.getInputStream();
-           // InputStreamReader is = new InputStreamReader(in);
 
+           // InputStreamReader is = new InputStreamReader(in);
+            responseParameters.setResponseCode(MyUrlConnection.getResponseCode());
+            Log.i("Sprava",""+MyUrlConnection.getResponseCode());
             if(MyUrlConnection.getResponseCode() == 200) {
                 if(requestParameters.requestType.equals("GET")){
-
+                    InputStream in = MyUrlConnection.getInputStream();
                     responseParameters.setType(requestParameters.requestType);
                     jsonString = readStream(in);
-                    Log.i("Sprava", jsonString);
                     responseParameters.setListOfCars(getCarsFromString(jsonString));
 
-                }else{
-                    if(requestParameters.requestType.equals("DELETE")){
+                }else if(requestParameters.requestType.equals("DELETE")){
                         responseParameters.setType(requestParameters.requestType);
-                    }
-                }
-            }else{
-                if(MyUrlConnection.getResponseCode() == 204) {
+                        }
 
-                }
             }
+
 
 
 
@@ -121,24 +117,24 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
         for(int i=0;i<data.length();i++) {
             car = new Car();
             JSONObject item = (JSONObject) data.get(i);
-            car.setC_engine(item.optString("c_engine"));
+          //  car.setC_engine(item.optString("c_engine"));
             car.setCreated(item.optString("created"));
-            car.setC_phoneNumber(item.optString("c_phoneNumber"));
+         //   car.setC_phoneNumber(item.optString("c_phoneNumber"));
             car.setC_price(item.optInt("c_price"));
-            car.setC_location(item.optString("c_location"));
+         //   car.setC_location(item.optString("c_location"));
             car.setC_categoryBrand(item.optInt("c_categoryBrand"));
             car.setC_yearOfProduction(item.optInt("c_yearOfProduction"));
             car.setC_model(item.optString("c_model"));
-            car.setC_mileAge(item.optInt("c_mileAge"));
-            car.setC_photo(item.optString("c_photo"));
+         //   car.setC_mileAge(item.optInt("c_mileAge"));
+         //   car.setC_photo(item.optString("c_photo"));
             car.setC_categoryFuel(item.optInt("c_categoryFuel"));
-            car.setC_categoryTransmission(item.optInt("c_categoryTransmission"));
-            car.setC_driveType(item.optString("c_driveType"));
-            car.setC_interiorColor(item.optString("c_interiorColor"));
+         //   car.setC_categoryTransmission(item.optInt("c_categoryTransmission"));
+         //   car.setC_driveType(item.optString("c_driveType"));
+         //   car.setC_interiorColor(item.optString("c_interiorColor"));
             car.setObjectId(item.optString("objectId"));
             cars.add(car);
         }
-        Log.i("Sprava o velkosti", "velkost" + cars.size());
+
         return cars;
     }
     @Override

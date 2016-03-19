@@ -8,6 +8,7 @@ import java.util.List;
 public class ResponseParameters {
     private List<Car> cars;
     private String type;
+    private int responseCode;
 
 
     public void setListOfCars(List<Car> cars){
@@ -18,12 +19,20 @@ public class ResponseParameters {
         this.type = type;
     }
 
+    public void setResponseCode(int responseCode){
+        this.responseCode = responseCode;
+    }
+
     public List<Car> getListOfCars(){
         return this.cars;
     }
 
     public String getType(){
         return this.type;
+    }
+
+    public int getResponseCode(){
+        return this.responseCode;
     }
 
 }

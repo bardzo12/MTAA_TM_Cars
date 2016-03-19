@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.net.MalformedURLException;
@@ -56,7 +57,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         RequestParameters r = null;
         URL https = null;
         try {
-            https = new URL("https://api.backendless.com/v1/data/Car");
+            https = new URL("https://api.backendless.com/v1/data/Car?props=objectId%2Cc_yearOfProduction%2Cc_model%2Cc_categoryBrand%2Cc_price%2Cc_categoryFuel");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -81,11 +82,25 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
     @Override
     public void processFinish(ResponseParameters responseParameters) {//this methods override method from interface AsyncResponse
-         if(responseParameters.getType().equals("GET")) {                                       // add list od Cars do ListView adapter
-             adapter.addList(responseParameters.getListOfCars());
-             adapter.notifyDataSetChanged();
-         }else{
-             adapter.notifyDataSetChanged();
+         if(responseParameters.getResponseCode() == 200) {// add list od Cars do ListView adapter
+             if(responseParameters.getType().equals("GET")) {
+                 adapter.addList(responseParameters.getListOfCars());
+                 adapter.notifyDataSetChanged();
+             }else if(responseParameters.getType().equals("DELETE")){
+                getAllCars();
+
+             }
+         }else if(responseParameters.getResponseCode() == 204){
+
+             Toast.makeText(ShowAllCarsActivity.this, "DATABASE IS EMPTY!", Toast.LENGTH_SHORT).show();
+
+         }else if(responseParameters.getResponseCode() == 400){
+
+             Toast.makeText(ShowAllCarsActivity.this, "BAD REQUEST ON DATABASE!", Toast.LENGTH_SHORT).show();
+
+         }else if(responseParameters.getResponseCode() == 404){
+
+             Toast.makeText(ShowAllCarsActivity.this, "ENTRY NOT FOUND!", Toast.LENGTH_SHORT).show();
          }
 
     }
@@ -113,10 +128,6 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;
         asyncTask.execute(r);
-
-        adapter.deleteCar(CarID);
-        adapter.notifyDataSetChanged();
-
 
         return true;
     }
