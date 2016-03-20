@@ -1,12 +1,16 @@
 package fiit.baranek.tomas.mtaa.Activities;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,14 +33,25 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
 
     ImageView mImageView;
     Car SelectCar;
+    CollapsingToolbarLayout collapsingToolbarLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_screen);
 
+        mImageView = (ImageView) findViewById(R.id.bgheader);
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.MyToolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapse_toolbar);
+
+        Context context = this;
+        collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(context, R.color.colorAccent));
+
         Bundle bundle = getIntent().getExtras();
         String CarID = bundle.getString("CarID");
-        mImageView = (ImageView) findViewById(R.id.imageView);
         getDetail(CarID);
 
     }
@@ -47,42 +62,40 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
             if(responseParameters.getType().equals("GET")) {
              SelectCar = responseParameters.getCar();
 
-                TextView brand = (TextView) findViewById( R.id.textViewBrand);
-                brand.setText(SelectCar.getC_categoryBrand() + " " + SelectCar.getC_model());
 
-                TextView location = (TextView) findViewById( R.id.textViewAddressEdit);
+                collapsingToolbarLayout.setTitle(SelectCar.getC_categoryBrand() + " " + SelectCar.getC_model());
+
+                TextView location = (TextView) findViewById( R.id.textViewAddressValue);
                 location.setText(SelectCar.getC_location());
 
-                TextView year = (TextView) findViewById( R.id.textViewYearEdit);
+                TextView year = (TextView) findViewById( R.id.textViewYearOfProductionValue);
                 year.setText(String.format(String.valueOf(SelectCar.getC_yearOfProduction())));
 
-                TextView mile = (TextView) findViewById( R.id.textViewMileEdit);
+                TextView mile = (TextView) findViewById( R.id.textViewMileAgeValue);
                 mile.setText(String.format(String.valueOf(SelectCar.getC_mileAge())));
 
-                TextView transsmition = (TextView) findViewById( R.id.textViewTransmissionEdit);
+                TextView transsmition = (TextView) findViewById( R.id.textViewTransmissionValue);
                 transsmition.setText(SelectCar.getC_categoryTransmission());
 
-                TextView color = (TextView) findViewById( R.id.textViewTransmissionEdit);
+                TextView color = (TextView) findViewById( R.id.textViewColorValue);
                 color.setText(SelectCar.getC_interiorColor());
 
-                TextView engine = (TextView) findViewById( R.id.textViewEngineEngineEdit);
+                TextView engine = (TextView) findViewById( R.id.textViewEngineValue);
                 engine.setText(SelectCar.getC_engine());
 
-                TextView drive = (TextView) findViewById( R.id.textViewDriveTypEdit);
+                TextView drive = (TextView) findViewById( R.id.textViewDriveTypeValue);
                 drive.setText(SelectCar.getC_driveType());
 
-                TextView fuel = (TextView) findViewById( R.id.textViewFuelEdit);
+                TextView fuel = (TextView) findViewById( R.id.textViewFuelValue);
                 fuel.setText(SelectCar.getC_categoryFuel());
 
-                TextView phone = (TextView) findViewById( R.id.textViewPhoneEdit);
+                TextView phone = (TextView) findViewById( R.id.textViewPhoneValue);
                 phone.setText(SelectCar.getC_phoneNumber());
 
-                TextView price = (TextView) findViewById( R.id.textViewPriceEdit);
+                TextView price = (TextView) findViewById( R.id.textViewPriceValue);
                 price.setText(String.format(String.valueOf(SelectCar.getC_price())));
 
                 new DownloadImage().execute(SelectCar.getC_photo());
-
-                System.out.println(SelectCar.getC_photo());
 
 
 

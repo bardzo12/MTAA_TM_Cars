@@ -63,10 +63,7 @@ public class LoginActivity extends AppCompatActivity{
     }
 
 
-    public void Nova(View v){
-        Intent intent = new Intent(this, DetailikActivity.class);
-        startActivity(intent);
-    }
+
 
 }
 
