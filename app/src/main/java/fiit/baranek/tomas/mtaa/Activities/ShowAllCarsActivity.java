@@ -2,8 +2,11 @@ package fiit.baranek.tomas.mtaa.Activities;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
@@ -120,7 +123,6 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
         DetailScreenActivity news = (DetailScreenActivity) getListAdapter().getItem(position);
         Intent i = new Intent(getApplicationContext(), DetailScreenActivity.class);
-
         startActivity(i);
 
     }
@@ -166,9 +168,35 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         }
 
     private void showDetail(String CarID) {
-        Intent intent = new Intent(this, DetailScreenActivity.class);
-        intent.putExtra("CarID",CarID);
-        startActivity(intent);
+        login(CarID);
+    }
+
+    public void login(String CarID){
+
+        if(isOnline()) {
+            Intent intent = new Intent(this, DetailScreenActivity.class);
+            intent.putExtra("CarID",CarID);
+            startActivity(intent);
+        }
+        else{
+            Intent intent = new Intent(this, ConnectionErrorActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    /**
+     * Checks whether the network is available.
+     */
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     private class CarsListAdapter extends BaseAdapter {// adapter for ListView showing all cars

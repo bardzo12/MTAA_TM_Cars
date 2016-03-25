@@ -1,6 +1,10 @@
 package fiit.baranek.tomas.mtaa.Activities;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -58,11 +62,40 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     public void login(){
-        Intent scan = new Intent(this,ShowAllCarsActivity.class);
-        startActivity(scan);
+
+        if(isOnline()) {
+            Intent scan = new Intent(this, ShowAllCarsActivity.class);
+            startActivity(scan);
+        }
+        else{
+            Intent intent = new Intent(this, ConnectionErrorActivity.class);
+            startActivity(intent);
+        }
     }
 
 
+    public void Edit(View v) {
+        Intent intent = new Intent(this, EditScreenActivity.class);
+        startActivity(intent);
+    }
+
+
+
+
+    /**
+     * Checks whether the network is available.
+     */
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
 
 }
