@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -124,6 +125,8 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
          */
         protected void onPostExecute(Drawable image)
         {
+            findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+            findViewById(R.id.bgheader).setVisibility(View.VISIBLE);
             setImage(image);
         }
 
