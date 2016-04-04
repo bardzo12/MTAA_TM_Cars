@@ -47,7 +47,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         super.onCreate(savedInstanceState);
      //   requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.list_all_cars);
-        this.setFinishOnTouchOutside(false);
+     //   this.setFinishOnTouchOutside(false);
 
 
         ImageButton refreshImageView = (ImageButton) findViewById(R.id.imageRefresh);
