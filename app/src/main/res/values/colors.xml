@@ -7,4 +7,5 @@
     <color name="my_primary_text">#FFFF</color>
     <color name="action_color">#FFFF</color>
     <color name="dark_material">#424242</color>
+    <color name="orange">#43a047</color>
 </resources>
