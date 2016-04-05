@@ -3,9 +3,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context="fiit.baranek.tomas.mtaa.Activities.ShowAllCarsActivity">
+
+
+    <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
+        android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary" app:popupTheme="@style/AppTheme.PopupOverlay"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+          >
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageRefresh"
+                android:src="@drawable/refresh"
+                android:background="@null"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/imageaddCar"
+                 />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageaddCar"
+                android:background="@null"
+                android:layout_centerVertical="true"
+                android:src="@drawable/plus"
+
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="15dp" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
 
 
 

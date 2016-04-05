@@ -47,17 +47,16 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         super.onCreate(savedInstanceState);
      //   requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.list_all_cars);
-        this.setFinishOnTouchOutside(false);
-        /*ListView klikajuci = (ListView) findViewById(R.id.);
-        klikajuci.setOnClickListener(new View.OnClickListener() {
+     //   this.setFinishOnTouchOutside(false);
+
+
+        ImageButton refreshImageView = (ImageButton) findViewById(R.id.imageRefresh);
+        refreshImageView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                refresh();
 
-                System.out.println("Klikol som");
             }
-        });*/
-        //this to set delegate/listener back to this class
-
-
+        });
 
 
 
@@ -180,9 +179,24 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         }
         else{
             Intent intent = new Intent(this, ConnectionErrorActivity.class);
+            intent.putExtra("ActivityID", 2);
+            intent.putExtra("CarID",CarID);
             startActivity(intent);
         }
     }
+
+    public void refresh(){
+
+        if(isOnline()) {
+            getAllCars();
+        }
+        else{
+            Intent intent = new Intent(this, ConnectionErrorActivity.class);
+            intent.putExtra("ActivityID", 11);
+            startActivity(intent);
+        }
+    }
+
 
     /**
      * Checks whether the network is available.
@@ -289,7 +303,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             }
 
 
-            TextView space = (TextView) view.findViewById(R.id.car_brand);
+            RelativeLayout space = (RelativeLayout) view.findViewById(R.id.celyObsah);
             space.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
 
