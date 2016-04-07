@@ -1,6 +1,8 @@
 package fiit.baranek.tomas.mtaa.Activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -12,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,6 +60,13 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         getDetail(CarID);
 
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        return true;
+    }
 
     @Override
     public void processFinish(ResponseParameters responseParameters) {
@@ -94,7 +105,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                 phone.setText(SelectCar.getC_phoneNumber());
 
                 TextView price = (TextView) findViewById( R.id.textViewPriceValue);
-                price.setText(String.format(String.valueOf(SelectCar.getC_price())));
+                price.setText(String.format(String.valueOf(SelectCar.getC_price())) + "€");
 
                 new DownloadImage().execute(SelectCar.getC_photo());
 
@@ -203,5 +214,52 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;
         asyncTask.execute(r);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.delete:
+                new AlertDialog.Builder(this)
+                        .setTitle("Delete car")
+                        .setMessage("Are you sure you want to delete this car?")
+                        .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteCarById(SelectCar.getObjectId());
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public boolean deleteCarById(String CarID){
+
+        RequestParameters r = null;
+        URL https = null;
+        try {
+            https = new URL("https://api.backendless.com/v1/data/Car/"+CarID);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        r = new RequestParameters(https, "DELETE", 1);
+
+        MyAsyncTask asyncTask =new MyAsyncTask(this);
+        asyncTask.delegate = this;
+        asyncTask.execute(r);
+
+        return true;
     }
 }
