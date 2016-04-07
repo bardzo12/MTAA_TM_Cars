@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import java.util.List;
 
 import fiit.baranek.tomas.mtaa.AsyncResponse;
 import fiit.baranek.tomas.mtaa.Car;
+import fiit.baranek.tomas.mtaa.Database.DatabaseHandler;
 import fiit.baranek.tomas.mtaa.MyAsyncTask;
 import fiit.baranek.tomas.mtaa.R;
 import fiit.baranek.tomas.mtaa.RequestParameters;
@@ -43,12 +45,13 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
 
 
+    DatabaseHandler db;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
      //   requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.list_all_cars);
      //   this.setFinishOnTouchOutside(false);
-
+        db = new DatabaseHandler(this);
 
         ImageButton refreshImageView = (ImageButton) findViewById(R.id.imageRefresh);
         refreshImageView.setOnClickListener(new View.OnClickListener() {
@@ -57,8 +60,11 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
             }
         });
-
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.MyToolbar);
+        toolbar.setTitle("TM CARS");
+        //setSupportActionBar(toolbar);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
 
     }
@@ -72,7 +78,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        r = new RequestParameters(https, "GET", 1);
+        r = new RequestParameters(https, "GET", 1, isOnline(), this);
 
         MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;
@@ -138,7 +144,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        r = new RequestParameters(https, "DELETE", 1);
+        r = new RequestParameters(https, "DELETE", 1, isOnline(), this);
 
         MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;
@@ -178,6 +184,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             startActivity(intent);
         }
         else{
+
             Intent intent = new Intent(this, ConnectionErrorActivity.class);
             intent.putExtra("ActivityID", 2);
             intent.putExtra("CarID",CarID);

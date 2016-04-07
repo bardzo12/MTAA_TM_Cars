@@ -7,22 +7,30 @@ import fiit.baranek.tomas.mtaa.Enums.CategoryTransmission;
 
 public class Car {
 
-    private String c_engine;
-    private String created;
-    private String c_phoneNumber;
-    private int c_price;
-    private String c_location;
-    private CategoryBrand c_categoryBrand;
-    private int c_yearOfProduction;
-    private String c_model;
-    private int c_mileAge;
-    private String c_photo;
-    private CategoryFuel c_categoryFuel;
-    private CategoryTransmission c_categoryTransmission;
-    private String c_driveType;
-    private String c_interiorColor;
-    private String objectId;
+    private String c_engine = "";
+    private String created = "";
+    private String c_phoneNumber = "";
+    private int c_price = 0;
+    private String c_location = "";
+    private CategoryBrand c_categoryBrand = CategoryBrand.AUDI;
+    private int c_yearOfProduction = 0;
+    private String c_model = "";
+    private int c_mileAge = 0;
+    private String c_photo = "";
+    private CategoryFuel c_categoryFuel = CategoryFuel.NAFTA;
+    private CategoryTransmission c_categoryTransmission = CategoryTransmission.AUTOMATIC;
+    private String c_driveType = "";
+    private String c_interiorColor = "";
+    private String objectId = "";
+    private long c_update = 0;
 
+    public long getC_update() {
+        return c_update;
+    }
+
+    public void setC_update(long c_update) {
+        this.c_update = c_update;
+    }
 
     public String getC_engine() {
         return c_engine;
@@ -62,6 +70,11 @@ public class Car {
 
     public void setC_location(String c_location) {
         this.c_location = c_location;
+    }
+
+
+    public int getC_categoryBrandInt(){
+        return c_categoryBrand.ordinal();
     }
 
     public String getC_categoryBrand() {
@@ -109,6 +122,10 @@ public class Car {
         return c_categoryFuel.toString();
     }
 
+    public int getC_categoryFuelInt(){
+        return c_categoryFuel.ordinal();
+    }
+
     public void setC_categoryFuel(int c_categoryFuel) {
         CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel-1];
         this.c_categoryFuel = Fuel;
@@ -116,6 +133,10 @@ public class Car {
 
     public String getC_categoryTransmission() {
         return c_categoryTransmission.toString();
+    }
+
+    public int getC_categoryTransmissionInt(){
+        return c_categoryTransmission.ordinal();
     }
 
     public void setC_categoryTransmission(int c_categoryTransmission) {
@@ -154,12 +175,12 @@ public class Car {
     /*
     Costructor for every Car elements
      */
-    public Car (String c_engine, String created, String c_phoneNumber, int c_price, String c_location, int c_categoryBrand,
+    public Car (String c_engine, String c_phoneNumber, int c_price, String c_location, int c_categoryBrand,
                 int c_yearOfProduction, String c_model, int c_mileAge, String c_photo, int c_categoryFuel, int c_categoryTransmission,
                 String c_driveType, String c_interiorColor, String objectId){
 
         this.c_engine = c_engine;
-        this.created = created;
+        //this.created = created;
         this.c_phoneNumber = c_phoneNumber;
         this.c_price = c_price;
         this.c_location = c_location;

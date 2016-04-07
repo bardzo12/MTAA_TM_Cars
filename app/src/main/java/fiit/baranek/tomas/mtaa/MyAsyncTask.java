@@ -3,6 +3,8 @@ package fiit.baranek.tomas.mtaa;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
@@ -19,6 +21,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import fiit.baranek.tomas.mtaa.Database.DatabaseHandler;
 
 /**
  * Created by matus on 15. 3. 2016.
@@ -40,6 +44,8 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
             this.dialog.show();
         }
     }
+
+
     @Override
     protected ResponseParameters doInBackground(RequestParameters... params){
         URL url;
@@ -47,54 +53,67 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
         String jsonString = null;
         ResponseParameters responseParameters = new ResponseParameters();
         RequestParameters requestParameters = params[0];
-        List<Car> cars = null;
+        Boolean isOnline = requestParameters.isOnline;
+        if(isOnline) {
+            List<Car> cars = null;
 
 
-        try {
-            url = requestParameters.url;
+            try {
+                url = requestParameters.url;
 
 
-            MyUrlConnection = (HttpURLConnection) url
-                    .openConnection();
-            MyUrlConnection.setRequestMethod(requestParameters.requestType);
-            MyUrlConnection.setRequestProperty("application-id", "1AF9A17F-4152-8B23-FF2C-C25040E38A00");
-            MyUrlConnection.setRequestProperty( "secret-key","953B4A54-64D4-4FA9-FFC5-B9DA0CC18800");
-            MyUrlConnection.setRequestProperty("application-type", "REST");
+                MyUrlConnection = (HttpURLConnection) url
+                        .openConnection();
+                MyUrlConnection.setRequestMethod(requestParameters.requestType);
+                MyUrlConnection.setRequestProperty("application-id", "1AF9A17F-4152-8B23-FF2C-C25040E38A00");
+                MyUrlConnection.setRequestProperty("secret-key", "953B4A54-64D4-4FA9-FFC5-B9DA0CC18800");
+                MyUrlConnection.setRequestProperty("application-type", "REST");
 
-           // InputStreamReader is = new InputStreamReader(in);
-            responseParameters.setResponseCode(MyUrlConnection.getResponseCode());
-            Log.i("Sprava",""+MyUrlConnection.getResponseCode());
-            if(MyUrlConnection.getResponseCode() == 200) {
-                if(requestParameters.requestType.equals("GET")){
-                    if(requestParameters.Type == 1) {
-                        InputStream in = MyUrlConnection.getInputStream();
-                        responseParameters.setType(requestParameters.requestType);
-                        jsonString = readStream(in);
-                        responseParameters.setListOfCars(getCarsFromString(jsonString));
-                    }else{
-                        InputStream in = MyUrlConnection.getInputStream();
-                        responseParameters.setType(requestParameters.requestType);
-                        jsonString = readStream(in);
-                        responseParameters.setCar(getCarFromString(jsonString));
-                    }
-                }else if(requestParameters.requestType.equals("DELETE")){
-                        responseParameters.setType(requestParameters.requestType);
+                // InputStreamReader is = new InputStreamReader(in);
+                responseParameters.setResponseCode(MyUrlConnection.getResponseCode());
+                Log.i("Sprava", "" + MyUrlConnection.getResponseCode());
+                if (MyUrlConnection.getResponseCode() == 200) {
+                    if (requestParameters.requestType.equals("GET")) {
+                        if (requestParameters.Type == 1) {
+                            InputStream in = MyUrlConnection.getInputStream();
+                            responseParameters.setType(requestParameters.requestType);
+                            jsonString = readStream(in);
+                            responseParameters.setListOfCars(getCarsFromString(jsonString));
+                        } else {
+                            InputStream in = MyUrlConnection.getInputStream();
+                            responseParameters.setType(requestParameters.requestType);
+                            jsonString = readStream(in);
+                            responseParameters.setCar(getCarFromString(jsonString));
                         }
+                    } else if (requestParameters.requestType.equals("DELETE")) {
+                        responseParameters.setType(requestParameters.requestType);
+                    }
 
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (MyUrlConnection != null) {
+                    MyUrlConnection.disconnect();
+                }
             }
 
-
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (MyUrlConnection != null) {
-                MyUrlConnection.disconnect();
+            return responseParameters;
+        }else{
+            responseParameters.setResponseCode(200);
+            DatabaseHandler db = new DatabaseHandler(requestParameters.context);
+            System.out.println("Počet: " + db.getCarsCount());
+            if(db != null) {
+                System.out.println("AHOJAKAJAJAJAJAJ");
+                responseParameters.setType(requestParameters.requestType);
+                responseParameters.setListOfCars(db.getAllCars());
+                return responseParameters;
             }
+            else
+                return null;
         }
-
-        return responseParameters;
     }
 
     public String readStream(InputStream stream){// Method reads stream and returns string value

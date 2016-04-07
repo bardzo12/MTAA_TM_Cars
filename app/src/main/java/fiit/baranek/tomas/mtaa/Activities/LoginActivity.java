@@ -63,16 +63,16 @@ public class LoginActivity extends AppCompatActivity{
 
     public void login(){
 
-        if(isOnline()) {
+        //if(isOnline()) {
             Intent scan = new Intent(this, ShowAllCarsActivity.class);
 
             startActivity(scan);
-        }
+        /*}
         else{
             Intent intent = new Intent(this, ConnectionErrorActivity.class);
             intent.putExtra("ActivityID", 1);
             startActivity(intent);
-        }
+        }*/
     }
 
 
