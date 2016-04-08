@@ -74,11 +74,11 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         RequestParameters r = null;
         URL https = null;
         try {
-            https = new URL("https://api.backendless.com/v1/data/Car?props=objectId%2Cc_yearOfProduction%2Cc_model%2Cc_categoryBrand%2Cc_price%2Cc_categoryFuel");
+            https = new URL("https://api.backendless.com/v1/data/Car?pageSize=100");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        r = new RequestParameters(https, "GET", 1, isOnline(), this);
+        r = new RequestParameters(https, "GET", 1, isOnline(), this, "");
 
         MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;
@@ -144,7 +144,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        r = new RequestParameters(https, "DELETE", 1, isOnline(), this);
+        r = new RequestParameters(https, "DELETE", 1, isOnline(), this,CarID);
 
         MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;
@@ -178,18 +178,18 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
     public void login(String CarID){
 
-        if(isOnline()) {
+        //if(isOnline()) {
             Intent intent = new Intent(this, DetailScreenActivity.class);
             intent.putExtra("CarID",CarID);
             startActivity(intent);
-        }
+       /* }
         else{
 
             Intent intent = new Intent(this, ConnectionErrorActivity.class);
             intent.putExtra("ActivityID", 2);
             intent.putExtra("CarID",CarID);
             startActivity(intent);
-        }
+        }*/
     }
 
     public void refresh(){

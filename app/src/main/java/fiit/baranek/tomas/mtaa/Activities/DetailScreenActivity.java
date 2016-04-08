@@ -109,7 +109,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                 TextView price = (TextView) findViewById( R.id.textViewPriceValue);
                 price.setText(String.format(String.valueOf(SelectCar.getC_price())) + "€");
 
-                new DownloadImage().execute(SelectCar.getC_photo());
+                //new DownloadImage().execute(SelectCar.getC_photo());
 
 
 
@@ -211,7 +211,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        r = new RequestParameters(https, "GET",2, isOnline(),this);
+        r = new RequestParameters(https, "GET",2, isOnline(),this, Id);
 
         MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;
@@ -271,7 +271,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        r = new RequestParameters(https, "DELETE", 1, isOnline(),this);
+        r = new RequestParameters(https, "DELETE", 1, isOnline(),this, CarID);
 
         MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;

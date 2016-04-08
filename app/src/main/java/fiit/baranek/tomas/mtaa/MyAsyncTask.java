@@ -79,6 +79,9 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                             responseParameters.setType(requestParameters.requestType);
                             jsonString = readStream(in);
                             responseParameters.setListOfCars(getCarsFromString(jsonString));
+                            long unixTime = System.currentTimeMillis();
+                            System.out.println("Som tu" + unixTime);
+                            System.out.println(jsonString);
                         } else {
                             InputStream in = MyUrlConnection.getInputStream();
                             responseParameters.setType(requestParameters.requestType);
@@ -102,18 +105,33 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
 
             return responseParameters;
         }else{
-            responseParameters.setResponseCode(200);
-            DatabaseHandler db = new DatabaseHandler(requestParameters.context);
-            System.out.println("Počet: " + db.getCarsCount());
-            if(db != null) {
-                System.out.println("AHOJAKAJAJAJAJAJ");
-                responseParameters.setType(requestParameters.requestType);
-                responseParameters.setListOfCars(db.getAllCars());
-                return responseParameters;
+
+            if (requestParameters.requestType.equals("GET")) {
+                if (requestParameters.Type == 1) {
+                    responseParameters.setResponseCode(200);
+                    DatabaseHandler db = new DatabaseHandler(requestParameters.context);
+                    System.out.println("Počet: " + db.getCarsCount());
+                    if(db != null) {
+                        System.out.println("AHOJAKAJAJAJAJAJ");
+                        responseParameters.setType(requestParameters.requestType);
+                        responseParameters.setListOfCars(db.getAllCars());
+                        return responseParameters;
+                    }
+                    else
+                        return null;
+                } else {
+                    responseParameters.setResponseCode(200);
+                    DatabaseHandler db = new DatabaseHandler(requestParameters.context);
+                    if(db != null){
+                        responseParameters.setType(requestParameters.requestType);
+                        responseParameters.setCar(db.getContact(requestParameters.carId));
+                    }
+                    return responseParameters;
+                    //System.out.println("Počet: " + db.getCarsCount());
+                }
             }
-            else
-                return null;
         }
+        return null;
     }
 
     public String readStream(InputStream stream){// Method reads stream and returns string value
@@ -142,21 +160,22 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
         for(int i=0;i<data.length();i++) {
             car = new Car();
             JSONObject item = (JSONObject) data.get(i);
-          //  car.setC_engine(item.optString("c_engine"));
+            car.setC_engine(item.optString("c_engine"));
             car.setCreated(item.optString("created"));
-         //   car.setC_phoneNumber(item.optString("c_phoneNumber"));
+            car.setC_phoneNumber(item.optString("c_phoneNumber"));
             car.setC_price(item.optInt("c_price"));
-         //   car.setC_location(item.optString("c_location"));
+            car.setC_location(item.optString("c_location"));
             car.setC_categoryBrand(item.optInt("c_categoryBrand"));
             car.setC_yearOfProduction(item.optInt("c_yearOfProduction"));
             car.setC_model(item.optString("c_model"));
-         //   car.setC_mileAge(item.optInt("c_mileAge"));
-         //   car.setC_photo(item.optString("c_photo"));
+            car.setC_mileAge(item.optInt("c_mileAge"));
+            car.setC_photo(item.optString("c_photo"));
             car.setC_categoryFuel(item.optInt("c_categoryFuel"));
-         //   car.setC_categoryTransmission(item.optInt("c_categoryTransmission"));
-         //   car.setC_driveType(item.optString("c_driveType"));
-         //   car.setC_interiorColor(item.optString("c_interiorColor"));
+            car.setC_categoryTransmission(item.optInt("c_categoryTransmission"));
+            car.setC_driveType(item.optString("c_driveType"));
+            car.setC_interiorColor(item.optString("c_interiorColor"));
             car.setObjectId(item.optString("objectId"));
+            car.setC_update(item.optLong("updated"));
             cars.add(car);
         }
 

@@ -15,13 +15,15 @@ public class RequestParameters {
     public int Type;
     public Boolean isOnline;
     public Context context;
+    public String carId;
 
-    public RequestParameters(URL url, String requestType, int Type, Boolean isOnline, Context context){
+    public RequestParameters(URL url, String requestType, int Type, Boolean isOnline, Context context, String carId){
         this.isOnline = isOnline;
         this.url = url;
         this.requestType = requestType;
         this.Type = Type;
         this.context = context;
+        this.carId = carId;
     }
 
 }

@@ -105,6 +105,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(KEY_CATEGORY_TRANSMISSION,car.getC_categoryTransmissionInt());
         values.put(KEY_DRIVE_TYPE, car.getC_driveType());
         values.put(KEY_INTERIOR_COLOR, car.getC_interiorColor());
+        values.put(KEY_UPDATED, car.getC_update());
         values.put(KEY_OBJECT_ID, car.getObjectId());
 
         db.insert(TABLE_CARS,null,values);
@@ -142,6 +143,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             values.put(KEY_CATEGORY_TRANSMISSION, car.getC_categoryTransmissionInt());
             values.put(KEY_DRIVE_TYPE, car.getC_driveType());
             values.put(KEY_INTERIOR_COLOR, car.getC_interiorColor());
+            values.put(KEY_UPDATED, car.getC_update());
             values.put(KEY_OBJECT_ID, car.getObjectId());
 
             db.insert(TABLE_CARS, null, values);
@@ -165,16 +167,18 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 car.setC_phoneNumber(cursor.getString(2));
                 car.setC_price(Integer.parseInt(cursor.getString(3)));
                 car.setC_location(cursor.getString(4));
-                car.setC_categoryBrand(Integer.parseInt(cursor.getString(5))+1);
+                car.setC_categoryBrand(Integer.parseInt(cursor.getString(5)) + 1);
                 car.setC_yearOfProduction(Integer.parseInt(cursor.getString(6)));
                 car.setC_model(cursor.getString(7));
                 car.setC_mileAge(Integer.parseInt(cursor.getString(8)));
                 car.setC_photo(cursor.getString(9));
-                car.setC_categoryFuel(Integer.parseInt(cursor.getString(10))+1);
-                car.setC_categoryTransmission(Integer.parseInt(cursor.getString(11))+1);
+                car.setC_categoryFuel(Integer.parseInt(cursor.getString(10)) + 1);
+                car.setC_categoryTransmission(Integer.parseInt(cursor.getString(11)) + 1);
                 car.setC_driveType(cursor.getString(12));
                 car.setC_interiorColor(cursor.getString(13));
-                car.setObjectId(cursor.getString(14));
+                if(cursor.getString(14) != null)
+                    car.setC_update(Long.parseLong(cursor.getString(14)));
+                car.setObjectId(cursor.getString(15));
                 carList.add(car);
             } while (cursor.moveToNext());
         }
@@ -191,5 +195,49 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         // return count
         return cursor.getCount();
+    }
+
+    // Getting single contact
+    public Car getContact(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        /*
+        KEY_ID + " INTEGER PRIMARY KEY," + KEY_ENGINE + " TEXT,"
+                + KEY_PHONE_NUMBER + " TEXT," + KEY_PRICE + " INTEGER,"
+                + KEY_LOCATION + " TEXT," + KEY_CATEGORY_BRAND + " INTEGER,"
+                + KEY_YEAR_OF_PRODUCTION + " INTEGER," + KEY_MODEL + " TEXT,"
+                + KEY_MILE_AGE + " INTEGER," + KEY_PHOTO + " TEXT,"
+                + KEY_CATEGORY_FUEL + " INTEGER," + KEY_CATEGORY_TRANSMISSION + " INTEGER,"
+                + KEY_DRIVE_TYPE + " TEXT," + KEY_INTERIOR_COLOR + " INTEGER,"
+                + KEY_UPDATED + " INTEGER," + KEY_OBJECT_ID
+         */
+        Cursor cursor = db.query(TABLE_CARS, new String[]{KEY_ID,
+                        KEY_ENGINE, KEY_PHONE_NUMBER, KEY_PRICE,
+                        KEY_LOCATION, KEY_CATEGORY_BRAND, KEY_YEAR_OF_PRODUCTION,
+                        KEY_MODEL, KEY_MILE_AGE, KEY_PHOTO, KEY_CATEGORY_FUEL,
+                        KEY_CATEGORY_TRANSMISSION, KEY_DRIVE_TYPE, KEY_INTERIOR_COLOR,
+                        KEY_UPDATED, KEY_OBJECT_ID}, KEY_OBJECT_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Car car = new Car();
+        car.setC_engine(cursor.getString(1));
+        car.setC_phoneNumber(cursor.getString(2));
+        car.setC_price(Integer.parseInt(cursor.getString(3)));
+        car.setC_location(cursor.getString(4));
+        car.setC_categoryBrand(Integer.parseInt(cursor.getString(5)) + 1);
+        car.setC_yearOfProduction(Integer.parseInt(cursor.getString(6)));
+        car.setC_model(cursor.getString(7));
+        car.setC_mileAge(Integer.parseInt(cursor.getString(8)));
+        car.setC_photo(cursor.getString(9));
+        car.setC_categoryFuel(Integer.parseInt(cursor.getString(10)) + 1);
+        car.setC_categoryTransmission(Integer.parseInt(cursor.getString(11)) + 1);
+        car.setC_driveType(cursor.getString(12));
+        car.setC_interiorColor(cursor.getString(13));
+        if(cursor.getString(14) != null)
+        car.setC_update(Long.parseLong(cursor.getString(14)));
+        car.setObjectId(cursor.getString(15));
+        return car;
     }
 }
