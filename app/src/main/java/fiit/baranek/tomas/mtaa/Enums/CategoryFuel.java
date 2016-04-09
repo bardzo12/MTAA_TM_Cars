@@ -5,8 +5,10 @@ package fiit.baranek.tomas.mtaa.Enums;
  */
 public enum CategoryFuel {
     NAFTA("nafta"),
-    BENZIN("benzin"),
-    LPG("LPG");
+    BENZIN("benzín"),
+    LPG("LPG"),
+    HYBRID("hybrid"),
+    ELEKTROMOTOR("elektromotor");
 
     private String stringValue;
 
