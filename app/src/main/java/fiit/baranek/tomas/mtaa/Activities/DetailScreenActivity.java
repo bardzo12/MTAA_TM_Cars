@@ -109,7 +109,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                 TextView price = (TextView) findViewById( R.id.textViewPriceValue);
                 price.setText(String.format(String.valueOf(SelectCar.getC_price())) + "€");
 
-                //new DownloadImage().execute(SelectCar.getC_photo());
+                if (isOnline()) new DownloadImage().execute(SelectCar.getC_photo());
 
 
 

@@ -103,6 +103,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
          if(responseParameters.getResponseCode() == 200) {// add list od Cars do ListView adapter
              if(responseParameters.getType().equals("GET")) {
                  adapter.addList(responseParameters.getListOfCars());
+                 db.addCars(responseParameters.getListOfCars());
                  adapter.notifyDataSetChanged();
              }else if(responseParameters.getType().equals("DELETE")){
                 getAllCars();
