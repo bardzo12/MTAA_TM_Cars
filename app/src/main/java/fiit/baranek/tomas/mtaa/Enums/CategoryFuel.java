@@ -16,6 +16,16 @@ public enum CategoryFuel {
         stringValue = toString;
 
     }
+    public static CategoryFuel fromString(String text) {
+        if (text != null) {
+            for (CategoryFuel b : CategoryFuel.values()) {
+                if (text.equalsIgnoreCase(b.stringValue)) {
+                    return b;
+                }
+            }
+        }
+        return null;
+    }
 
     @Override
     public String toString(){

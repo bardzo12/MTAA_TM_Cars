@@ -26,6 +26,8 @@ import java.net.URL;
 
 import fiit.baranek.tomas.mtaa.AsyncResponse;
 import fiit.baranek.tomas.mtaa.Enums.CategoryBrand;
+import fiit.baranek.tomas.mtaa.Enums.CategoryFuel;
+import fiit.baranek.tomas.mtaa.Enums.CategoryTransmission;
 import fiit.baranek.tomas.mtaa.MyAsyncTask;
 import fiit.baranek.tomas.mtaa.R;
 import fiit.baranek.tomas.mtaa.RequestParameters;
@@ -80,7 +82,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
         mile = (EditText) findViewById( R.id.textViewMileAgeValue_edit_screen);
         mile.setText(String.format(String.valueOf(bundle.getInt("mileage"))));
 
-       String[] SPINNERLIST2 = new String[]{"manuálna", "automatická"};
+       String[] SPINNERLIST2 = new String[]{"automatická", "manuálna"};
         ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, SPINNERLIST2);
         transsmition = (MaterialBetterSpinner)
@@ -120,7 +122,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-              // updateCar();
+              updateCar();
 
             }
         });
@@ -140,13 +142,19 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
             car.put("c_phoneNumber", phone.getText());
             car.put("c_price", price.getText());
             car.put("c_location", location.getText());
-            car.put("c_categoryBrand", brand.getText());
+            CategoryBrand categoryBrand;
+            categoryBrand = CategoryBrand.fromString(brand.getText().toString());
+            car.put("c_categoryBrand", String.valueOf(categoryBrand.ordinal() + 1));
             car.put("c_yearOfProduction", year.getText());
             car.put("c_model", model.getText());
             car.put("c_mileAge", mile.getText());
             car.put("c_photo", photo.getText());
-            car.put("c_categoryFuel", fuel.getText());
-            car.put("c_categoryTransmission", transsmition.getText());
+            CategoryFuel categoryFuel;
+            categoryFuel = CategoryFuel.fromString(fuel.getText().toString());
+            car.put("c_categoryFuel", String.valueOf(categoryFuel.ordinal() + 1));
+            CategoryTransmission categoryTransmission;
+            categoryTransmission = CategoryTransmission.fromString(transsmition.getText().toString());
+            car.put("c_categoryTransmission", String.valueOf(categoryTransmission.ordinal() + 1));
             car.put("c_driveType", drive.getText());
             car.put("c_interiorColor", color.getText());
 
@@ -156,9 +164,10 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
         }
 
 
+        System.out.println("Toto je json:");
+        System.out.println(car.toString());
 
-
-
+/*
 
         RequestParameters r = null;
         URL https = null;
@@ -171,7 +180,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
 
         MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;
-        asyncTask.execute(r);
+        asyncTask.execute(r);*/
 
     }
 

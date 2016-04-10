@@ -12,6 +12,16 @@ public enum CategoryBrand {
 
     private String stringValue;
 
+    public static CategoryBrand fromString(String text) {
+        if (text != null) {
+            for (CategoryBrand b : CategoryBrand.values()) {
+                if (text.equalsIgnoreCase(b.stringValue)) {
+                    return b;
+                }
+            }
+        }
+        return null;
+    }
     CategoryBrand(String toString){
         stringValue = toString;
 
