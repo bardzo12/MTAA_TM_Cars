@@ -5,7 +5,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+ >
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/MyAppbar"
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true">
         <android.support.v7.widget.Toolbar
-            android:id="@+id/MyToolbar"
+            android:id="@+id/MyToolbar_edit_screen"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary" app:popupTheme="@style/AppTheme.PopupOverlay"
@@ -269,15 +269,15 @@
                         android:id="@+id/textViewColor"
                         android:textColor="#000000" />
 
-                    <EditText
-                        android:layout_width="wrap_content"
+                    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                        android:id="@+id/spinner_color_edit_screen"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text=""
-                        android:textSize="22dp"
+                        android:textAlignment="viewEnd"
                         android:textColor="@color/black"
-                        android:id="@+id/textViewColorValue_edit_screen"
-                        android:layout_gravity="right" />
+                        android:textSize="22dp"
+                        app:met_primaryColor="?colorAccent"
+                        />
 
                 </LinearLayout>
             </android.support.v7.widget.CardView> <android.support.v7.widget.CardView

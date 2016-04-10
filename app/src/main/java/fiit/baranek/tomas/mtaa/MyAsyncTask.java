@@ -70,6 +70,7 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                 MyUrlConnection.setRequestProperty("secret-key", "953B4A54-64D4-4FA9-FFC5-B9DA0CC18800");
                 MyUrlConnection.setRequestProperty("application-type", "REST");
 
+
                 // InputStreamReader is = new InputStreamReader(in);
 
                 if (requestParameters.requestType.equals("GET")) {
@@ -93,14 +94,17 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                 }   } else if (requestParameters.requestType.equals("DELETE")) {
                     responseParameters.setType(requestParameters.requestType);
                 }else if(requestParameters.requestType.equals("PUT")){
-                    Log.i("Sprava", "CODE: \n"+requestParameters.json.toString());
+                    Log.i("Sprava", "JSON: \n"+requestParameters.json.toString());
+                    MyUrlConnection.setRequestProperty("Content-type", "application/json");
                     MyUrlConnection.setDoOutput(true);
-
-                  /*  OutputStreamWriter out = new OutputStreamWriter(
+                    OutputStreamWriter out = new OutputStreamWriter(
                             MyUrlConnection.getOutputStream());
                     out.write(requestParameters.json.toString());
-                    out.close();*/
+                    out.close();
+
+                    responseParameters.setType(requestParameters.requestType);
                 }
+                Log.i("Sprava", "URL: "+url);
                 Log.i("Sprava", "CODE: "+MyUrlConnection.getResponseCode());
                 responseParameters.setResponseCode(MyUrlConnection.getResponseCode());
 

@@ -1,13 +1,18 @@
 package fiit.baranek.tomas.mtaa.Activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -35,7 +40,17 @@ import fiit.baranek.tomas.mtaa.ResponseParameters;
 
 public class EditScreenActivity extends AppCompatActivity implements AsyncResponse{
     @Override
-    public void processFinish(ResponseParameters output) {
+    public void processFinish(ResponseParameters responseParameters) {
+
+        if(responseParameters.getResponseCode() == 200) {// add list od Cars do ListView adapter
+            if (responseParameters.getType().equals("PUT")) {
+
+
+            } else if ((responseParameters.getType().equals("DELETE"))) {
+                finish();
+            }
+        }
+
 
     }
 
@@ -45,7 +60,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
     private EditText year;
     private EditText mile;
     private MaterialBetterSpinner transsmition;
-    private EditText color;
+    private MaterialBetterSpinner color;
     private EditText engine;
     private EditText drive;
     private MaterialBetterSpinner fuel;
@@ -59,9 +74,17 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_screen);
         Bundle bundle = getIntent().getExtras();
-
-    //    collapsingToolbarLayout.setTitle(SelectCar.getC_categoryBrand() + " " + SelectCar.getC_model());
         String[] SPINNERLIST1 = new String[]{"Škoda", "Mercedes","BMW", "Audi", "Ford"};
+        String[] SPINNERLIST2 = new String[]{"automatická", "manuálna"};
+        String[] SPINNERLIST3 = new String[]{"nafta", "benzín", "LPG", "hybrid", "elektromotor"};
+        String[] SPINNERLIST4 = new String[]{"biela", "čierna", "hnedá"};
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.MyToolbar_edit_screen);
+        toolbar.setTitle(SPINNERLIST1[bundle.getInt("brand")]+" "+bundle.getString("model"));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, SPINNERLIST1);
         brand = (MaterialBetterSpinner)
@@ -82,7 +105,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
         mile = (EditText) findViewById( R.id.textViewMileAgeValue_edit_screen);
         mile.setText(String.format(String.valueOf(bundle.getInt("mileage"))));
 
-       String[] SPINNERLIST2 = new String[]{"automatická", "manuálna"};
+
         ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, SPINNERLIST2);
         transsmition = (MaterialBetterSpinner)
@@ -90,8 +113,14 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
         transsmition.setText(SPINNERLIST2[bundle.getInt("transmission")]);
         transsmition.setAdapter(arrayAdapter2);
 
-        color = (EditText) findViewById( R.id.textViewColorValue_edit_screen);
+        ArrayAdapter<String> arrayAdapter4 = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, SPINNERLIST4);
+        color = (MaterialBetterSpinner)
+                findViewById(R.id.spinner_color_edit_screen);
         color.setText(bundle.getString("color"));
+
+        color.setAdapter(arrayAdapter1);
+
 
         engine = (EditText) findViewById( R.id.textViewEngineValue_edit_screen);
         engine.setText(bundle.getString("engine"));
@@ -99,7 +128,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
         drive = (EditText) findViewById( R.id.textViewDriveTypeValue_edit_screen);
         drive.setText(bundle.getString("drivetype"));
 
-        String[] SPINNERLIST3 = new String[]{"nafta", "benzín", "LPG", "hybrid", "elektromotor"};
+
         ArrayAdapter<String> arrayAdapter3 = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, SPINNERLIST3);
         fuel = (MaterialBetterSpinner)
@@ -164,10 +193,8 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
         }
 
 
-        System.out.println("Toto je json:");
-        System.out.println(car.toString());
 
-/*
+
 
         RequestParameters r = null;
         URL https = null;
@@ -180,7 +207,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
 
         MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;
-        asyncTask.execute(r);*/
+        asyncTask.execute(r);
 
     }
 
@@ -195,4 +222,19 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
             return false;
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        return false;
+    }
+
+
+
+
+
 }

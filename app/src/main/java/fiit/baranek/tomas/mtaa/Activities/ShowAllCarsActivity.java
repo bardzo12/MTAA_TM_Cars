@@ -16,9 +16,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +47,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
      //   requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.list_all_cars);
+        setContentView(R.layout.activity_list_all_cars);
      //   this.setFinishOnTouchOutside(false);
         db = new DatabaseHandler(this);
 

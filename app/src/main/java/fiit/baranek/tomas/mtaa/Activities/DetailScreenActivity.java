@@ -65,14 +65,21 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
 
         Bundle bundle = getIntent().getExtras();
         CarID = bundle.getString("CarID");
-        CarBrandInt = bundle.getInt("CarBrand");
-        CarFuelInt = bundle.getInt("CarFuel");
-        CarTransmissionInt = bundle.getInt("CarTransmission");
+
         getDetail(CarID);
 
 
 
     }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        getDetail(CarID);
+
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -86,6 +93,11 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         if(responseParameters.getResponseCode() == 200) {// add list od Cars do ListView adapter
             if(responseParameters.getType().equals("GET")) {
              SelectCar = responseParameters.getCar();
+
+
+                CarBrandInt = SelectCar.getC_categoryBrandInt();
+                CarFuelInt = SelectCar.getC_categoryFuelInt();
+                CarTransmissionInt = SelectCar.getC_categoryTransmissionInt();
 
 
                 collapsingToolbarLayout.setTitle(SelectCar.getC_categoryBrand() + " " + SelectCar.getC_model());
@@ -137,6 +149,8 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
 
 
 
+            }else if((responseParameters.getType().equals("DELETE"))){
+                finish();
             }
         }else{
             System.out.println("Niečo je zle");
