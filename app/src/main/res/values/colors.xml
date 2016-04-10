@@ -4,8 +4,9 @@
     <color name="colorPrimaryDark">#6a1b9a</color>
     <color name="colorAccent">#6a1b9a</color>
     <color name="text_color">#212121</color>
-    <color name="my_primary_text">#FFFF</color>
+    <color name="my_primary_text">#000000</color>
     <color name="action_color">#FFFF</color>
     <color name="dark_material">#424242</color>
     <color name="orange">#43a047</color>
+    <color name="black">#000000</color>
 </resources>

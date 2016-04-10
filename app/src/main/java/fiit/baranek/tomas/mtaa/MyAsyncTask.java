@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -70,10 +71,10 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                 MyUrlConnection.setRequestProperty("application-type", "REST");
 
                 // InputStreamReader is = new InputStreamReader(in);
-                responseParameters.setResponseCode(MyUrlConnection.getResponseCode());
-                Log.i("Sprava", "" + MyUrlConnection.getResponseCode());
+
+                if (requestParameters.requestType.equals("GET")) {
                 if (MyUrlConnection.getResponseCode() == 200) {
-                    if (requestParameters.requestType.equals("GET")) {
+
                         if (requestParameters.Type == 1) {
                             InputStream in = MyUrlConnection.getInputStream();
                             responseParameters.setType(requestParameters.requestType);
@@ -88,12 +89,20 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                             jsonString = readStream(in);
                             responseParameters.setCar(getCarFromString(jsonString));
                         }
-                    } else if (requestParameters.requestType.equals("DELETE")) {
-                        responseParameters.setType(requestParameters.requestType);
-                    }
 
+                }   } else if (requestParameters.requestType.equals("DELETE")) {
+                    responseParameters.setType(requestParameters.requestType);
+                }else if(requestParameters.requestType.equals("PUT")){
+                    Log.i("Sprava", "CODE: \n"+requestParameters.json.toString());
+                    MyUrlConnection.setDoOutput(true);
+
+                  /*  OutputStreamWriter out = new OutputStreamWriter(
+                            MyUrlConnection.getOutputStream());
+                    out.write(requestParameters.json.toString());
+                    out.close();*/
                 }
-
+                Log.i("Sprava", "CODE: "+MyUrlConnection.getResponseCode());
+                responseParameters.setResponseCode(MyUrlConnection.getResponseCode());
 
             } catch (Exception e) {
                 e.printStackTrace();

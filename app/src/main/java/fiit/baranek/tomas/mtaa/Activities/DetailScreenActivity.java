@@ -3,6 +3,7 @@ package fiit.baranek.tomas.mtaa.Activities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +43,10 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
     ImageView mImageView;
     Car SelectCar;
     CollapsingToolbarLayout collapsingToolbarLayout;
+    private String CarID;
+    private int CarBrandInt;
+    private int CarFuelInt;
+    private int CarTransmissionInt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +64,13 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(context, R.color.colorAccent));
 
         Bundle bundle = getIntent().getExtras();
-        String CarID = bundle.getString("CarID");
+        CarID = bundle.getString("CarID");
+        CarBrandInt = bundle.getInt("CarBrand");
+        CarFuelInt = bundle.getInt("CarFuel");
+        CarTransmissionInt = bundle.getInt("CarTransmission");
         getDetail(CarID);
+
+
 
     }
     @Override
@@ -109,7 +120,20 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                 TextView price = (TextView) findViewById( R.id.textViewPriceValue);
                 price.setText(String.format(String.valueOf(SelectCar.getC_price())) + "€");
 
+
                 if (isOnline()) new DownloadImage().execute(SelectCar.getC_photo());
+
+                Button button = (Button) findViewById(R.id.EditButton);
+                button.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+
+                        startEdit( SelectCar.getC_model(), SelectCar.getC_location(), SelectCar.getC_yearOfProduction(),
+                                SelectCar.getC_mileAge(), SelectCar.getC_interiorColor(), SelectCar.getC_engine(),
+                                SelectCar.getC_driveType(), SelectCar.getC_phoneNumber(), SelectCar.getC_price(),
+                                SelectCar.getC_photo(), CarID, CarBrandInt, CarFuelInt,CarTransmissionInt);
+
+                    }
+                });
 
 
 
@@ -118,6 +142,28 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
             System.out.println("Niečo je zle");
         }
     }
+
+    public void startEdit( String Model,String Location, int YearOfProduction, int MileAge,
+                          String Color, String Engine, String DriveType, String phoneNumber, int price, String photo,
+                          String ID,int brand, int Fuel, int Transmission){
+        Intent intent = new Intent(this, EditScreenActivity.class);
+        intent.putExtra("brand", brand);
+        intent.putExtra("model", Model);
+        intent.putExtra("location", Location);
+        intent.putExtra("year", YearOfProduction);
+        intent.putExtra("mileage", MileAge);
+        intent.putExtra("transmission", Transmission);
+        intent.putExtra("color", Color);
+        intent.putExtra("engine", Engine);
+        intent.putExtra("drivetype", DriveType);
+        intent.putExtra("fuel", Fuel);
+        intent.putExtra("phonenumber", phoneNumber);
+        intent.putExtra("price", price);
+        intent.putExtra("photo", photo);
+        intent.putExtra("ID", ID);
+        startActivity(intent);
+    }
+
 
     private void setImage(Drawable drawable)
     {

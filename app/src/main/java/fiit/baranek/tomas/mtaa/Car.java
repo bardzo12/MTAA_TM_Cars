@@ -82,6 +82,7 @@ public class Car {
     }
 
     public void setC_categoryBrand(int c_categoryBrand) {
+
         CategoryBrand Brand = CategoryBrand.values()[c_categoryBrand-1];
         this.c_categoryBrand = Brand;
     }
@@ -127,6 +128,7 @@ public class Car {
     }
 
     public void setC_categoryFuel(int c_categoryFuel) {
+
         CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel-1];
         this.c_categoryFuel = Fuel;
     }

@@ -173,15 +173,18 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
         }
 
-    private void showDetail(String CarID) {
-        login(CarID);
+    private void showDetail(Car car) {
+        login(car);
     }
 
-    public void login(String CarID){
+    public void login(Car car){
 
         //if(isOnline()) {
             Intent intent = new Intent(this, DetailScreenActivity.class);
-            intent.putExtra("CarID",CarID);
+            intent.putExtra("CarID",car.getObjectId());
+            intent.putExtra("CarBrand",car.getC_categoryBrandInt());
+            intent.putExtra("CarTransmission",car.getC_categoryTransmissionInt());
+            intent.putExtra("CarFuel",car.getC_categoryFuelInt());
             startActivity(intent);
        /* }
         else{
@@ -315,7 +318,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             space.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
 
-                   showDetail(device.getObjectId());
+                   showDetail(device);
                 }
             });
 
