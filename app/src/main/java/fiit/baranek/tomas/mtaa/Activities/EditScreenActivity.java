@@ -30,6 +30,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import fiit.baranek.tomas.mtaa.AsyncResponse;
+import fiit.baranek.tomas.mtaa.Car;
+import fiit.baranek.tomas.mtaa.Database.DatabaseHandler;
 import fiit.baranek.tomas.mtaa.Enums.CategoryBrand;
 import fiit.baranek.tomas.mtaa.Enums.CategoryFuel;
 import fiit.baranek.tomas.mtaa.Enums.CategoryTransmission;
@@ -68,6 +70,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
     private EditText photo;
     private EditText price;
     private String CarID;
+    private DatabaseHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +83,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
         String[] SPINNERLIST4 = new String[]{"biela", "čierna", "hnedá"};
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.MyToolbar_edit_screen);
-        toolbar.setTitle(SPINNERLIST1[bundle.getInt("brand")]+" "+bundle.getString("model"));
+        toolbar.setTitle(SPINNERLIST1[bundle.getInt("brand")] + " " + bundle.getString("model"));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -146,6 +149,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
         photo.setText(bundle.getString("photo"));
 
         CarID = bundle.getString("ID");
+        db = new DatabaseHandler(this);
 
         Button button = (Button) findViewById(R.id.SaveButton_edit_screen);
         button.setOnClickListener(new View.OnClickListener() {
@@ -163,29 +167,43 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
 
     public void updateCar(){
 
-
+        Car updatedCar = new Car();
 
         JSONObject car = new JSONObject();
         try {
             car.put("c_engine", engine.getText());
+            updatedCar.setC_engine(engine.getText().toString());
             car.put("c_phoneNumber", phone.getText());
+            updatedCar.setC_phoneNumber(phone.getText().toString());
             car.put("c_price", price.getText());
+            updatedCar.setC_price(Integer.parseInt(price.getText().toString()));
             car.put("c_location", location.getText());
+            updatedCar.setC_location(location.getText().toString());
             CategoryBrand categoryBrand;
             categoryBrand = CategoryBrand.fromString(brand.getText().toString());
             car.put("c_categoryBrand", String.valueOf(categoryBrand.ordinal() + 1));
+            updatedCar.setC_categoryBrand(categoryBrand.ordinal() + 1);
             car.put("c_yearOfProduction", year.getText());
+            updatedCar.setC_yearOfProduction(Integer.parseInt(year.getText().toString()));
             car.put("c_model", model.getText());
+            updatedCar.setC_model(model.getText().toString());
             car.put("c_mileAge", mile.getText());
+            updatedCar.setC_mileAge(Integer.parseInt(mile.getText().toString()));
             car.put("c_photo", photo.getText());
+            updatedCar.setC_photo(photo.getText().toString());
             CategoryFuel categoryFuel;
             categoryFuel = CategoryFuel.fromString(fuel.getText().toString());
             car.put("c_categoryFuel", String.valueOf(categoryFuel.ordinal() + 1));
+            updatedCar.setC_categoryFuel(categoryFuel.ordinal() + 1);
             CategoryTransmission categoryTransmission;
             categoryTransmission = CategoryTransmission.fromString(transsmition.getText().toString());
             car.put("c_categoryTransmission", String.valueOf(categoryTransmission.ordinal() + 1));
+            updatedCar.setC_categoryTransmission(categoryTransmission.ordinal() + 1);
             car.put("c_driveType", drive.getText());
+            updatedCar.setC_driveType(drive.getText().toString());
             car.put("c_interiorColor", color.getText());
+            updatedCar.setC_interiorColor(color.getText().toString());
+            updatedCar.setObjectId(CarID);
 
         } catch (JSONException e) {
             // TODO Auto-generated catch block
@@ -194,20 +212,28 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
 
 
 
+        db.updateCar(updatedCar);
 
+        if(isOnline()) {
+            RequestParameters r = null;
+            URL https = null;
+            try {
+                https = new URL("https://api.backendless.com/v1/data/Car/" + CarID);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            r = new RequestParameters(https, "PUT", 1, isOnline(), this, "", car);
 
-        RequestParameters r = null;
-        URL https = null;
-        try {
-            https = new URL("https://api.backendless.com/v1/data/Car/"+CarID);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+            MyAsyncTask asyncTask = new MyAsyncTask(this);
+            asyncTask.delegate = this;
+            asyncTask.execute(r);
+        } else{
+            long unixTime = System.currentTimeMillis();
+            System.out.println("System time unix: ");
+            System.out.println(unixTime);
+            updatedCar.setC_update(unixTime);
+            db.addCarUpdated(updatedCar);
         }
-        r = new RequestParameters(https, "PUT", 1, isOnline(), this, "",car);
-
-        MyAsyncTask asyncTask =new MyAsyncTask(this);
-        asyncTask.delegate = this;
-        asyncTask.execute(r);
 
     }
 

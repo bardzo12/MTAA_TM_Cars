@@ -33,6 +33,7 @@ import java.net.URL;
 
 import fiit.baranek.tomas.mtaa.AsyncResponse;
 import fiit.baranek.tomas.mtaa.Car;
+import fiit.baranek.tomas.mtaa.Database.DatabaseHandler;
 import fiit.baranek.tomas.mtaa.MyAsyncTask;
 import fiit.baranek.tomas.mtaa.R;
 import fiit.baranek.tomas.mtaa.RequestParameters;
@@ -47,6 +48,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
     private int CarBrandInt;
     private int CarFuelInt;
     private int CarTransmissionInt;
+    private DatabaseHandler db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +69,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         CarID = bundle.getString("CarID");
 
         getDetail(CarID);
+        db = new DatabaseHandler(this);
 
 
 
@@ -147,6 +150,13 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                     }
                 });
 
+                collapsingToolbarLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startDetailFoto(SelectCar.getC_photo());
+                    }
+                });
+
 
 
             }else if((responseParameters.getType().equals("DELETE"))){
@@ -155,6 +165,12 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         }else{
             System.out.println("Niečo je zle");
         }
+    }
+
+    public void startDetailFoto(String photo){
+        Intent intent = new Intent(this, ActivityFotoDetail.class);
+        intent.putExtra("photo", photo);
+        startActivity(intent);
     }
 
     public void startEdit( String Model,String Location, int YearOfProduction, int MileAge,
@@ -305,7 +321,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                         .setMessage("Are you sure you want to delete this car?")
                         .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                deleteCarById(SelectCar.getObjectId());
+                                deleteCarById(SelectCar);
                                 finish();
                             }
                         })
@@ -322,21 +338,25 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         }
     }
 
-    public boolean deleteCarById(String CarID){
+    public boolean deleteCarById(Car CarID){
+        if(isOnline()) {
+            RequestParameters r = null;
+            URL https = null;
+            try {
+                https = new URL("https://api.backendless.com/v1/data/Car/" + CarID);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            r = new RequestParameters(https, "DELETE", 1, isOnline(), this, CarID.getObjectId());
 
-        RequestParameters r = null;
-        URL https = null;
-        try {
-            https = new URL("https://api.backendless.com/v1/data/Car/"+CarID);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+            MyAsyncTask asyncTask = new MyAsyncTask(this);
+            asyncTask.delegate = this;
+            asyncTask.execute(r);
+
+            return true;
+        }else{
+            db.addCarDeleted(CarID);
+            return false;
         }
-        r = new RequestParameters(https, "DELETE", 1, isOnline(),this, CarID);
-
-        MyAsyncTask asyncTask =new MyAsyncTask(this);
-        asyncTask.delegate = this;
-        asyncTask.execute(r);
-
-        return true;
     }
 }

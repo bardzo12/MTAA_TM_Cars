@@ -22,10 +22,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "carsManager";
+    private static final String DATABASE_NAME = "carsManagerTables4";
 
     // Contacts table name
     private static final String TABLE_CARS = "cars";
+    private static final String TABLE_CARS_DELETED = "cars_deleted";
+    private static final String TABLE_CARS_UPDATE = "cars_updated";
 
     /*
     private String c_engine;
@@ -78,6 +80,27 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 + KEY_CATEGORY_FUEL + " INTEGER," + KEY_CATEGORY_TRANSMISSION + " INTEGER,"
                 + KEY_DRIVE_TYPE + " TEXT," + KEY_INTERIOR_COLOR + " INTEGER,"
                 + KEY_UPDATED + " INTEGER," + KEY_OBJECT_ID + " TEXT" + ")";
+
+        String CREATE_CARS_TABLE_DELETE = "CREATE TABLE " + TABLE_CARS_DELETED + "("
+                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_ENGINE + " TEXT,"
+                + KEY_PHONE_NUMBER + " TEXT," + KEY_PRICE + " INTEGER,"
+                + KEY_LOCATION + " TEXT," + KEY_CATEGORY_BRAND + " INTEGER,"
+                + KEY_YEAR_OF_PRODUCTION + " INTEGER," + KEY_MODEL + " TEXT,"
+                + KEY_MILE_AGE + " INTEGER," + KEY_PHOTO + " TEXT,"
+                + KEY_CATEGORY_FUEL + " INTEGER," + KEY_CATEGORY_TRANSMISSION + " INTEGER,"
+                + KEY_DRIVE_TYPE + " TEXT," + KEY_INTERIOR_COLOR + " INTEGER,"
+                + KEY_UPDATED + " INTEGER," + KEY_OBJECT_ID + " TEXT" + ")";
+        String CREATE_CARS_TABLE_UPDATE = "CREATE TABLE " + TABLE_CARS_UPDATE + "("
+                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_ENGINE + " TEXT,"
+                + KEY_PHONE_NUMBER + " TEXT," + KEY_PRICE + " INTEGER,"
+                + KEY_LOCATION + " TEXT," + KEY_CATEGORY_BRAND + " INTEGER,"
+                + KEY_YEAR_OF_PRODUCTION + " INTEGER," + KEY_MODEL + " TEXT,"
+                + KEY_MILE_AGE + " INTEGER," + KEY_PHOTO + " TEXT,"
+                + KEY_CATEGORY_FUEL + " INTEGER," + KEY_CATEGORY_TRANSMISSION + " INTEGER,"
+                + KEY_DRIVE_TYPE + " TEXT," + KEY_INTERIOR_COLOR + " INTEGER,"
+                + KEY_UPDATED + " INTEGER," + KEY_OBJECT_ID + " TEXT" + ")";
+        db.execSQL(CREATE_CARS_TABLE_UPDATE);
+        db.execSQL(CREATE_CARS_TABLE_DELETE);
         db.execSQL(CREATE_CARS_TABLE);
     }
 
@@ -117,6 +140,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         System.out.println("TUSOMSA2");
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CARS);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_CARS_DELETED);
         String CREATE_CARS_TABLE = "CREATE TABLE " + TABLE_CARS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_ENGINE + " TEXT,"
                 + KEY_PHONE_NUMBER + " TEXT," + KEY_PRICE + " INTEGER,"
@@ -126,6 +150,17 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 + KEY_CATEGORY_FUEL + " INTEGER," + KEY_CATEGORY_TRANSMISSION + " INTEGER,"
                 + KEY_DRIVE_TYPE + " TEXT," + KEY_INTERIOR_COLOR + " INTEGER,"
                 + KEY_UPDATED + " INTEGER," + KEY_OBJECT_ID + " TEXT" + ")";
+
+        /*String CREATE_CARS_TABLE_DELETE = "CREATE TABLE " + TABLE_CARS_DELETED + "("
+                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_ENGINE + " TEXT,"
+                + KEY_PHONE_NUMBER + " TEXT," + KEY_PRICE + " INTEGER,"
+                + KEY_LOCATION + " TEXT," + KEY_CATEGORY_BRAND + " INTEGER,"
+                + KEY_YEAR_OF_PRODUCTION + " INTEGER," + KEY_MODEL + " TEXT,"
+                + KEY_MILE_AGE + " INTEGER," + KEY_PHOTO + " TEXT,"
+                + KEY_CATEGORY_FUEL + " INTEGER," + KEY_CATEGORY_TRANSMISSION + " INTEGER,"
+                + KEY_DRIVE_TYPE + " TEXT," + KEY_INTERIOR_COLOR + " INTEGER,"
+                + KEY_UPDATED + " INTEGER," + KEY_OBJECT_ID + " TEXT" + ")";
+        db.execSQL(CREATE_CARS_TABLE_DELETE);*/
         db.execSQL(CREATE_CARS_TABLE);
         // db.needUpgrade(db.getVersion()+1);
         for(Car car : cars) {
@@ -198,7 +233,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     }
 
     // Getting single contact
-    public Car getContact(String id) {
+    public Car getCar(String id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         /*
@@ -240,4 +275,187 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         car.setObjectId(cursor.getString(15));
         return car;
     }
+
+
+
+    public int updateCar(Car car) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ENGINE, car.getC_engine());
+        values.put(KEY_PHONE_NUMBER, car.getC_phoneNumber());
+        values.put(KEY_PRICE, car.getC_price());
+        values.put(KEY_LOCATION, car.getC_location());
+        values.put(KEY_CATEGORY_BRAND, car.getC_categoryBrandInt());
+        values.put(KEY_YEAR_OF_PRODUCTION, car.getC_yearOfProduction());
+        values.put(KEY_MODEL, car.getC_model());
+        values.put(KEY_MILE_AGE, car.getC_mileAge());
+        values.put(KEY_PHOTO, car.getC_photo());
+        values.put(KEY_CATEGORY_FUEL, car.getC_categoryFuelInt());
+        values.put(KEY_CATEGORY_TRANSMISSION, car.getC_categoryTransmissionInt());
+        values.put(KEY_DRIVE_TYPE, car.getC_driveType());
+        values.put(KEY_INTERIOR_COLOR, car.getC_interiorColor());
+        values.put(KEY_UPDATED, car.getC_update());
+        values.put(KEY_OBJECT_ID, car.getObjectId());
+        db.insert(TABLE_CARS_UPDATE, null, values);
+
+        // updating row
+        return db.update(TABLE_CARS, values, KEY_OBJECT_ID + " = ?",
+                new String[] { String.valueOf(car.getObjectId()) });
+    }
+
+    //tables for deleted cars
+    public void addCarDeleted(Car car){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ENGINE, car.getC_engine());
+        values.put(KEY_PHONE_NUMBER, car.getC_phoneNumber());
+        values.put(KEY_PRICE, car.getC_price());
+        values.put(KEY_LOCATION, car.getC_location());
+        values.put(KEY_CATEGORY_BRAND, car.getC_categoryBrandInt());
+        values.put(KEY_YEAR_OF_PRODUCTION, car.getC_yearOfProduction());
+        values.put(KEY_MODEL, car.getC_model());
+        values.put(KEY_MILE_AGE, car.getC_mileAge());
+        values.put(KEY_PHOTO, car.getC_photo());
+        values.put(KEY_CATEGORY_FUEL, car.getC_categoryFuelInt());
+        values.put(KEY_CATEGORY_TRANSMISSION, car.getC_categoryTransmissionInt());
+        values.put(KEY_DRIVE_TYPE, car.getC_driveType());
+        values.put(KEY_INTERIOR_COLOR, car.getC_interiorColor());
+        values.put(KEY_UPDATED, car.getC_update());
+        values.put(KEY_OBJECT_ID, car.getObjectId());
+        db.insert(TABLE_CARS_DELETED, null, values);
+    }
+
+    public List<Car> getAllCarsDeleted(){
+        List<Car> carList = new ArrayList<Car>();
+
+        String selectQuery = "SELECT * FROM " + TABLE_CARS_DELETED;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if(cursor.moveToFirst()){
+            do{
+                Car car = new Car();
+                //car.setObjectId(cursor.getString(0));
+                car.setC_engine(cursor.getString(1));
+                car.setC_phoneNumber(cursor.getString(2));
+                car.setC_price(Integer.parseInt(cursor.getString(3)));
+                car.setC_location(cursor.getString(4));
+                car.setC_categoryBrand(Integer.parseInt(cursor.getString(5)) + 1);
+                car.setC_yearOfProduction(Integer.parseInt(cursor.getString(6)));
+                car.setC_model(cursor.getString(7));
+                car.setC_mileAge(Integer.parseInt(cursor.getString(8)));
+                car.setC_photo(cursor.getString(9));
+                car.setC_categoryFuel(Integer.parseInt(cursor.getString(10)) + 1);
+                car.setC_categoryTransmission(Integer.parseInt(cursor.getString(11)) + 1);
+                car.setC_driveType(cursor.getString(12));
+                car.setC_interiorColor(cursor.getString(13));
+                if(cursor.getString(14) != null)
+                    car.setC_update(Long.parseLong(cursor.getString(14)));
+                car.setObjectId(cursor.getString(15));
+                carList.add(car);
+            } while (cursor.moveToNext());
+        }
+
+
+        return  carList;
+    }
+
+    public void restartTableCarDeleted(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CARS_DELETED);
+        String CREATE_CARS_TABLE_DELETED = "CREATE TABLE " + TABLE_CARS_DELETED + "("
+                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_ENGINE + " TEXT,"
+                + KEY_PHONE_NUMBER + " TEXT," + KEY_PRICE + " INTEGER,"
+                + KEY_LOCATION + " TEXT," + KEY_CATEGORY_BRAND + " INTEGER,"
+                + KEY_YEAR_OF_PRODUCTION + " INTEGER," + KEY_MODEL + " TEXT,"
+                + KEY_MILE_AGE + " INTEGER," + KEY_PHOTO + " TEXT,"
+                + KEY_CATEGORY_FUEL + " INTEGER," + KEY_CATEGORY_TRANSMISSION + " INTEGER,"
+                + KEY_DRIVE_TYPE + " TEXT," + KEY_INTERIOR_COLOR + " INTEGER,"
+                + KEY_UPDATED + " INTEGER," + KEY_OBJECT_ID + " TEXT" + ")";
+        db.execSQL(CREATE_CARS_TABLE_DELETED);
+    }
+
+
+
+    //tables for updated cars
+    public void addCarUpdated(Car car){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ENGINE, car.getC_engine());
+        values.put(KEY_PHONE_NUMBER, car.getC_phoneNumber());
+        values.put(KEY_PRICE, car.getC_price());
+        values.put(KEY_LOCATION, car.getC_location());
+        values.put(KEY_CATEGORY_BRAND, car.getC_categoryBrandInt());
+        values.put(KEY_YEAR_OF_PRODUCTION, car.getC_yearOfProduction());
+        values.put(KEY_MODEL, car.getC_model());
+        values.put(KEY_MILE_AGE, car.getC_mileAge());
+        values.put(KEY_PHOTO, car.getC_photo());
+        values.put(KEY_CATEGORY_FUEL, car.getC_categoryFuelInt());
+        values.put(KEY_CATEGORY_TRANSMISSION, car.getC_categoryTransmissionInt());
+        values.put(KEY_DRIVE_TYPE, car.getC_driveType());
+        values.put(KEY_INTERIOR_COLOR, car.getC_interiorColor());
+        values.put(KEY_UPDATED, car.getC_update());
+        values.put(KEY_OBJECT_ID, car.getObjectId());
+        db.insert(TABLE_CARS_UPDATE, null, values);
+    }
+
+    public List<Car> getAllCarsUpdated(){
+        List<Car> carList = new ArrayList<Car>();
+
+        String selectQuery = "SELECT * FROM " + TABLE_CARS_UPDATE;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if(cursor.moveToFirst()){
+            do{
+                Car car = new Car();
+                //car.setObjectId(cursor.getString(0));
+                car.setC_engine(cursor.getString(1));
+                car.setC_phoneNumber(cursor.getString(2));
+                car.setC_price(Integer.parseInt(cursor.getString(3)));
+                car.setC_location(cursor.getString(4));
+                car.setC_categoryBrand(Integer.parseInt(cursor.getString(5)) + 1);
+                car.setC_yearOfProduction(Integer.parseInt(cursor.getString(6)));
+                car.setC_model(cursor.getString(7));
+                car.setC_mileAge(Integer.parseInt(cursor.getString(8)));
+                car.setC_photo(cursor.getString(9));
+                car.setC_categoryFuel(Integer.parseInt(cursor.getString(10)) + 1);
+                car.setC_categoryTransmission(Integer.parseInt(cursor.getString(11)) + 1);
+                car.setC_driveType(cursor.getString(12));
+                car.setC_interiorColor(cursor.getString(13));
+                if(cursor.getString(14) != null)
+                    car.setC_update(Long.parseLong(cursor.getString(14)));
+                car.setObjectId(cursor.getString(15));
+                carList.add(car);
+            } while (cursor.moveToNext());
+        }
+
+
+        return  carList;
+    }
+
+    public void restartTableCarUpdated(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CARS_UPDATE);
+        String CREATE_CARS_TABLE_UPDATED = "CREATE TABLE " + TABLE_CARS_UPDATE + "("
+                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_ENGINE + " TEXT,"
+                + KEY_PHONE_NUMBER + " TEXT," + KEY_PRICE + " INTEGER,"
+                + KEY_LOCATION + " TEXT," + KEY_CATEGORY_BRAND + " INTEGER,"
+                + KEY_YEAR_OF_PRODUCTION + " INTEGER," + KEY_MODEL + " TEXT,"
+                + KEY_MILE_AGE + " INTEGER," + KEY_PHOTO + " TEXT,"
+                + KEY_CATEGORY_FUEL + " INTEGER," + KEY_CATEGORY_TRANSMISSION + " INTEGER,"
+                + KEY_DRIVE_TYPE + " TEXT," + KEY_INTERIOR_COLOR + " INTEGER,"
+                + KEY_UPDATED + " INTEGER," + KEY_OBJECT_ID + " TEXT" + ")";
+        db.execSQL(CREATE_CARS_TABLE_UPDATED);
+    }
+
+    public void deleteCar(Car car) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CARS, KEY_OBJECT_ID + " = ?",
+                new String[] { String.valueOf(car.getObjectId()) });
+        db.close();
+    }
+
 }

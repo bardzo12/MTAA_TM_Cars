@@ -93,6 +93,7 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
 
                 }   } else if (requestParameters.requestType.equals("DELETE")) {
                     responseParameters.setType(requestParameters.requestType);
+                    System.out.println("Tu som ja");
                 }else if(requestParameters.requestType.equals("PUT")){
                     Log.i("Sprava", "JSON: \n"+requestParameters.json.toString());
                     MyUrlConnection.setRequestProperty("Content-type", "application/json");
@@ -115,7 +116,7 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                     MyUrlConnection.disconnect();
                 }
             }
-
+            System.out.println("Ty kkt");
             return responseParameters;
         }else{
 
@@ -137,11 +138,13 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                     DatabaseHandler db = new DatabaseHandler(requestParameters.context);
                     if(db != null){
                         responseParameters.setType(requestParameters.requestType);
-                        responseParameters.setCar(db.getContact(requestParameters.carId));
+                        responseParameters.setCar(db.getCar(requestParameters.carId));
                     }
                     return responseParameters;
                     //System.out.println("Počet: " + db.getCarsCount());
                 }
+            } else if (requestParameters.requestType.equals("DELETE")){
+
             }
         }
         return null;

@@ -21,6 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,6 +32,9 @@ import java.util.List;
 import fiit.baranek.tomas.mtaa.AsyncResponse;
 import fiit.baranek.tomas.mtaa.Car;
 import fiit.baranek.tomas.mtaa.Database.DatabaseHandler;
+import fiit.baranek.tomas.mtaa.Enums.CategoryBrand;
+import fiit.baranek.tomas.mtaa.Enums.CategoryFuel;
+import fiit.baranek.tomas.mtaa.Enums.CategoryTransmission;
 import fiit.baranek.tomas.mtaa.MyAsyncTask;
 import fiit.baranek.tomas.mtaa.R;
 import fiit.baranek.tomas.mtaa.RequestParameters;
@@ -46,15 +52,32 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
     DatabaseHandler db;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-     //   requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //   requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_list_all_cars);
-     //   this.setFinishOnTouchOutside(false);
+        //   this.setFinishOnTouchOutside(false);
         db = new DatabaseHandler(this);
 
         ImageButton refreshImageView = (ImageButton) findViewById(R.id.imageRefresh);
         refreshImageView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
+                System.out.println("Vymazané auta offline: ");
+                List<Car> carList = db.getAllCarsDeleted();
+                for(Car auko : carList){
+                    delete(auko);
+                }
+                //delete if succes deleted from backendless
+                db.restartTableCarDeleted();
+
+                System.out.println("Update auta offline: ");
+                List<Car> carList2 = db.getAllCarsUpdated();
+                for(Car auko2 : carList2){
+                   update(auko2);
+                }
+                db.restartTableCarUpdated();
+                //getAllCars();
                 refresh();
+
 
             }
         });
@@ -67,6 +90,57 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
     }
 
+    public void update(Car auto){
+        JSONObject car = new JSONObject();
+        try {
+            car.put("c_engine", auto.getC_engine());
+            car.put("c_phoneNumber", auto.getC_phoneNumber());
+            car.put("c_price", auto.getC_price());
+            car.put("c_location", auto.getC_location());
+            car.put("c_categoryBrand", auto.getC_categoryBrandInt()+1);
+            car.put("c_yearOfProduction", String.valueOf(auto.getC_yearOfProduction()));
+            car.put("c_model", auto.getC_model());
+            car.put("c_mileAge", auto.getC_mileAge());
+            car.put("c_photo", auto.getC_photo());
+            car.put("c_categoryFuel", auto.getC_categoryFuelInt()+1);
+            car.put("c_categoryTransmission", auto.getC_categoryTransmissionInt()+1);
+            car.put("c_driveType", auto.getC_driveType());
+            car.put("c_interiorColor", auto.getC_interiorColor());
+            car.put("objectId", auto.getObjectId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(isOnline()) {
+            RequestParameters r = null;
+            URL https = null;
+            try {
+                https = new URL("https://api.backendless.com/v1/data/Car/" + auto.getObjectId());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            r = new RequestParameters(https, "PUT", 1, isOnline(), this, "", car);
+
+            MyAsyncTask asyncTask = new MyAsyncTask(this);
+            asyncTask.delegate = this;
+            asyncTask.execute(r);
+            //System.out.println(car.toString());
+        }
+    }
+    public void delete(Car auto){
+        RequestParameters r = null;
+
+        URL https = null;
+        try {
+            https = new URL("https://api.backendless.com/v1/data/Car/" + auto.getObjectId());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        r = new RequestParameters(https, "DELETE", 1, isOnline(), this, auto.getObjectId());
+
+        MyAsyncTask asyncTask = new MyAsyncTask(this);
+        asyncTask.delegate = this;
+        asyncTask.execute(r);
+    }
     public void getAllCars(){
 
         RequestParameters r = null;
@@ -98,27 +172,27 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
     @Override
     public void processFinish(ResponseParameters responseParameters) {//this methods override method from interface AsyncResponse
-         if(responseParameters.getResponseCode() == 200) {// add list od Cars do ListView adapter
-             if(responseParameters.getType().equals("GET")) {
-                 adapter.addList(responseParameters.getListOfCars());
-                 db.addCars(responseParameters.getListOfCars());
-                 adapter.notifyDataSetChanged();
-             }else if(responseParameters.getType().equals("DELETE")){
+        if(responseParameters.getResponseCode() == 200) {// add list od Cars do ListView adapter
+            if(responseParameters.getType().equals("GET")) {
+                adapter.addList(responseParameters.getListOfCars());
+                db.addCars(responseParameters.getListOfCars());
+                adapter.notifyDataSetChanged();
+            }else if(responseParameters.getType().equals("DELETE")){
                 getAllCars();
 
-             }
-         }else if(responseParameters.getResponseCode() == 204){
+            }
+        }else if(responseParameters.getResponseCode() == 204){
 
-             Toast.makeText(ShowAllCarsActivity.this, "DATABASE IS EMPTY!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ShowAllCarsActivity.this, "DATABASE IS EMPTY!", Toast.LENGTH_SHORT).show();
 
-         }else if(responseParameters.getResponseCode() == 400){
+        }else if(responseParameters.getResponseCode() == 400){
 
-             Toast.makeText(ShowAllCarsActivity.this, "BAD REQUEST ON DATABASE!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ShowAllCarsActivity.this, "BAD REQUEST ON DATABASE!", Toast.LENGTH_SHORT).show();
 
-         }else if(responseParameters.getResponseCode() == 404){
+        }else if(responseParameters.getResponseCode() == 404){
 
-             Toast.makeText(ShowAllCarsActivity.this, "ENTRY NOT FOUND!", Toast.LENGTH_SHORT).show();
-         }
+            Toast.makeText(ShowAllCarsActivity.this, "ENTRY NOT FOUND!", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -134,42 +208,50 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
 
 
-    public boolean deleteCarById(String CarID){
+    public boolean deleteCarById(Car CarID){
+        db.deleteCar(CarID);
+        if (isOnline()) {
+            RequestParameters r = null;
 
-        RequestParameters r = null;
-        URL https = null;
-        try {
-            https = new URL("https://api.backendless.com/v1/data/Car/"+CarID);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+            URL https = null;
+            try {
+                https = new URL("https://api.backendless.com/v1/data/Car/" + CarID.getObjectId());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            r = new RequestParameters(https, "DELETE", 1, isOnline(), this, CarID.getObjectId());
+
+            MyAsyncTask asyncTask = new MyAsyncTask(this);
+            asyncTask.delegate = this;
+            asyncTask.execute(r);
+
+            return true;
         }
-        r = new RequestParameters(https, "DELETE", 1, isOnline(), this,CarID);
-
-        MyAsyncTask asyncTask =new MyAsyncTask(this);
-        asyncTask.delegate = this;
-        asyncTask.execute(r);
-
-        return true;
+        else{
+            db.addCarDeleted(CarID);
+            getAllCars();
+            return false;
+        }
     }
 
-       private void showDialog(final String CarID) {
-           new AlertDialog.Builder(this)
-                   .setTitle("Delete car")
-                   .setMessage("Are you sure you want to delete this car?")
-                   .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
-                       public void onClick(DialogInterface dialog, int which) {
-                           deleteCarById(CarID);
-                       }
-                   })
-                   .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                       public void onClick(DialogInterface dialog, int which) {
-                           // do nothing
-                       }
-                   })
-                   .setIcon(android.R.drawable.ic_dialog_alert)
-                   .show();
+    private void showDialog(final Car CarID) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete car")
+                .setMessage("Are you sure you want to delete this car?")
+                .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteCarById(CarID);
+                    }
+                })
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
 
-        }
+    }
 
     private void showDetail(Car car) {
         login(car);
@@ -178,12 +260,12 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
     public void login(Car car){
 
         //if(isOnline()) {
-            Intent intent = new Intent(this, DetailScreenActivity.class);
-            intent.putExtra("CarID",car.getObjectId());
-            intent.putExtra("CarBrand",car.getC_categoryBrandInt());
-            intent.putExtra("CarTransmission",car.getC_categoryTransmissionInt());
-            intent.putExtra("CarFuel",car.getC_categoryFuelInt());
-            startActivity(intent);
+        Intent intent = new Intent(this, DetailScreenActivity.class);
+        intent.putExtra("CarID",car.getObjectId());
+        intent.putExtra("CarBrand",car.getC_categoryBrandInt());
+        intent.putExtra("CarTransmission",car.getC_categoryTransmissionInt());
+        intent.putExtra("CarFuel",car.getC_categoryFuelInt());
+        startActivity(intent);
        /* }
         else{
 
@@ -315,8 +397,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             RelativeLayout space = (RelativeLayout) view.findViewById(R.id.celyObsah);
             space.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-
-                   showDetail(device);
+                        showDetail(device);
                 }
             });
 
@@ -324,7 +405,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             deleteImageView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
 
-                showDialog(device.getObjectId());
+                    showDialog(device);
                 }
             });
 
@@ -346,6 +427,6 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
     }
 
 
-    }
+}
 
 
