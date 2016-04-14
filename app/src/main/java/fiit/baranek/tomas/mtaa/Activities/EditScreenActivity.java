@@ -93,7 +93,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
 
 
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, SPINNERLIST1);
+                R.layout.spinner_item, SPINNERLIST1);
         brand = (MaterialBetterSpinner)
                 findViewById(R.id.spinner_brand_edit_screen);
         brand.setText(SPINNERLIST1[bundle.getInt("brand")]);
@@ -114,14 +114,14 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
 
 
         ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, SPINNERLIST2);
+                R.layout.spinner_item, SPINNERLIST2);
         transsmition = (MaterialBetterSpinner)
                 findViewById(R.id.spinner_transmission_edit_screen);
         transsmition.setText(SPINNERLIST2[bundle.getInt("transmission")]);
         transsmition.setAdapter(arrayAdapter2);
 
         ArrayAdapter<String> arrayAdapter4 = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, SPINNERLIST4);
+                R.layout.spinner_item, SPINNERLIST4);
         color = (MaterialBetterSpinner)
                 findViewById(R.id.spinner_color_edit_screen);
         color.setText(bundle.getString("color"));
@@ -137,7 +137,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
 
 
         ArrayAdapter<String> arrayAdapter3 = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, SPINNERLIST3);
+                R.layout.spinner_item, SPINNERLIST3);
         fuel = (MaterialBetterSpinner)
                 findViewById(R.id.spinner_fuel_edit_screen);
         fuel.setText(SPINNERLIST3[bundle.getInt("fuel")]);

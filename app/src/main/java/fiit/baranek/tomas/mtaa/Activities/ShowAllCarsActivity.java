@@ -185,9 +185,6 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
                 getAllCars();
 
             }
-        }else if(responseParameters.getResponseCode() == 204){
-
-            Toast.makeText(ShowAllCarsActivity.this, "DATABASE IS EMPTY!", Toast.LENGTH_SHORT).show();
 
         }else if(responseParameters.getResponseCode() == 400){
 
@@ -196,6 +193,9 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         }else if(responseParameters.getResponseCode() == 404){
 
             Toast.makeText(ShowAllCarsActivity.this, "ENTRY NOT FOUND!", Toast.LENGTH_SHORT).show();
+        }else if(500<=responseParameters.getResponseCode() && responseParameters.getResponseCode()<=510){
+
+            Toast.makeText(ShowAllCarsActivity.this, "Chyba serverovej časti aplikácie, dáta nie sú dostupné!", Toast.LENGTH_SHORT).show();
         }
 
     }

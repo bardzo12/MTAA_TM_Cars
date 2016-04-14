@@ -38,7 +38,7 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
     public MyAsyncTask(Activity activity){
         this.activity = activity;
         this.context = activity;
-        this.dialog = new ProgressDialog(activity);
+        this.dialog = new ProgressDialog(activity, R.style.AlertDialogCustom);
         this.dialog.setTitle("Loading");
         this.dialog.setMessage("Loading data from database ...");
         if(!this.dialog.isShowing()){

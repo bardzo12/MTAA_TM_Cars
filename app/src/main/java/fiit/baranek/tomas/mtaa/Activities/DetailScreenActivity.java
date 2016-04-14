@@ -165,9 +165,17 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
             }else if((responseParameters.getType().equals("DELETE"))){
                 finish();
             }
-        }else{
-            System.out.println("Niečo je zle");
-        }
+              }else if(responseParameters.getResponseCode() == 400){
+
+        Toast.makeText(DetailScreenActivity.this, "BAD REQUEST ON DATABASE!", Toast.LENGTH_SHORT).show();
+
+    }else if(responseParameters.getResponseCode() == 404){
+
+        Toast.makeText(DetailScreenActivity.this, "ENTRY NOT FOUND!", Toast.LENGTH_SHORT).show();
+    }else if(500<=responseParameters.getResponseCode() && responseParameters.getResponseCode()<=510){
+
+        Toast.makeText(DetailScreenActivity.this, "Chyba serverovej časti aplikácie, dáta nie sú dostupné!", Toast.LENGTH_SHORT).show();
+    }
     }
 
     public void startDetailFoto(String photo){
