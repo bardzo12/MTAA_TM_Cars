@@ -25,6 +25,7 @@ public class ActivityFotoDetail extends AppCompatActivity {
 
     ImageView imageView;
     String PhotoUrl;
+    byte[] fotecka;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +34,8 @@ public class ActivityFotoDetail extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.imageView);
         Bundle bundle = getIntent().getExtras();
         PhotoUrl = bundle.getString("photo");
-        if (isOnline()) new DownloadImage().execute(PhotoUrl);
+        fotecka = getIntent().getByteArrayExtra("image");
+        new DownloadImage().execute(PhotoUrl);
     }
 
     private void setImage(Drawable drawable)
@@ -46,7 +48,10 @@ public class ActivityFotoDetail extends AppCompatActivity {
         @Override
         protected Drawable doInBackground(String... arg0) {
             // This is done in a background thread
-            return downloadImage(arg0[0]);
+            if(isOnline())
+                return downloadImage(arg0[0]);
+            else
+                return new BitmapDrawable(BitmapFactory.decodeByteArray(fotecka, 0, fotecka.length));
         }
 
         /**

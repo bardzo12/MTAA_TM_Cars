@@ -7,8 +7,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 import fiit.baranek.tomas.mtaa.Car;
 
@@ -22,7 +24,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "carsManagerTables4";
+    private static final String DATABASE_NAME = "carsManagerTables16";
 
     // Contacts table name
     private static final String TABLE_CARS = "cars";
@@ -63,7 +65,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String KEY_DRIVE_TYPE = "drive_type";
     private static final String KEY_INTERIOR_COLOR = "iterior_color";
     private static final String KEY_UPDATED = "updated";
-
+    private static final String KEY_IMAGE = "image";
 
     public DatabaseHandler(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
@@ -79,7 +81,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 + KEY_MILE_AGE + " INTEGER," + KEY_PHOTO + " TEXT,"
                 + KEY_CATEGORY_FUEL + " INTEGER," + KEY_CATEGORY_TRANSMISSION + " INTEGER,"
                 + KEY_DRIVE_TYPE + " TEXT," + KEY_INTERIOR_COLOR + " INTEGER,"
-                + KEY_UPDATED + " INTEGER," + KEY_OBJECT_ID + " TEXT" + ")";
+                + KEY_UPDATED + " INTEGER," + KEY_OBJECT_ID + " TEXT," + KEY_IMAGE + " BLOB" + ")";
 
         String CREATE_CARS_TABLE_DELETE = "CREATE TABLE " + TABLE_CARS_DELETED + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_ENGINE + " TEXT,"
@@ -130,6 +132,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(KEY_INTERIOR_COLOR, car.getC_interiorColor());
         values.put(KEY_UPDATED, car.getC_update());
         values.put(KEY_OBJECT_ID, car.getObjectId());
+        values.put(KEY_IMAGE, car.getC_image());
 
         db.insert(TABLE_CARS,null,values);
     }
@@ -149,7 +152,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 + KEY_MILE_AGE + " INTEGER," + KEY_PHOTO + " TEXT,"
                 + KEY_CATEGORY_FUEL + " INTEGER," + KEY_CATEGORY_TRANSMISSION + " INTEGER,"
                 + KEY_DRIVE_TYPE + " TEXT," + KEY_INTERIOR_COLOR + " INTEGER,"
-                + KEY_UPDATED + " INTEGER," + KEY_OBJECT_ID + " TEXT" + ")";
+                + KEY_UPDATED + " INTEGER," + KEY_OBJECT_ID + " TEXT," + KEY_IMAGE + " BLOB" +  ")";
 
         /*String CREATE_CARS_TABLE_DELETE = "CREATE TABLE " + TABLE_CARS_DELETED + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_ENGINE + " TEXT,"
@@ -180,6 +183,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             values.put(KEY_INTERIOR_COLOR, car.getC_interiorColor());
             values.put(KEY_UPDATED, car.getC_update());
             values.put(KEY_OBJECT_ID, car.getObjectId());
+            values.put(KEY_IMAGE, car.getC_image());
 
             db.insert(TABLE_CARS, null, values);
         }
@@ -214,6 +218,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 if(cursor.getString(14) != null)
                     car.setC_update(Long.parseLong(cursor.getString(14)));
                 car.setObjectId(cursor.getString(15));
+                car.setC_image(cursor.getBlob(16));
                 carList.add(car);
             } while (cursor.moveToNext());
         }
@@ -251,7 +256,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                         KEY_LOCATION, KEY_CATEGORY_BRAND, KEY_YEAR_OF_PRODUCTION,
                         KEY_MODEL, KEY_MILE_AGE, KEY_PHOTO, KEY_CATEGORY_FUEL,
                         KEY_CATEGORY_TRANSMISSION, KEY_DRIVE_TYPE, KEY_INTERIOR_COLOR,
-                        KEY_UPDATED, KEY_OBJECT_ID}, KEY_OBJECT_ID + "=?",
+                        KEY_UPDATED, KEY_OBJECT_ID,KEY_IMAGE}, KEY_OBJECT_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -273,6 +278,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if(cursor.getString(14) != null)
         car.setC_update(Long.parseLong(cursor.getString(14)));
         car.setObjectId(cursor.getString(15));
+        car.setC_image(cursor.getBlob(16));
         return car;
     }
 
@@ -296,6 +302,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(KEY_INTERIOR_COLOR, car.getC_interiorColor());
         values.put(KEY_UPDATED, car.getC_update());
         values.put(KEY_OBJECT_ID, car.getObjectId());
+        values.put(KEY_IMAGE, car.getC_image());
         db.insert(TABLE_CARS_UPDATE, null, values);
 
         // updating row

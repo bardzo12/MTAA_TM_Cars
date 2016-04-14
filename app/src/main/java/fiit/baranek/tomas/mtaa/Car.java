@@ -24,6 +24,16 @@ public class Car {
     private String objectId = "";
     private long c_update = 0;
 
+    public byte[] getC_image() {
+        return c_image;
+    }
+
+    public void setC_image(byte[] c_image) {
+        this.c_image = c_image;
+    }
+
+    private byte[] c_image;
+
     public long getC_update() {
         return c_update;
     }

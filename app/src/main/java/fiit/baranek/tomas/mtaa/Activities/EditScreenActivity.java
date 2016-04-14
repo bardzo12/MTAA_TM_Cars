@@ -73,6 +73,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
     private String CarID;
     private DatabaseHandler db;
 
+    Car updatedCar = new Car();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +91,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-
+        updatedCar.setC_image(getIntent().getByteArrayExtra("image"));
 
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(this,
                 R.layout.spinner_item, SPINNERLIST1);
@@ -170,8 +171,6 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
 
 
     public void updateCar(){
-
-        Car updatedCar = new Car();
 
         JSONObject car = new JSONObject();
         try {

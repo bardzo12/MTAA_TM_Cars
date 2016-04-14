@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -50,6 +51,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
     private int CarFuelInt;
     private int CarTransmissionInt;
     private DatabaseHandler db;
+    private byte[] fotecka;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,8 +140,9 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                 TextView price = (TextView) findViewById( R.id.textViewPriceValue);
                 price.setText(String.format(String.valueOf(SelectCar.getC_price())) + "€");
 
+                fotecka = SelectCar.getC_image();
 
-                if (isOnline()) new DownloadImage().execute(SelectCar.getC_photo());
+                new DownloadImage().execute(SelectCar.getC_photo());
 
                 Button button = (Button) findViewById(R.id.EditButton);
                 button.setOnClickListener(new View.OnClickListener() {
@@ -148,7 +151,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                         startEdit( SelectCar.getC_model(), SelectCar.getC_location(), SelectCar.getC_yearOfProduction(),
                                 SelectCar.getC_mileAge(), SelectCar.getC_interiorColor(), SelectCar.getC_engine(),
                                 SelectCar.getC_driveType(), SelectCar.getC_phoneNumber(), SelectCar.getC_price(),
-                                SelectCar.getC_photo(), CarID, CarBrandInt, CarFuelInt,CarTransmissionInt);
+                                SelectCar.getC_photo(), CarID, CarBrandInt, CarFuelInt,CarTransmissionInt, SelectCar.getC_image());
 
                     }
                 });
@@ -156,7 +159,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                 collapsingToolbarLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startDetailFoto(SelectCar.getC_photo());
+                        startDetailFoto(SelectCar.getC_photo(),SelectCar.getC_image());
                     }
                 });
 
@@ -178,15 +181,16 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
     }
     }
 
-    public void startDetailFoto(String photo){
+    public void startDetailFoto(String photo, byte[] byteArray){
         Intent intent = new Intent(this, ActivityFotoDetail.class);
         intent.putExtra("photo", photo);
+        intent.putExtra("image",byteArray);
         startActivity(intent);
     }
 
     public void startEdit( String Model,String Location, int YearOfProduction, int MileAge,
                           String Color, String Engine, String DriveType, String phoneNumber, int price, String photo,
-                          String ID,int brand, int Fuel, int Transmission){
+                          String ID,int brand, int Fuel, int Transmission, byte[] byteArray){
         Intent intent = new Intent(this, EditScreenActivity.class);
         intent.putExtra("brand", brand);
         intent.putExtra("model", Model);
@@ -202,6 +206,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         intent.putExtra("price", price);
         intent.putExtra("photo", photo);
         intent.putExtra("ID", ID);
+        intent.putExtra("image",byteArray);
         startActivity(intent);
     }
 
@@ -216,7 +221,10 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         @Override
         protected Drawable doInBackground(String... arg0) {
             // This is done in a background thread
-            return downloadImage(arg0[0]);
+            if(isOnline())
+                return downloadImage(arg0[0]);
+            else
+                return new BitmapDrawable(BitmapFactory.decodeByteArray(fotecka, 0, fotecka.length));
         }
 
         /**
@@ -248,6 +256,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
             try {
                 url = new URL(_url);
                 in = url.openStream();
+
 
             /*
              * THIS IS NOT NEEDED

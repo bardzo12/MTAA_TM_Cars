@@ -61,21 +61,24 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         refreshImageView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                System.out.println("Vymazané auta offline: ");
-                List<Car> carList = db.getAllCarsDeleted();
-                for(Car auko : carList){
-                    delete(auko);
-                }
-                //delete if succes deleted from backendless
-                db.restartTableCarDeleted();
+                if(isOnline()) {
+                    System.out.println("Vymazané auta offline: ");
 
-                System.out.println("Update auta offline: ");
-                List<Car> carList2 = db.getAllCarsUpdated();
-                for(Car auko2 : carList2){
-                   update(auko2);
+                    List<Car> carList = db.getAllCarsDeleted();
+                    for (Car auko : carList) {
+                        delete(auko);
+                    }
+                    //delete if succes deleted from backendless
+                    db.restartTableCarDeleted();
+
+                    System.out.println("Update auta offline: ");
+                    List<Car> carList2 = db.getAllCarsUpdated();
+                    for (Car auko2 : carList2) {
+                        update(auko2);
+                    }
+                    db.restartTableCarUpdated();
+                    //getAllCars();
                 }
-                db.restartTableCarUpdated();
-                //getAllCars();
                 refresh();
 
 
@@ -146,7 +149,6 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         asyncTask.execute(r);
     }
     public void getAllCars(){
-
         RequestParameters r = null;
         URL https = null;
         try {
@@ -181,6 +183,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
                 adapter.addList(responseParameters.getListOfCars());
                 db.addCars(responseParameters.getListOfCars());
                 adapter.notifyDataSetChanged();
+                System.out.println("13.4. GET");
             }else if(responseParameters.getType().equals("DELETE")){
                 getAllCars();
 

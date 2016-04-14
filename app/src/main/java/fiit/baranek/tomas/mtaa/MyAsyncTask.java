@@ -3,6 +3,9 @@ package fiit.baranek.tomas.mtaa;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -13,16 +16,28 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.client.methods.HttpGet;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 import fiit.baranek.tomas.mtaa.Database.DatabaseHandler;
 
 /**
@@ -192,13 +207,72 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
             car.setC_interiorColor(item.optString("c_interiorColor"));
             car.setObjectId(item.optString("objectId"));
             car.setC_update(item.optLong("updated"));
+            URL url;
+            BufferedOutputStream out;
+            InputStream in;
+            BufferedInputStream buf;
+            ByteArrayOutputStream buffer = null;
+            //BufferedInputStream buf;
+            try {
+                url = new URL(car.getC_photo());
+                in = url.openStream();
+
+
+            /*
+             * THIS IS NOT NEEDED
+             *
+             * YOU TRY TO CREATE AN ACTUAL IMAGE HERE, BY WRITING
+             * TO A NEW FILE
+             * YOU ONLY NEED TO READ THE INPUTSTREAM
+             * AND CONVERT THAT TO A BITMAP
+            out = new BufferedOutputStream(new FileOutputStream("testImage.jpg"));
+            int i;
+
+             while ((i = in.read()) != -1) {
+                 out.write(i);
+             }
+             out.close();
+             in.close();
+             */
+
+                // Read the inputstream
+                buf = new BufferedInputStream(in);
+
+                buffer = new ByteArrayOutputStream();
+                int nRead;
+                byte[] data2 = new byte[16384];
+
+                while ((nRead = in.read(data2, 0, data2.length)) != -1) {
+                    buffer.write(data2, 0, nRead);
+                }
+
+                buffer.flush();
+
+
+                System.out.println("Fotečka: ");
+                System.out.println(buffer.toByteArray());
+                // Convert the BufferedInputStream to a Bitmap
+                Bitmap bMap = BitmapFactory.decodeStream(buf);
+                if (in != null) {
+                    in.close();
+                }
+                if (buf != null) {
+                    buf.close();
+                }
+
+            } catch (Exception e) {
+                Log.e("Error reading file", e.toString());
+            }
+            car.setC_image(buffer.toByteArray());
             cars.add(car);
         }
 
         return cars;
     }
 
-    public Car getCarFromString(String backenlessString) throws JSONException {// this method gets String value, and returns
+
+
+    public Car getCarFromString(String backenlessString) throws JSONException, IOException {// this method gets String value, and returns
         // List of Cars
 
         JSONObject response = new JSONObject(backenlessString);
@@ -221,8 +295,63 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
             car.setC_driveType(response.optString("c_driveType"));
             car.setC_interiorColor(response.optString("c_interiorColor"));
             car.setObjectId(response.optString("objectId"));
+        URL url;
+        BufferedOutputStream out;
+        InputStream in;
+        BufferedInputStream buf;
+        ByteArrayOutputStream buffer = null;
+        //BufferedInputStream buf;
+        try {
+            url = new URL(car.getC_photo());
+            in = url.openStream();
 
 
+            /*
+             * THIS IS NOT NEEDED
+             *
+             * YOU TRY TO CREATE AN ACTUAL IMAGE HERE, BY WRITING
+             * TO A NEW FILE
+             * YOU ONLY NEED TO READ THE INPUTSTREAM
+             * AND CONVERT THAT TO A BITMAP
+            out = new BufferedOutputStream(new FileOutputStream("testImage.jpg"));
+            int i;
+
+             while ((i = in.read()) != -1) {
+                 out.write(i);
+             }
+             out.close();
+             in.close();
+             */
+
+            // Read the inputstream
+            buf = new BufferedInputStream(in);
+
+            buffer = new ByteArrayOutputStream();
+            int nRead;
+            byte[] data2 = new byte[16384];
+
+            while ((nRead = in.read(data2, 0, data2.length)) != -1) {
+                buffer.write(data2, 0, nRead);
+            }
+
+            buffer.flush();
+
+
+            System.out.println("Fotečka: ");
+            System.out.println(buffer.toByteArray());
+            // Convert the BufferedInputStream to a Bitmap
+            Bitmap bMap = BitmapFactory.decodeStream(buf);
+            if (in != null) {
+                in.close();
+            }
+            if (buf != null) {
+                buf.close();
+            }
+
+        } catch (Exception e) {
+            Log.e("Error reading file", e.toString());
+        }
+        car.setC_image(buffer.toByteArray());
         return car;
     }
 
