@@ -19,6 +19,8 @@
             android:layout_height="match_parent"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:contentScrim="@color/colorAccent"
+            android:titleTextColor="@color/white"
+            android:subtitleTextColor="@color/white"
             android:fitsSystemWindows="true">
 
             <ProgressBar
@@ -41,6 +43,8 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/MyToolbar"
                 android:layout_width="match_parent"
+                android:titleTextColor="@color/white"
+                android:subtitleTextColor="@color/white"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin" />
 
@@ -401,6 +405,7 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:text="Upraviť"
+                android:textStyle="bold"
                 android:background="@color/colorPrimary"
                 android:layout_marginTop="40dp"
                 android:textColor="@android:color/white"/>

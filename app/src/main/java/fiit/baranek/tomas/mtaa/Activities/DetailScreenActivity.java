@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -57,13 +58,15 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         mImageView = (ImageView) findViewById(R.id.bgheader);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.MyToolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapse_toolbar);
-
+        collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
         Context context = this;
-        collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(context, R.color.colorAccent));
+        collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(context, R.color.colorPrimary));
 
         Bundle bundle = getIntent().getExtras();
         CarID = bundle.getString("CarID");
@@ -316,7 +319,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                 finish();
                 return true;
             case R.id.delete:
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.AlertDialogCustom)
                         .setTitle("Delete car")
                         .setMessage("Are you sure you want to delete this car?")
                         .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
@@ -343,7 +346,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
             RequestParameters r = null;
             URL https = null;
             try {
-                https = new URL("https://api.backendless.com/v1/data/Car/" + CarID);
+                https = new URL("https://api.backendless.com/v1/data/Car/" + CarID.getObjectId());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }

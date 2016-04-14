@@ -81,6 +81,10 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
             }
         });
+
+
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.MyToolbar);
         toolbar.setTitle("TM CARS");
         //setSupportActionBar(toolbar);
@@ -235,7 +239,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
     }
 
     private void showDialog(final Car CarID) {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.AlertDialogCustom)
                 .setTitle("Delete car")
                 .setMessage("Are you sure you want to delete this car?")
                 .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {

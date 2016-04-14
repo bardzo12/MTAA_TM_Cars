@@ -5,6 +5,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 
     <!-- Base application theme. -->
@@ -15,8 +18,14 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <!-- Title Text Color -->
-        <item name="android:textColorPrimary">@color/my_primary_text</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
     </style>
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AlertDialogCustom" parent="android:Theme.Material.Light.Dialog.Alert">
+        <item name="android:colorPrimary">#0AAEEF</item>
+        <item name="android:colorAccent">#002a9c</item>
+    </style>
 </resources>
 

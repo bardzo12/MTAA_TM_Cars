@@ -16,7 +16,7 @@
             android:id="@+id/MyToolbar_edit_screen"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary" app:popupTheme="@style/AppTheme.PopupOverlay"
+            android:background="@color/colorPrimary" app:popupTheme="@style/AppTheme1"
             app:layout_collapseMode="parallax" >
 
         </android.support.v7.widget.Toolbar>
@@ -496,6 +496,7 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:text="Ulozit"
+                android:textStyle="bold"
                 android:background="@color/colorPrimary"
                 android:layout_marginTop="40dp"
                 android:textColor="@android:color/white"/>

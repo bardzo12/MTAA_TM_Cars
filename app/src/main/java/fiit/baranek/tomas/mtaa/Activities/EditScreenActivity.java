@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
@@ -84,8 +85,11 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.MyToolbar_edit_screen);
         toolbar.setTitle(SPINNERLIST1[bundle.getInt("brand")] + " " + bundle.getString("model"));
+        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
 
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(this,
@@ -234,6 +238,8 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
             updatedCar.setC_update(unixTime);
             db.addCarUpdated(updatedCar);
         }
+
+        Toast.makeText(this,"Car was updated", Toast.LENGTH_SHORT).show();
 
     }
 
