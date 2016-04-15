@@ -71,6 +71,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
     private EditText photo;
     private EditText price;
     private String CarID;
+    private String photoS;
     private DatabaseHandler db;
 
     Car updatedCar = new Car();
@@ -127,7 +128,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
                 findViewById(R.id.spinner_color_edit_screen);
         color.setText(bundle.getString("color"));
 
-        color.setAdapter(arrayAdapter1);
+        color.setAdapter(arrayAdapter4);
 
 
         engine = (EditText) findViewById( R.id.textViewEngineValue_edit_screen);
@@ -152,6 +153,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
 
         photo = (EditText) findViewById( R.id.textViewPhotoValue_edit_screen);
         photo.setText(bundle.getString("photo"));
+        photoS = bundle.getString("photo");
 
         CarID = bundle.getString("ID");
         db = new DatabaseHandler(this);
@@ -193,7 +195,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
             car.put("c_mileAge", mile.getText());
             updatedCar.setC_mileAge(Integer.parseInt(mile.getText().toString()));
             car.put("c_photo", photo.getText());
-            updatedCar.setC_photo(photo.getText().toString());
+            updatedCar.setC_photo(photoS);
             CategoryFuel categoryFuel;
             categoryFuel = CategoryFuel.fromString(fuel.getText().toString());
             car.put("c_categoryFuel", String.valueOf(categoryFuel.ordinal() + 1));
@@ -205,7 +207,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
             car.put("c_driveType", drive.getText());
             updatedCar.setC_driveType(drive.getText().toString());
             car.put("c_interiorColor", color.getText());
-            updatedCar.setC_interiorColor(color.getText().toString());
+           updatedCar.setC_interiorColor(color.getText().toString());
             updatedCar.setObjectId(CarID);
 
         } catch (JSONException e) {
@@ -215,9 +217,10 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
 
 
 
-        db.updateCar(updatedCar);
+
 
         if(isOnline()) {
+            db.updateCar(updatedCar);
             RequestParameters r = null;
             URL https = null;
             try {
@@ -230,17 +233,47 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
             MyAsyncTask asyncTask = new MyAsyncTask(this);
             asyncTask.delegate = this;
             asyncTask.execute(r);
+            Toast.makeText(this,"Car was updated", Toast.LENGTH_SHORT).show();
         } else{
-            long unixTime = System.currentTimeMillis();
-            System.out.println("System time unix: ");
-            System.out.println(unixTime);
-            updatedCar.setC_update(unixTime);
-            db.addCarUpdated(updatedCar);
+          showDialog();
         }
 
-        Toast.makeText(this,"Car was updated", Toast.LENGTH_SHORT).show();
+
 
     }
+
+
+    private void updateOfline(){
+        db.updateCar(updatedCar);
+        long unixTime = System.currentTimeMillis();
+        System.out.println("System time unix: ");
+        System.out.println(unixTime);
+        updatedCar.setC_update(unixTime);
+        db.addCarUpdated(updatedCar);
+        Toast.makeText(this,"Car was updated", Toast.LENGTH_SHORT).show();
+    }
+
+
+    private void showDialog() {
+        new AlertDialog.Builder(this, R.style.AlertDialogCustom)
+                .setTitle("Uprava auta")
+                .setMessage("Fotka nemôže byť zmenená bez pripojenia na internet. Chcete napriek tomu vykonať úpravu?")
+                .setPositiveButton("ANO", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        updateOfline();
+                    }
+                })
+                .setNegativeButton("NIE", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
+    }
+
+
 
     public boolean isOnline() {
         ConnectivityManager cm =

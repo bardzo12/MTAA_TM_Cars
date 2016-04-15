@@ -337,15 +337,15 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                 return true;
             case R.id.delete:
                 new AlertDialog.Builder(this, R.style.AlertDialogCustom)
-                        .setTitle("Delete car")
-                        .setMessage("Are you sure you want to delete this car?")
-                        .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                        .setTitle("Vymazanie auta")
+                        .setMessage("Naozaj chcete vymazat toto auto?")
+                        .setPositiveButton("ANO", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 deleteCarById(SelectCar);
                                 finish();
                             }
                         })
-                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("NIE", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // do nothing
                             }
