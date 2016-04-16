@@ -87,7 +87,8 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                             responseParameters.setCar(getCarFromString(jsonString));
                         }
 
-                }   } else if (requestParameters.requestType.equals("DELETE")) {
+                }
+                } else if (requestParameters.requestType.equals("DELETE")) {
                     responseParameters.setType(requestParameters.requestType);
                 }else if(requestParameters.requestType.equals("PUT")){
                     Log.i("Sprava", "JSON: \n"+requestParameters.json.toString());

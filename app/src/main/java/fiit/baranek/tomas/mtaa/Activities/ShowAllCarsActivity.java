@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,6 +123,8 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
      * online get all cars
      */
     public void getAllCars(){
+
+        Log.i(ShowAllCarsActivity.class.getSimpleName(), "volanie get all");
         RequestParameters r = null;
         URL https = null;
         try {
@@ -140,6 +143,8 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
     @Override
     protected void onResume(){
+
+        Log.i(ShowAllCarsActivity.class.getSimpleName(), "navrat ku vsetkym");
         super.onResume();
         adapter = new CarsListAdapter();
         setListAdapter(adapter);
@@ -157,7 +162,8 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
                 adapter.addList(responseParameters.getListOfCars());
                 db.addCars(responseParameters.getListOfCars());
                 adapter.notifyDataSetChanged();
-            }else if(responseParameters.getCar() != null){
+            }else if(responseParameters.getCar() != null)
+                {
                     //offline update
                     if(responseParameters.getCar().getC_update() < publicCar.getC_update()){
                         JSONObject car = new JSONObject();

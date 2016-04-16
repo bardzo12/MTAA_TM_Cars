@@ -72,7 +72,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         Bundle bundle = getIntent().getExtras();
         CarID = bundle.getString("CarID");
 
-        getDetail(CarID);
+
         db = new DatabaseHandler(this);
 
 
@@ -97,6 +97,11 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
 
     @Override
     public void processFinish(ResponseParameters responseParameters) {
+
+
+
+
+        Log.i("Code",""+responseParameters.getResponseCode());
         if(responseParameters.getResponseCode() == 200) {// add list od Cars do ListView adapter
             if(responseParameters.getType().equals("GET")) {
              SelectCar = responseParameters.getCar();
@@ -173,7 +178,8 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
 
     }else if(responseParameters.getResponseCode() == 404){
 
-        Toast.makeText(DetailScreenActivity.this, "ENTRY NOT FOUND!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(DetailScreenActivity.this, "Toto auto uz bolo vymazane!", Toast.LENGTH_SHORT).show();
+        finish();
     }else if(500<=responseParameters.getResponseCode() && responseParameters.getResponseCode()<=510){
 
         Toast.makeText(DetailScreenActivity.this, "Chyba serverovej časti aplikácie, dáta nie sú dostupné!", Toast.LENGTH_SHORT).show();
