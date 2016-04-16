@@ -5,39 +5,25 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.TextView;
 
-import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.msebera.android.httpclient.HttpEntity;
-import cz.msebera.android.httpclient.HttpResponse;
-import cz.msebera.android.httpclient.client.methods.HttpGet;
-import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 import fiit.baranek.tomas.mtaa.Database.DatabaseHandler;
 
 /**
@@ -86,8 +72,6 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                 MyUrlConnection.setRequestProperty("application-type", "REST");
 
 
-                // InputStreamReader is = new InputStreamReader(in);
-
                 if (requestParameters.requestType.equals("GET")) {
                 if (MyUrlConnection.getResponseCode() == 200) {
 
@@ -96,9 +80,6 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                             responseParameters.setType(requestParameters.requestType);
                             jsonString = readStream(in);
                             responseParameters.setListOfCars(getCarsFromString(jsonString));
-                            long unixTime = System.currentTimeMillis();
-                            System.out.println("Som tu" + unixTime);
-                            System.out.println(jsonString);
                         } else {
                             InputStream in = MyUrlConnection.getInputStream();
                             responseParameters.setType(requestParameters.requestType);
@@ -108,7 +89,6 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
 
                 }   } else if (requestParameters.requestType.equals("DELETE")) {
                     responseParameters.setType(requestParameters.requestType);
-                    System.out.println("Tu som ja");
                 }else if(requestParameters.requestType.equals("PUT")){
                     Log.i("Sprava", "JSON: \n"+requestParameters.json.toString());
                     MyUrlConnection.setRequestProperty("Content-type", "application/json");
@@ -131,7 +111,6 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                     MyUrlConnection.disconnect();
                 }
             }
-            System.out.println("Ty kkt");
             return responseParameters;
         }else{
 
@@ -139,9 +118,7 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                 if (requestParameters.Type == 1) {
                     responseParameters.setResponseCode(200);
                     DatabaseHandler db = new DatabaseHandler(requestParameters.context);
-                    System.out.println("Počet: " + db.getCarsCount());
                     if(db != null) {
-                        System.out.println("AHOJAKAJAJAJAJAJ");
                         responseParameters.setType(requestParameters.requestType);
                         responseParameters.setListOfCars(db.getAllCars());
                         return responseParameters;
@@ -156,7 +133,6 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                         responseParameters.setCar(db.getCar(requestParameters.carId));
                     }
                     return responseParameters;
-                    //System.out.println("Počet: " + db.getCarsCount());
                 }
             } else if (requestParameters.requestType.equals("DELETE")){
 
@@ -165,7 +141,12 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
         return null;
     }
 
-    public String readStream(InputStream stream){// Method reads stream and returns string value
+    /**
+     * Method reads stream and returns string value
+     * @param stream
+     * @return
+     */
+    public String readStream(InputStream stream){
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         StringBuilder sb = new StringBuilder();
 
@@ -182,8 +163,14 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
         return sb.toString();
     }
 
-    public List<Car> getCarsFromString(String backenlessString) throws JSONException {// this method gets String value, and returns
-                                                                                        // List of Cars
+    /**
+     * his method gets String value, and returns
+     * List of Cars
+     * @param backenlessString
+     * @return
+     * @throws JSONException
+     */
+    public List<Car> getCarsFromString(String backenlessString) throws JSONException {
         final List<Car> cars = new ArrayList<Car>();
         JSONObject response = new JSONObject(backenlessString);
         Car car;
@@ -208,32 +195,12 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
             car.setObjectId(item.optString("objectId"));
             car.setC_update(item.optLong("updated"));
             URL url;
-            BufferedOutputStream out;
             InputStream in;
             BufferedInputStream buf;
             ByteArrayOutputStream buffer = null;
-            //BufferedInputStream buf;
             try {
                 url = new URL(car.getC_photo());
                 in = url.openStream();
-
-
-            /*
-             * THIS IS NOT NEEDED
-             *
-             * YOU TRY TO CREATE AN ACTUAL IMAGE HERE, BY WRITING
-             * TO A NEW FILE
-             * YOU ONLY NEED TO READ THE INPUTSTREAM
-             * AND CONVERT THAT TO A BITMAP
-            out = new BufferedOutputStream(new FileOutputStream("testImage.jpg"));
-            int i;
-
-             while ((i = in.read()) != -1) {
-                 out.write(i);
-             }
-             out.close();
-             in.close();
-             */
 
                 // Read the inputstream
                 buf = new BufferedInputStream(in);
@@ -247,10 +214,6 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                 }
 
                 buffer.flush();
-
-
-                System.out.println("Fotečka: ");
-                System.out.println(buffer.toByteArray());
                 // Convert the BufferedInputStream to a Bitmap
                 Bitmap bMap = BitmapFactory.decodeStream(buf);
                 if (in != null) {
@@ -271,15 +234,17 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
     }
 
 
+    /**
+     * this method gets String value, and returns
+     * @param backenlessString
+     * @return
+     * @throws JSONException
+     * @throws IOException
+     */
 
-    public Car getCarFromString(String backenlessString) throws JSONException, IOException {// this method gets String value, and returns
-        // List of Cars
-
+    public Car getCarFromString(String backenlessString) throws JSONException, IOException {
         JSONObject response = new JSONObject(backenlessString);
         Car car = new Car();
-
-            //System.out.println("Tu som");
-
             car.setC_engine(response.optString("c_engine"));
             car.setCreated(response.optString("created"));
             car.setC_phoneNumber(response.optString("c_phoneNumber"));
@@ -295,33 +260,14 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
             car.setC_driveType(response.optString("c_driveType"));
             car.setC_interiorColor(response.optString("c_interiorColor"));
             car.setObjectId(response.optString("objectId"));
+        car.setC_update(response.optLong("updated"));
         URL url;
-        BufferedOutputStream out;
         InputStream in;
         BufferedInputStream buf;
         ByteArrayOutputStream buffer = null;
-        //BufferedInputStream buf;
         try {
             url = new URL(car.getC_photo());
             in = url.openStream();
-
-
-            /*
-             * THIS IS NOT NEEDED
-             *
-             * YOU TRY TO CREATE AN ACTUAL IMAGE HERE, BY WRITING
-             * TO A NEW FILE
-             * YOU ONLY NEED TO READ THE INPUTSTREAM
-             * AND CONVERT THAT TO A BITMAP
-            out = new BufferedOutputStream(new FileOutputStream("testImage.jpg"));
-            int i;
-
-             while ((i = in.read()) != -1) {
-                 out.write(i);
-             }
-             out.close();
-             in.close();
-             */
 
             // Read the inputstream
             buf = new BufferedInputStream(in);
@@ -335,9 +281,6 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
             }
 
             buffer.flush();
-
-
-            System.out.println("Fotečka: ");
             System.out.println(buffer.toByteArray());
             // Convert the BufferedInputStream to a Bitmap
             Bitmap bMap = BitmapFactory.decodeStream(buf);

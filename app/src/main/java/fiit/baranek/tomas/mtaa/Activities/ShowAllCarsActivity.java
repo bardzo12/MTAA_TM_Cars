@@ -32,9 +32,6 @@ import java.util.List;
 import fiit.baranek.tomas.mtaa.AsyncResponse;
 import fiit.baranek.tomas.mtaa.Car;
 import fiit.baranek.tomas.mtaa.Database.DatabaseHandler;
-import fiit.baranek.tomas.mtaa.Enums.CategoryBrand;
-import fiit.baranek.tomas.mtaa.Enums.CategoryFuel;
-import fiit.baranek.tomas.mtaa.Enums.CategoryTransmission;
 import fiit.baranek.tomas.mtaa.MyAsyncTask;
 import fiit.baranek.tomas.mtaa.R;
 import fiit.baranek.tomas.mtaa.RequestParameters;
@@ -42,19 +39,14 @@ import fiit.baranek.tomas.mtaa.ResponseParameters;
 
 
 public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
-    CarsListAdapter adapter;
-    private final static String TAG = ShowAllCarsActivity.class
-            .getSimpleName();
 
+    private CarsListAdapter adapter;
+    private DatabaseHandler db;
+    private Car publicCar;
 
-
-
-    DatabaseHandler db;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //   requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_list_all_cars);
-        //   this.setFinishOnTouchOutside(false);
         db = new DatabaseHandler(this);
 
         ImageButton refreshImageView = (ImageButton) findViewById(R.id.imageRefresh);
@@ -62,26 +54,21 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             public void onClick(View v) {
 
                 if(isOnline()) {
-                    System.out.println("Vymazané auta offline: ");
-
+                    //get cars for delete and deleted it
                     List<Car> carList = db.getAllCarsDeleted();
                     for (Car auko : carList) {
                         delete(auko);
                     }
-                    //delete if succes deleted from backendless
                     db.restartTableCarDeleted();
-
-                    System.out.println("Update auta offline: ");
+                    //get cars for update and delete it
                     List<Car> carList2 = db.getAllCarsUpdated();
                     for (Car auko2 : carList2) {
+                        publicCar = auko2;
                         update(auko2);
                     }
                     db.restartTableCarUpdated();
-                    //getAllCars();
                 }
                 refresh();
-
-
             }
         });
 
@@ -90,33 +77,12 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.MyToolbar);
         toolbar.setTitle("TM CARS");
-        //setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-
     }
 
+    /**
+     * offline update cars
+     */
     public void update(Car auto){
-        JSONObject car = new JSONObject();
-        try {
-            car.put("c_engine", auto.getC_engine());
-            car.put("c_phoneNumber", auto.getC_phoneNumber());
-            car.put("c_price", auto.getC_price());
-            car.put("c_location", auto.getC_location());
-            car.put("c_categoryBrand", auto.getC_categoryBrandInt()+1);
-            car.put("c_yearOfProduction", String.valueOf(auto.getC_yearOfProduction()));
-            car.put("c_model", auto.getC_model());
-            car.put("c_mileAge", auto.getC_mileAge());
-            car.put("c_photo", auto.getC_photo());
-            car.put("c_categoryFuel", auto.getC_categoryFuelInt()+1);
-            car.put("c_categoryTransmission", auto.getC_categoryTransmissionInt()+1);
-            car.put("c_driveType", auto.getC_driveType());
-            car.put("c_interiorColor", auto.getC_interiorColor());
-            car.put("objectId", auto.getObjectId());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
         if(isOnline()) {
             RequestParameters r = null;
             URL https = null;
@@ -125,14 +91,17 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            r = new RequestParameters(https, "PUT", 1, isOnline(), this, "", car);
+            r = new RequestParameters(https, "GET",2, isOnline(),this, auto.getObjectId());
 
-            MyAsyncTask asyncTask = new MyAsyncTask(this);
+            MyAsyncTask asyncTask =new MyAsyncTask(this);
             asyncTask.delegate = this;
             asyncTask.execute(r);
-            //System.out.println(car.toString());
         }
     }
+
+    /***
+     * offline delete cars
+     */
     public void delete(Car auto){
         RequestParameters r = null;
 
@@ -148,6 +117,10 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         asyncTask.delegate = this;
         asyncTask.execute(r);
     }
+
+    /**
+     * online get all cars
+     */
     public void getAllCars(){
         RequestParameters r = null;
         URL https = null;
@@ -180,10 +153,50 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
     public void processFinish(ResponseParameters responseParameters) {//this methods override method from interface AsyncResponse
         if(responseParameters.getResponseCode() == 200) {// add list od Cars do ListView adapter
             if(responseParameters.getType().equals("GET")) {
+                if (responseParameters.getListOfCars() != null) {
                 adapter.addList(responseParameters.getListOfCars());
                 db.addCars(responseParameters.getListOfCars());
                 adapter.notifyDataSetChanged();
-                System.out.println("13.4. GET");
+            }else if(responseParameters.getCar() != null){
+                    //offline update
+                    if(responseParameters.getCar().getC_update() < publicCar.getC_update()){
+                        JSONObject car = new JSONObject();
+                        try {
+                            car.put("c_engine", publicCar.getC_engine());
+                            car.put("c_phoneNumber", publicCar.getC_phoneNumber());
+                            car.put("c_price", publicCar.getC_price());
+                            car.put("c_location", publicCar.getC_location());
+                            car.put("c_categoryBrand", publicCar.getC_categoryBrandInt()+1);
+                            car.put("c_yearOfProduction", String.valueOf(publicCar.getC_yearOfProduction()));
+                            car.put("c_model", publicCar.getC_model());
+                            car.put("c_mileAge", publicCar.getC_mileAge());
+                            car.put("c_photo", publicCar.getC_photo());
+                            car.put("c_categoryFuel", publicCar.getC_categoryFuelInt()+1);
+                            car.put("c_categoryTransmission", publicCar.getC_categoryTransmissionInt()+1);
+                            car.put("c_driveType", publicCar.getC_driveType());
+                            car.put("c_interiorColor", publicCar.getC_interiorColor());
+                            car.put("objectId", publicCar.getObjectId());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if(isOnline()) {
+                            RequestParameters r = null;
+                            URL https = null;
+                            try {
+                                https = new URL("https://api.backendless.com/v1/data/Car/" + responseParameters.getCar().getObjectId());
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                            }
+                            r = new RequestParameters(https, "PUT", 1, isOnline(), this, "", car);
+
+                            MyAsyncTask asyncTask = new MyAsyncTask(this);
+                            asyncTask.delegate = this;
+                            asyncTask.execute(r);
+                            refresh();
+                        }
+                    }
+            }
+
             }else if(responseParameters.getType().equals("DELETE")){
                 getAllCars();
 
@@ -196,6 +209,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         }else if(responseParameters.getResponseCode() == 404){
 
             Toast.makeText(ShowAllCarsActivity.this, "ENTRY NOT FOUND!", Toast.LENGTH_SHORT).show();
+            refresh();
         }else if(500<=responseParameters.getResponseCode() && responseParameters.getResponseCode()<=510){
 
             Toast.makeText(ShowAllCarsActivity.this, "Chyba serverovej časti aplikácie, dáta nie sú dostupné!", Toast.LENGTH_SHORT).show();
@@ -265,22 +279,12 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
     }
 
     public void login(Car car){
-
-        //if(isOnline()) {
         Intent intent = new Intent(this, DetailScreenActivity.class);
         intent.putExtra("CarID",car.getObjectId());
         intent.putExtra("CarBrand",car.getC_categoryBrandInt());
         intent.putExtra("CarTransmission",car.getC_categoryTransmissionInt());
         intent.putExtra("CarFuel",car.getC_categoryFuelInt());
         startActivity(intent);
-       /* }
-        else{
-
-            Intent intent = new Intent(this, ConnectionErrorActivity.class);
-            intent.putExtra("ActivityID", 2);
-            intent.putExtra("CarID",CarID);
-            startActivity(intent);
-        }*/
     }
 
     public void refresh(){
@@ -423,7 +427,11 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
 
     }
-    static class ViewHolder {// class used for creating view of one Car
+
+    /**
+     * class used for creating view of one Car
+     */
+    static class ViewHolder {
 
         TextView car_brand;
         TextView car_model;

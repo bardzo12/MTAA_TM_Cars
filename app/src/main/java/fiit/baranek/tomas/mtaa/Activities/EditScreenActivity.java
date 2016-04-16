@@ -6,20 +6,14 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
@@ -170,8 +164,9 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
     }
 
 
-
-
+    /**
+     * This method update car
+     */
     public void updateCar(){
 
         JSONObject car = new JSONObject();
@@ -215,10 +210,6 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
             e.printStackTrace();
         }
 
-
-
-
-
         if(isOnline()) {
             db.updateCar(updatedCar);
             RequestParameters r = null;
@@ -242,11 +233,12 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
 
     }
 
-
+    /**
+     * This method update car when device is offline
+     */
     private void updateOfline(){
         db.updateCar(updatedCar);
         long unixTime = System.currentTimeMillis();
-        System.out.println("System time unix: ");
         System.out.println(unixTime);
         updatedCar.setC_update(unixTime);
         db.addCarUpdated(updatedCar);
@@ -274,7 +266,10 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
     }
 
 
-
+    /**
+     * Check internet connection
+     * @return
+     */
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

@@ -184,15 +184,14 @@ public class Car {
 
     }
 
-    /*
-    Costructor for every Car elements
+    /**
+     * Costructor for every Car elements
      */
     public Car (String c_engine, String c_phoneNumber, int c_price, String c_location, int c_categoryBrand,
                 int c_yearOfProduction, String c_model, int c_mileAge, String c_photo, int c_categoryFuel, int c_categoryTransmission,
                 String c_driveType, String c_interiorColor, String objectId){
 
         this.c_engine = c_engine;
-        //this.created = created;
         this.c_phoneNumber = c_phoneNumber;
         this.c_price = c_price;
         this.c_location = c_location;
@@ -213,8 +212,8 @@ public class Car {
 
 
 
-    /*
-    Constructor for first view
+    /**
+     * Constructor for first view
      */
     public Car (String objectId, int c_categoryBrand,  String c_model, int c_price,  int c_categoryFuel){
         this.c_price = c_price;

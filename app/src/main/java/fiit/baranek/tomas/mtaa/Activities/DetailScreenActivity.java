@@ -12,10 +12,10 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -28,7 +28,6 @@ import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -257,24 +256,6 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                 url = new URL(_url);
                 in = url.openStream();
 
-
-            /*
-             * THIS IS NOT NEEDED
-             *
-             * YOU TRY TO CREATE AN ACTUAL IMAGE HERE, BY WRITING
-             * TO A NEW FILE
-             * YOU ONLY NEED TO READ THE INPUTSTREAM
-             * AND CONVERT THAT TO A BITMAP
-            out = new BufferedOutputStream(new FileOutputStream("testImage.jpg"));
-            int i;
-
-             while ((i = in.read()) != -1) {
-                 out.write(i);
-             }
-             out.close();
-             in.close();
-             */
-
                 // Read the inputstream
                 buf = new BufferedInputStream(in);
 
@@ -297,6 +278,11 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         }
 
     }
+
+    /**
+     * get detail car with Id
+     * @param Id
+     */
 
     public void getDetail(String Id){
 
@@ -358,6 +344,10 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         }
     }
 
+
+    /**
+     * Delete car by ID
+     */
     public boolean deleteCarById(Car CarID){
         if(isOnline()) {
             RequestParameters r = null;
