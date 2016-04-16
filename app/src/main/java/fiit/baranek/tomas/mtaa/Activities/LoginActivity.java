@@ -42,10 +42,10 @@ public class LoginActivity extends AppCompatActivity{
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {//inicializing action listener for login button
-                // if(mEmailView.getText().equals("ProjektMTAA") && mPasswordView.getText().equals("heslo123")){
+                 if(mEmailView.getText().equals("mta@mta.sk") && mPasswordView.getText().equals("mta")){
 
                 login();
-                //  }
+                  }
 
             }
         });
