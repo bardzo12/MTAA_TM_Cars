@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -42,10 +43,12 @@ public class LoginActivity extends AppCompatActivity{
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {//inicializing action listener for login button
-                 if(mEmailView.getText().equals("mta@mta.sk") && mPasswordView.getText().equals("mta")){
 
-                login();
-                  }
+
+                 if(mEmailView.getText().toString().equals("mta@mta.sk") && mPasswordView.getText().toString().equals("mta")){
+
+                    login();
+                 }
 
             }
         });

@@ -67,6 +67,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
     private String CarID;
     private String photoS;
     private DatabaseHandler db;
+    private Toolbar toolbar;
 
     Car updatedCar = new Car();
     @Override
@@ -79,7 +80,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
         String[] SPINNERLIST3 = new String[]{"nafta", "benzín", "LPG", "hybrid", "elektromotor"};
         String[] SPINNERLIST4 = new String[]{"biela", "čierna", "hnedá"};
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.MyToolbar_edit_screen);
+        toolbar = (Toolbar) findViewById(R.id.MyToolbar_edit_screen);
         toolbar.setTitle(SPINNERLIST1[bundle.getInt("brand")] + " " + bundle.getString("model"));
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
@@ -225,6 +226,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
             asyncTask.delegate = this;
             asyncTask.execute(r);
             Toast.makeText(this,"Car was updated", Toast.LENGTH_SHORT).show();
+            toolbar.setTitle(brand.getText().toString() + " " + model.getText());
         } else{
           showDialog();
         }
@@ -243,6 +245,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
         updatedCar.setC_update(unixTime);
         db.addCarUpdated(updatedCar);
         Toast.makeText(this,"Car was updated", Toast.LENGTH_SHORT).show();
+        toolbar.setTitle(brand.getText().toString() + " " + model.getText());
     }
 
 
