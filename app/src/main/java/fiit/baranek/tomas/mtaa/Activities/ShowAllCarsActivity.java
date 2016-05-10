@@ -22,10 +22,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.github.nkzawa.socketio.client.Ack;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +42,7 @@ import fiit.baranek.tomas.mtaa.MyAsyncTask;
 import fiit.baranek.tomas.mtaa.R;
 import fiit.baranek.tomas.mtaa.RequestParameters;
 import fiit.baranek.tomas.mtaa.ResponseParameters;
+import fiit.baranek.tomas.mtaa.WebSocket.WebSocket;
 
 
 public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
@@ -161,6 +167,8 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
                 if (responseParameters.getListOfCars() != null) {
                 adapter.addList(responseParameters.getListOfCars());
                 db.addCars(responseParameters.getListOfCars());
+                    WebSocket socket = new WebSocket();
+                    socket.GET();
                 adapter.notifyDataSetChanged();
             }else if(responseParameters.getCar() != null)
                 {

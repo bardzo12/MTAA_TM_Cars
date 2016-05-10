@@ -1,6 +1,9 @@
 package fiit.baranek.tomas.mtaa;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import fiit.baranek.tomas.mtaa.Enums.CategoryBrand;
 import fiit.baranek.tomas.mtaa.Enums.CategoryFuel;
 import fiit.baranek.tomas.mtaa.Enums.CategoryTransmission;
@@ -211,6 +214,28 @@ public class Car {
     }
 
 
+    public Car (String c_engine, String c_phoneNumber, int c_price, String c_location, int c_categoryBrand,
+                int c_yearOfProduction, String c_model, int c_mileAge, String c_photo, int c_categoryFuel, int c_categoryTransmission,
+                String c_driveType, String c_interiorColor){
+
+        this.c_engine = c_engine;
+        this.c_phoneNumber = c_phoneNumber;
+        this.c_price = c_price;
+        this.c_location = c_location;
+        CategoryBrand Brand = CategoryBrand.values()[c_categoryBrand-1];
+        this.c_categoryBrand = Brand;
+        this.c_yearOfProduction = c_yearOfProduction;
+        this.c_model = c_model;
+        this.c_mileAge = c_mileAge;
+        this.c_photo = c_photo;
+        CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel-1];
+        this.c_categoryFuel = Fuel;
+        CategoryTransmission Transmission = CategoryTransmission.values()[c_categoryTransmission-1];
+        this.c_categoryTransmission = Transmission;
+        this.c_driveType = c_driveType;
+        this.c_interiorColor = c_interiorColor;
+    }
+
 
     /**
      * Constructor for first view
@@ -223,6 +248,30 @@ public class Car {
         CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel-1];
         this.c_categoryFuel = Fuel;
         this.objectId = objectId;
+    }
+
+    public JSONObject getJSON(){
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("c_engine", getC_engine());
+            obj.put("c_phoneNumber", getC_phoneNumber());
+            obj.put("c_price", getC_price());
+            obj.put("c_location", getC_location());
+            obj.put("c_categoryBrand", getC_categoryBrandInt());
+            obj.put("c_yearOfProduction", getC_yearOfProduction());
+            obj.put("c_model", getC_model());
+            obj.put("c_mileAge", getC_mileAge());
+            obj.put("c_photo", getC_photo());
+            obj.put("c_categoryFuel", getC_categoryFuel());
+            obj.put("c_categoryTransmission", getC_categoryTransmissionInt());
+            obj.put("c_driveType", getC_driveType());
+            obj.put("c_interiorColor", getC_interiorColor());
+            long unixTime = System.currentTimeMillis() / 1000L;
+            obj.put("c_update", unixTime);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
     }
 
 }

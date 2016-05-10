@@ -6,12 +6,21 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.github.nkzawa.socketio.client.Ack;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
+
+import fiit.baranek.tomas.mtaa.Car;
 import fiit.baranek.tomas.mtaa.R;
 
 /**
@@ -35,6 +44,7 @@ public class LoginActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
         mEmailView = (TextView) findViewById(R.id.email);
         mPasswordView = (TextView) findViewById(R.id.password);
@@ -44,11 +54,22 @@ public class LoginActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {//inicializing action listener for login button
 
-
-                 if(mEmailView.getText().toString().equals("mta@mta.sk") && mPasswordView.getText().toString().equals("mta")){
-
-                    login();
-                 }
+                if(mEmailView.getText().toString().equals("")){
+                    mEmailView.setError("Nebol zadaný prihlasovací E-mail");
+                }else {
+                    if (mPasswordView.getText().toString().equals("")) {
+                        mPasswordView.setError("Nebolo zadané prihlasovacie heslo");
+                    } else {
+                        if (mEmailView.getText().toString().equals("mta@mta.sk") && mPasswordView.getText().toString().equals("mta")) {
+                            if (!isEmailValid(mEmailView.getText().toString())) {
+                                mEmailView.setError("Zle zadaný E-mail");
+                            } else
+                                login();
+                        } else {
+                            mPasswordView.setError("Zlé prihlasovacie údaje");
+                        }
+                    }
+                }
 
             }
         });
@@ -59,14 +80,16 @@ public class LoginActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        mEmailView.setText("");
+        mPasswordView.setText("");
     }
 
     public void login(){
 
         //if(isOnline()) {
-            Intent scan = new Intent(this, ShowAllCarsActivity.class);
+        Intent scan = new Intent(this, ShowAllCarsActivity.class);
 
-            startActivity(scan);
+        startActivity(scan);
         /*}
         else{
             Intent intent = new Intent(this, ConnectionErrorActivity.class);
@@ -82,6 +105,11 @@ public class LoginActivity extends AppCompatActivity{
     }
 
 
+
+    private boolean isEmailValid(String email) {
+        //TODO: Replace this with your own logic
+        return email.contains("@");
+    }
 
 
     /**
