@@ -26,6 +26,72 @@ public class Car {
     private String c_interiorColor = "";
     private String objectId = "";
     private long c_update = 0;
+    private byte[] c_image;
+
+    public Car() {
+
+    }
+
+    /**
+     * Costructor for every Car elements
+     */
+    public Car(String c_engine, String c_phoneNumber, int c_price, String c_location, int c_categoryBrand,
+               int c_yearOfProduction, String c_model, int c_mileAge, String c_photo, int c_categoryFuel, int c_categoryTransmission,
+               String c_driveType, String c_interiorColor, String objectId) {
+
+        this.c_engine = c_engine;
+        this.c_phoneNumber = c_phoneNumber;
+        this.c_price = c_price;
+        this.c_location = c_location;
+        CategoryBrand Brand = CategoryBrand.values()[c_categoryBrand - 1];
+        this.c_categoryBrand = Brand;
+        this.c_yearOfProduction = c_yearOfProduction;
+        this.c_model = c_model;
+        this.c_mileAge = c_mileAge;
+        this.c_photo = c_photo;
+        CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel - 1];
+        this.c_categoryFuel = Fuel;
+        CategoryTransmission Transmission = CategoryTransmission.values()[c_categoryTransmission - 1];
+        this.c_categoryTransmission = Transmission;
+        this.c_driveType = c_driveType;
+        this.c_interiorColor = c_interiorColor;
+        this.objectId = objectId;
+    }
+
+    public Car(String c_engine, String c_phoneNumber, int c_price, String c_location, int c_categoryBrand,
+               int c_yearOfProduction, String c_model, int c_mileAge, String c_photo, int c_categoryFuel, int c_categoryTransmission,
+               String c_driveType, String c_interiorColor) {
+
+        this.c_engine = c_engine;
+        this.c_phoneNumber = c_phoneNumber;
+        this.c_price = c_price;
+        this.c_location = c_location;
+        CategoryBrand Brand = CategoryBrand.values()[c_categoryBrand - 1];
+        this.c_categoryBrand = Brand;
+        this.c_yearOfProduction = c_yearOfProduction;
+        this.c_model = c_model;
+        this.c_mileAge = c_mileAge;
+        this.c_photo = c_photo;
+        CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel - 1];
+        this.c_categoryFuel = Fuel;
+        CategoryTransmission Transmission = CategoryTransmission.values()[c_categoryTransmission - 1];
+        this.c_categoryTransmission = Transmission;
+        this.c_driveType = c_driveType;
+        this.c_interiorColor = c_interiorColor;
+    }
+
+    /**
+     * Constructor for first view
+     */
+    public Car(String objectId, int c_categoryBrand, String c_model, int c_price, int c_categoryFuel) {
+        this.c_price = c_price;
+        CategoryBrand Brand = CategoryBrand.values()[c_categoryBrand - 1];
+        this.c_categoryBrand = Brand;
+        this.c_model = c_model;
+        CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel - 1];
+        this.c_categoryFuel = Fuel;
+        this.objectId = objectId;
+    }
 
     public byte[] getC_image() {
         return c_image;
@@ -34,8 +100,6 @@ public class Car {
     public void setC_image(byte[] c_image) {
         this.c_image = c_image;
     }
-
-    private byte[] c_image;
 
     public long getC_update() {
         return c_update;
@@ -84,7 +148,6 @@ public class Car {
     public void setC_location(String c_location) {
         this.c_location = c_location;
     }
-
 
     public int getC_categoryBrandInt(){
         return c_categoryBrand.ordinal();
@@ -136,27 +199,27 @@ public class Car {
         return c_categoryFuel.toString();
     }
 
-    public int getC_categoryFuelInt(){
-        return c_categoryFuel.ordinal();
-    }
-
     public void setC_categoryFuel(int c_categoryFuel) {
 
         CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel-1];
         this.c_categoryFuel = Fuel;
     }
 
-    public String getC_categoryTransmission() {
-        return c_categoryTransmission.toString();
+    public int getC_categoryFuelInt() {
+        return c_categoryFuel.ordinal();
     }
 
-    public int getC_categoryTransmissionInt(){
-        return c_categoryTransmission.ordinal();
+    public String getC_categoryTransmission() {
+        return c_categoryTransmission.toString();
     }
 
     public void setC_categoryTransmission(int c_categoryTransmission) {
         CategoryTransmission Transmission = CategoryTransmission.values()[c_categoryTransmission-1];
         this.c_categoryTransmission = Transmission;
+    }
+
+    public int getC_categoryTransmissionInt() {
+        return c_categoryTransmission.ordinal();
     }
 
     public String getC_driveType() {
@@ -183,73 +246,6 @@ public class Car {
         this.objectId = objectId;
     }
 
-    public Car(){
-
-    }
-
-    /**
-     * Costructor for every Car elements
-     */
-    public Car (String c_engine, String c_phoneNumber, int c_price, String c_location, int c_categoryBrand,
-                int c_yearOfProduction, String c_model, int c_mileAge, String c_photo, int c_categoryFuel, int c_categoryTransmission,
-                String c_driveType, String c_interiorColor, String objectId){
-
-        this.c_engine = c_engine;
-        this.c_phoneNumber = c_phoneNumber;
-        this.c_price = c_price;
-        this.c_location = c_location;
-        CategoryBrand Brand = CategoryBrand.values()[c_categoryBrand-1];
-        this.c_categoryBrand = Brand;
-        this.c_yearOfProduction = c_yearOfProduction;
-        this.c_model = c_model;
-        this.c_mileAge = c_mileAge;
-        this.c_photo = c_photo;
-        CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel-1];
-        this.c_categoryFuel = Fuel;
-        CategoryTransmission Transmission = CategoryTransmission.values()[c_categoryTransmission-1];
-        this.c_categoryTransmission = Transmission;
-        this.c_driveType = c_driveType;
-        this.c_interiorColor = c_interiorColor;
-        this.objectId = objectId;
-    }
-
-
-    public Car (String c_engine, String c_phoneNumber, int c_price, String c_location, int c_categoryBrand,
-                int c_yearOfProduction, String c_model, int c_mileAge, String c_photo, int c_categoryFuel, int c_categoryTransmission,
-                String c_driveType, String c_interiorColor){
-
-        this.c_engine = c_engine;
-        this.c_phoneNumber = c_phoneNumber;
-        this.c_price = c_price;
-        this.c_location = c_location;
-        CategoryBrand Brand = CategoryBrand.values()[c_categoryBrand-1];
-        this.c_categoryBrand = Brand;
-        this.c_yearOfProduction = c_yearOfProduction;
-        this.c_model = c_model;
-        this.c_mileAge = c_mileAge;
-        this.c_photo = c_photo;
-        CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel-1];
-        this.c_categoryFuel = Fuel;
-        CategoryTransmission Transmission = CategoryTransmission.values()[c_categoryTransmission-1];
-        this.c_categoryTransmission = Transmission;
-        this.c_driveType = c_driveType;
-        this.c_interiorColor = c_interiorColor;
-    }
-
-
-    /**
-     * Constructor for first view
-     */
-    public Car (String objectId, int c_categoryBrand,  String c_model, int c_price,  int c_categoryFuel){
-        this.c_price = c_price;
-        CategoryBrand Brand = CategoryBrand.values()[c_categoryBrand-1];
-        this.c_categoryBrand = Brand;
-        this.c_model = c_model;
-        CategoryFuel Fuel = CategoryFuel.values()[c_categoryFuel-1];
-        this.c_categoryFuel = Fuel;
-        this.objectId = objectId;
-    }
-
     public JSONObject getJSON(){
         JSONObject obj = new JSONObject();
         try {
@@ -257,13 +253,13 @@ public class Car {
             obj.put("c_phoneNumber", getC_phoneNumber());
             obj.put("c_price", getC_price());
             obj.put("c_location", getC_location());
-            obj.put("c_categoryBrand", getC_categoryBrandInt());
+            obj.put("c_categoryBrand", getC_categoryBrandInt() + 1);
             obj.put("c_yearOfProduction", getC_yearOfProduction());
             obj.put("c_model", getC_model());
             obj.put("c_mileAge", getC_mileAge());
             obj.put("c_photo", getC_photo());
-            obj.put("c_categoryFuel", getC_categoryFuel());
-            obj.put("c_categoryTransmission", getC_categoryTransmissionInt());
+            obj.put("c_categoryFuel", getC_categoryFuelInt() + 1);
+            obj.put("c_categoryTransmission", getC_categoryTransmissionInt() + 1);
             obj.put("c_driveType", getC_driveType());
             obj.put("c_interiorColor", getC_interiorColor());
             long unixTime = System.currentTimeMillis() / 1000L;

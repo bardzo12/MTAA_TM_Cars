@@ -39,6 +39,7 @@ import fiit.baranek.tomas.mtaa.MyAsyncTask;
 import fiit.baranek.tomas.mtaa.R;
 import fiit.baranek.tomas.mtaa.RequestParameters;
 import fiit.baranek.tomas.mtaa.ResponseParameters;
+import fiit.baranek.tomas.mtaa.WebSocket.WebSocket;
 
 public class DetailScreenActivity extends AppCompatActivity implements AsyncResponse {
 
@@ -101,10 +102,14 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
 
 
 
+
         Log.i("Code",""+responseParameters.getResponseCode());
-        if(responseParameters.getResponseCode() == 200) {// add list od Cars do ListView adapter
+        if (responseParameters.getResponseCode() == 404) {// add list od Cars do ListView adapter
             if(responseParameters.getType().equals("GET")) {
-             SelectCar = responseParameters.getCar();
+
+
+                WebSocket socket = new WebSocket();
+                SelectCar = socket.GETONE(CarID);
 
 
                 CarBrandInt = SelectCar.getC_categoryBrandInt();
@@ -178,6 +183,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
 
     }else if(responseParameters.getResponseCode() == 404){
 
+
             Toast.makeText(DetailScreenActivity.this, "Toto auto uz bolo vymazane!", Toast.LENGTH_SHORT).show();
         finish();
     }else if(500<=responseParameters.getResponseCode() && responseParameters.getResponseCode()<=510){
@@ -221,12 +227,99 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         mImageView.setBackgroundDrawable(drawable);
     }
 
+    /**
+     * get detail car with Id
+     *
+     * @param Id
+     */
+
+    public void getDetail(String Id) {
+        WebSocket socket = new WebSocket();
+        SelectCar = socket.GETONE(Id);
+        RequestParameters r = null;
+        URL https = null;
+        try {
+            https = new URL("https://api.backendless.com/v1/data/Car/" + Id);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        r = new RequestParameters(https, "GET", 2, isOnline(), this, Id);
+
+        MyAsyncTask asyncTask = new MyAsyncTask(this);
+        asyncTask.delegate = this;
+        asyncTask.execute(r);
+    }
+
+    /**
+     * Checks whether the network is available.
+     */
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.delete:
+                new AlertDialog.Builder(this, R.style.AlertDialogCustom)
+                        .setTitle("Vymazanie auta")
+                        .setMessage("Naozaj chcete vymazat toto auto?")
+                        .setPositiveButton("ANO", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteCarById(SelectCar);
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("NIE", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Delete car by ID
+     */
+    public boolean deleteCarById(Car CarID){
+        if(isOnline()) {
+            RequestParameters r = null;
+            URL https = null;
+            try {
+                https = new URL("https://api.backendless.com/v1/data/Car/" + CarID.getObjectId());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            r = new RequestParameters(https, "DELETE", 1, isOnline(), this, CarID.getObjectId());
+
+            MyAsyncTask asyncTask = new MyAsyncTask(this);
+            asyncTask.delegate = this;
+            asyncTask.execute(r);
+
+            return true;
+        } else {
+            db.addCarDeleted(CarID);
+            return false;
+        }
+    }
+
     public class DownloadImage extends AsyncTask<String, Integer, Drawable> {
 
         @Override
         protected Drawable doInBackground(String... arg0) {
             // This is done in a background thread
-            if(isOnline())
+            if (isOnline())
                 return downloadImage(arg0[0]);
             else
                 return new BitmapDrawable(BitmapFactory.decodeByteArray(fotecka, 0, fotecka.length));
@@ -236,8 +329,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
          * Called after the image has been downloaded
          * -> this calls a function on the main thread again
          */
-        protected void onPostExecute(Drawable image)
-        {
+        protected void onPostExecute(Drawable image) {
             findViewById(R.id.loadingPanel).setVisibility(View.GONE);
             findViewById(R.id.bgheader).setVisibility(View.VISIBLE);
             setImage(image);
@@ -246,11 +338,11 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
 
         /**
          * Actually download the Image from the _url
+         *
          * @param _url
          * @return
          */
-        private Drawable downloadImage(String _url)
-        {
+        private Drawable downloadImage(String _url) {
             //Prepare to download image
             URL url;
             BufferedOutputStream out;
@@ -283,96 +375,5 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
             return null;
         }
 
-    }
-
-    /**
-     * get detail car with Id
-     * @param Id
-     */
-
-    public void getDetail(String Id){
-
-        RequestParameters r = null;
-        URL https = null;
-        try {
-            https = new URL("https://api.backendless.com/v1/data/Car/" + Id);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        r = new RequestParameters(https, "GET",2, isOnline(),this, Id);
-
-        MyAsyncTask asyncTask =new MyAsyncTask(this);
-        asyncTask.delegate = this;
-        asyncTask.execute(r);
-    }
-
-    /**
-     * Checks whether the network is available.
-     */
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.delete:
-                new AlertDialog.Builder(this, R.style.AlertDialogCustom)
-                        .setTitle("Vymazanie auta")
-                        .setMessage("Naozaj chcete vymazat toto auto?")
-                        .setPositiveButton("ANO", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                deleteCarById(SelectCar);
-                                finish();
-                            }
-                        })
-                        .setNegativeButton("NIE", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-
-    /**
-     * Delete car by ID
-     */
-    public boolean deleteCarById(Car CarID){
-        if(isOnline()) {
-            RequestParameters r = null;
-            URL https = null;
-            try {
-                https = new URL("https://api.backendless.com/v1/data/Car/" + CarID.getObjectId());
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            r = new RequestParameters(https, "DELETE", 1, isOnline(), this, CarID.getObjectId());
-
-            MyAsyncTask asyncTask = new MyAsyncTask(this);
-            asyncTask.delegate = this;
-            asyncTask.execute(r);
-
-            return true;
-        }else{
-            db.addCarDeleted(CarID);
-            return false;
-        }
     }
 }

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,16 +20,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import com.github.nkzawa.socketio.client.Ack;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +50,18 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         db = new DatabaseHandler(this);
 
         ImageButton refreshImageView = (ImageButton) findViewById(R.id.imageRefresh);
+        ImageButton insertImageView = (ImageButton) findViewById(R.id.imageaddCar);
+
+
+        insertImageView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                System.out.println("Ahoj tu som");
+                cretaNew();
+
+            }
+        });
+
+
         refreshImageView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -84,6 +89,11 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.MyToolbar);
         toolbar.setTitle("TM CARS");
+    }
+
+    private void cretaNew() {
+        Intent intent = new Intent(this, CreateActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -165,11 +175,12 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         if(responseParameters.getResponseCode() == 200) {// add list od Cars do ListView adapter
             if(responseParameters.getType().equals("GET")) {
                 if (responseParameters.getListOfCars() != null) {
-                adapter.addList(responseParameters.getListOfCars());
-                db.addCars(responseParameters.getListOfCars());
                     WebSocket socket = new WebSocket();
-                    socket.GET();
-                adapter.notifyDataSetChanged();
+                    List<Car> autka = responseParameters.getListOfCars();
+                    System.out.println("Veľkosť zo seocketu" + socket.GET().size());
+                    adapter.addList(socket.GET());
+                    db.addCars(socket.GET());
+                    adapter.notifyDataSetChanged();
             }else if(responseParameters.getCar() != null)
                 {
                     //offline update
@@ -321,12 +332,20 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    /**
+     * class used for creating view of one Car
+     */
+    static class ViewHolder {
+
+        TextView car_brand;
+        TextView car_model;
+        TextView car_yearOgProduction;
+        TextView car_price;
+        TextView car_fuel;
+
     }
 
     private class CarsListAdapter extends BaseAdapter {// adapter for ListView showing all cars
@@ -334,15 +353,15 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         private LayoutInflater mInflator;
 
 
-        @Override
-        public boolean isEnabled(int position) {
-            return true;
-        }
-
         public CarsListAdapter() {
             super();
             arrayListCars = new ArrayList<Car>();
             mInflator = ShowAllCarsActivity.this.getLayoutInflater();
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return true;
         }
 
         public void addCar(Car car) {
@@ -439,19 +458,6 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             return view;
         }
 
-
-    }
-
-    /**
-     * class used for creating view of one Car
-     */
-    static class ViewHolder {
-
-        TextView car_brand;
-        TextView car_model;
-        TextView car_yearOgProduction;
-        TextView car_price;
-        TextView car_fuel;
 
     }
 

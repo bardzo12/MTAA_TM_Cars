@@ -2,7 +2,7 @@
     <string name="app_name">TM CARS</string>
 
     <!-- Strings related to login -->
-    <string name="user_uuid">cc09cc7d-5bcf-47a6-ae5c-4bccb3b13f30</string>
+    <string name="user_uuid">"f14f9190-c21b-446a-9b84-9c9ea2c1dc76"</string>
     <string name="card_one">This is First card</string>
     <string name="card_two">This is two card</string>
     <string name="prompt_email">Email</string>

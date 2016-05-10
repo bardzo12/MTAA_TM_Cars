@@ -11,16 +11,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.github.nkzawa.socketio.client.Ack;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.URISyntaxException;
-
-import fiit.baranek.tomas.mtaa.Car;
 import fiit.baranek.tomas.mtaa.R;
 
 /**
@@ -53,7 +43,7 @@ public class LoginActivity extends AppCompatActivity{
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {//inicializing action listener for login button
-
+/*
                 if(mEmailView.getText().toString().equals("")){
                     mEmailView.setError("Nebol zadaný prihlasovací E-mail");
                 }else {
@@ -69,7 +59,8 @@ public class LoginActivity extends AppCompatActivity{
                             mPasswordView.setError("Zlé prihlasovacie údaje");
                         }
                     }
-                }
+                }*/
+                login();
 
             }
         });
@@ -119,12 +110,7 @@ public class LoginActivity extends AppCompatActivity{
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
 

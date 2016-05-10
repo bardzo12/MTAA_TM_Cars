@@ -32,7 +32,8 @@
         <activity android:name=".Activities.DetailScreenActivity" />
         <activity android:name=".Activities.EditScreenActivity" />
         <activity android:name=".Activities.ConnectionErrorActivity" />
-        <activity android:name=".Activities.ActivityFotoDetail"></activity>
+        <activity android:name=".Activities.ActivityFotoDetail" />
+        <activity android:name=".Activities.CreateActivity"></activity>
     </application>
 
 </manifest>
