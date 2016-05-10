@@ -74,6 +74,59 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         CarID = bundle.getString("CarID");
 
 
+        WebSocket socket = new WebSocket();
+        SelectCar = socket.GETONE(CarID);
+        System.out.println("GET socket" + SelectCar.getC_phoneNumber());
+
+
+        CarBrandInt = SelectCar.getC_categoryBrandInt();
+        CarFuelInt = SelectCar.getC_categoryFuelInt();
+        CarTransmissionInt = SelectCar.getC_categoryTransmissionInt();
+
+
+        collapsingToolbarLayout.setTitle(SelectCar.getC_categoryBrand() + " " + SelectCar.getC_model());
+
+        TextView location = (TextView) findViewById( R.id.textViewAddressValue);
+        location.setText(SelectCar.getC_location());
+
+        TextView year = (TextView) findViewById( R.id.textViewYearOfProductionValue);
+        year.setText(String.format(String.valueOf(SelectCar.getC_yearOfProduction())));
+
+        TextView mile = (TextView) findViewById( R.id.textViewMileAgeValue);
+        mile.setText(String.format(String.valueOf(SelectCar.getC_mileAge())));
+
+        TextView transsmition = (TextView) findViewById( R.id.textViewTransmissionValue);
+        transsmition.setText(SelectCar.getC_categoryTransmission());
+
+        TextView color = (TextView) findViewById( R.id.textViewColorValue);
+        color.setText(SelectCar.getC_interiorColor());
+
+        TextView engine = (TextView) findViewById( R.id.textViewEngineValue);
+        engine.setText(SelectCar.getC_engine());
+
+        TextView drive = (TextView) findViewById( R.id.textViewDriveTypeValue);
+        drive.setText(SelectCar.getC_driveType());
+
+        TextView fuel = (TextView) findViewById( R.id.textViewFuelValue);
+        fuel.setText(SelectCar.getC_categoryFuel());
+
+        TextView phone = (TextView) findViewById( R.id.textViewPhoneValue);
+        phone.setText(SelectCar.getC_phoneNumber());
+
+        TextView price = (TextView) findViewById( R.id.textViewPriceValue);
+        price.setText(String.format(String.valueOf(SelectCar.getC_price())) + "€");
+
+        fotecka = SelectCar.getC_image();
+
+        new DownloadImage().execute(SelectCar.getC_photo());
+
+        collapsingToolbarLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startDetailFoto(SelectCar.getC_photo(), SelectCar.getC_image());
+            }
+        });
+
         db = new DatabaseHandler(this);
 
 
@@ -103,7 +156,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
 
 
 
-        Log.i("Code",""+responseParameters.getResponseCode());
+        Log.i("Code", "" + responseParameters.getResponseCode());
         if (responseParameters.getResponseCode() == 404) {// add list od Cars do ListView adapter
             if(responseParameters.getType().equals("GET")) {
 
@@ -122,10 +175,10 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                 TextView location = (TextView) findViewById( R.id.textViewAddressValue);
                 location.setText(SelectCar.getC_location());
 
-                TextView year = (TextView) findViewById( R.id.textViewYearOfProductionValue);
+                TextView year = (TextView) findViewById(R.id.textViewYearOfProductionValue);
                 year.setText(String.format(String.valueOf(SelectCar.getC_yearOfProduction())));
 
-                TextView mile = (TextView) findViewById( R.id.textViewMileAgeValue);
+                TextView mile = (TextView) findViewById(R.id.textViewMileAgeValue);
                 mile.setText(String.format(String.valueOf(SelectCar.getC_mileAge())));
 
                 TextView transsmition = (TextView) findViewById( R.id.textViewTransmissionValue);
@@ -146,31 +199,22 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                 TextView phone = (TextView) findViewById( R.id.textViewPhoneValue);
                 phone.setText(SelectCar.getC_phoneNumber());
 
-                TextView price = (TextView) findViewById( R.id.textViewPriceValue);
+                TextView price = (TextView) findViewById(R.id.textViewPriceValue);
                 price.setText(String.format(String.valueOf(SelectCar.getC_price())) + "€");
 
-                fotecka = SelectCar.getC_image();
-
-                new DownloadImage().execute(SelectCar.getC_photo());
 
                 Button button = (Button) findViewById(R.id.EditButton);
                 button.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
 
-                        startEdit( SelectCar.getC_model(), SelectCar.getC_location(), SelectCar.getC_yearOfProduction(),
+                        startEdit(SelectCar.getC_model(), SelectCar.getC_location(), SelectCar.getC_yearOfProduction(),
                                 SelectCar.getC_mileAge(), SelectCar.getC_interiorColor(), SelectCar.getC_engine(),
                                 SelectCar.getC_driveType(), SelectCar.getC_phoneNumber(), SelectCar.getC_price(),
-                                SelectCar.getC_photo(), CarID, CarBrandInt, CarFuelInt,CarTransmissionInt, SelectCar.getC_image());
+                                SelectCar.getC_photo(), CarID, CarBrandInt, CarFuelInt, CarTransmissionInt, SelectCar.getC_image());
 
                     }
                 });
 
-                collapsingToolbarLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startDetailFoto(SelectCar.getC_photo(),SelectCar.getC_image());
-                    }
-                });
 
 
 
@@ -234,7 +278,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
      */
 
     public void getDetail(String Id) {
-        WebSocket socket = new WebSocket();
+        /*WebSocket socket = new WebSocket();
         SelectCar = socket.GETONE(Id);
         RequestParameters r = null;
         URL https = null;
@@ -247,7 +291,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
 
         MyAsyncTask asyncTask = new MyAsyncTask(this);
         asyncTask.delegate = this;
-        asyncTask.execute(r);
+        asyncTask.execute(r);*/
     }
 
     /**

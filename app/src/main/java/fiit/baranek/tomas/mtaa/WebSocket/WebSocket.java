@@ -60,6 +60,7 @@ public class WebSocket {
     }
 
     public Car GETONE(String ID) {
+        final Car car= new Car();
         IO.Options opts = new IO.Options();
         opts.secure = false;
         opts.port = 1341;
@@ -67,6 +68,7 @@ public class WebSocket {
         opts.forceNew = true;
         opts.timeout = 5000;
         Socket socket = null;
+        final boolean[] koniec = {false};
         try {
             socket = IO.socket("http://sandbox.touch4it.com:1341/?__sails_io_sdk_version=0.12.1", opts);
             socket.connect();
@@ -84,12 +86,37 @@ public class WebSocket {
         socket.emit("get", js, new Ack() {
             @Override
             public void call(Object... args) {
-                System.out.println("Som v get jedna");
-                JSONObject response = (JSONObject) args[0];
-                System.out.println(response.toString());
+                try {
+                    System.out.println("Som v get jedna");
+                    JSONObject response = (JSONObject) args[0];
+                    JSONObject body = response.getJSONObject("body");
+                    JSONObject data = body.getJSONObject("data");
+                    car.setC_engine(data.getString("c_engine"));
+                    car.setC_phoneNumber(data.getString("c_phoneNumber"));
+                    car.setC_price(data.getInt("c_price"));
+                    car.setC_location(data.getString("c_location"));
+                    car.setC_categoryBrand(data.getInt("c_categoryBrand"));
+                    car.setC_yearOfProduction(data.getInt("c_yearOfProduction"));
+                    car.setC_model(data.getString("c_model"));
+                    car.setC_mileAge(data.getInt("c_mileAge"));
+                    car.setC_photo(data.getString("c_photo"));
+                    car.setC_categoryFuel(data.getInt("c_categoryFuel"));
+                    car.setC_categoryTransmission(data.getInt("c_categoryTransmission"));
+                    car.setC_driveType(data.getString("c_driveType"));
+                    car.setC_interiorColor(data.getString("c_interiorColor"));
+                    car.setC_update(data.getInt("c_update"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                koniec[0] = true;
             }
         });
-        return new Car();
+
+        while (!koniec[0]){
+
+        }
+        System.out.println("Totoka sa mi vrati z get: " + car.getC_phoneNumber());
+        return car;
     }
 
 

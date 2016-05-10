@@ -16,7 +16,7 @@ public class CreateActivity extends AppCompatActivity {
         WebSocket socket = new WebSocket();
         Car newCar = new Car();
         newCar.setC_categoryBrand(4);
-        newCar.setC_model("A1");
+        newCar.setC_model("A7");
         newCar.setC_location("Čadečka");
         newCar.setC_yearOfProduction(2011);
         newCar.setC_mileAge(78439);
@@ -26,6 +26,7 @@ public class CreateActivity extends AppCompatActivity {
         newCar.setC_engine("6 Cyl 3.0L");
         newCar.setC_categoryFuel(3);
         newCar.setC_phoneNumber("0918573333");
+        newCar.setC_photo("https://a.tcimg.net/vehicle-images/inventory/21175/12/44/WAUFGAFB1BN064412/724MNTC6FPTEQGRJ6WTYAJRLBA-600.jpg?idx=0");
         socket.createNew(newCar);
     }
 }

@@ -176,8 +176,6 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             if(responseParameters.getType().equals("GET")) {
                 if (responseParameters.getListOfCars() != null) {
                     WebSocket socket = new WebSocket();
-                    List<Car> autka = responseParameters.getListOfCars();
-                    System.out.println("Veľkosť zo seocketu" + socket.GET().size());
                     adapter.addList(socket.GET());
                     db.addCars(socket.GET());
                     adapter.notifyDataSetChanged();
