@@ -255,7 +255,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
     public boolean deleteCarById(Car CarID){
         db.deleteCar(CarID);
         if (isOnline()) {
-            RequestParameters r = null;
+            /*RequestParameters r = null;
 
             URL https = null;
             try {
@@ -267,7 +267,10 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
             MyAsyncTask asyncTask = new MyAsyncTask(this);
             asyncTask.delegate = this;
-            asyncTask.execute(r);
+            asyncTask.execute(r);*/
+            WebSocket socket = new WebSocket();
+            socket.Detele(CarID.getObjectId());
+            getAllCars();
 
             return true;
         }

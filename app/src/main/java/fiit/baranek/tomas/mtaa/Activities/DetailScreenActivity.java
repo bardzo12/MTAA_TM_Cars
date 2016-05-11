@@ -127,6 +127,18 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
             }
         });
 
+        Button button = (Button) findViewById(R.id.EditButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                startEdit(SelectCar.getC_model(), SelectCar.getC_location(), SelectCar.getC_yearOfProduction(),
+                        SelectCar.getC_mileAge(), SelectCar.getC_interiorColor(), SelectCar.getC_engine(),
+                        SelectCar.getC_driveType(), SelectCar.getC_phoneNumber(), SelectCar.getC_price(),
+                        SelectCar.getC_photo(), CarID, CarBrandInt, CarFuelInt, CarTransmissionInt, SelectCar.getC_image());
+
+            }
+        });
+
         db = new DatabaseHandler(this);
 
 
@@ -316,7 +328,9 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                         .setMessage("Naozaj chcete vymazat toto auto?")
                         .setPositiveButton("ANO", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                deleteCarById(SelectCar);
+                                /*deleteCarById(SelectCar);*/
+                                WebSocket socket = new WebSocket();
+                                socket.Detele(CarID);
                                 finish();
                             }
                         })
@@ -338,7 +352,10 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
      */
     public boolean deleteCarById(Car CarID){
         if(isOnline()) {
-            RequestParameters r = null;
+            WebSocket socket = new WebSocket();
+            socket.Detele(CarID.getObjectId());
+            return true;
+            /*RequestParameters r = null;
             URL https = null;
             try {
                 https = new URL("https://api.backendless.com/v1/data/Car/" + CarID.getObjectId());
@@ -351,7 +368,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
             asyncTask.delegate = this;
             asyncTask.execute(r);
 
-            return true;
+            return true;*/
         } else {
             db.addCarDeleted(CarID);
             return false;

@@ -32,6 +32,7 @@ public class WebSocket {
         opts.forceNew = true;
         opts.timeout = 5000;
         Socket socket = null;
+        final int[] statusCode = new int[1];
         try {
             socket = IO.socket("http://sandbox.touch4it.com:1341/?__sails_io_sdk_version=0.12.1", opts);
             socket.connect();
@@ -53,9 +54,21 @@ public class WebSocket {
             @Override
             public void call(Object... args) {
                 JSONObject response = (JSONObject) args[0];
+                try {
+                    statusCode[0] = response.getInt("statusCode");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 System.out.println("Resposne create:" + response);
             }
         });
+        System.out.println("Status code: " + statusCode[0]);
+        if(statusCode[0] == 200)
+            System.out.println("Všetko je okey");
+        else if(statusCode[0] == 400)
+            System.out.println("Bad Request - Input validation failed");
+        else if(statusCode[0] == 500)
+            System.out.println(" Server error - Server application error");
         return "";
     }
 
@@ -68,6 +81,7 @@ public class WebSocket {
         opts.forceNew = true;
         opts.timeout = 5000;
         Socket socket = null;
+        final int[] statusCode = new int[1];
         final boolean[] koniec = {false};
         try {
             socket = IO.socket("http://sandbox.touch4it.com:1341/?__sails_io_sdk_version=0.12.1", opts);
@@ -105,6 +119,7 @@ public class WebSocket {
                     car.setC_driveType(data.getString("c_driveType"));
                     car.setC_interiorColor(data.getString("c_interiorColor"));
                     car.setC_update(data.getInt("c_update"));
+                    statusCode[0] = response.getInt("statusCode");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -115,6 +130,15 @@ public class WebSocket {
         while (!koniec[0]){
 
         }
+        System.out.println("Status code: " + statusCode[0]);
+        if(statusCode[0] == 200)
+            System.out.println("Všetko je okey");
+        else if(statusCode[0] == 400)
+            System.out.println("Bad Request - Input validation failed");
+        else if(statusCode[0] == 500)
+            System.out.println(" Server error - Server application error");
+        else if(statusCode[0] == 404)
+            System.out.println("Not Found - Data entry not found by ID and user");
         System.out.println("Totoka sa mi vrati z get: " + car.getC_phoneNumber());
         return car;
     }
@@ -123,7 +147,7 @@ public class WebSocket {
     public List<Car> GET(){
         final List<Car> cars = new ArrayList<Car>();
         final boolean[] koniec = {false};
-
+        final int[] statusCode = new int[1];
         IO.Options opts = new IO.Options();
         opts.secure = false;
         opts.port = 1341;
@@ -175,6 +199,7 @@ public class WebSocket {
                         carFromJson.setC_update(Long.parseLong(data.getJSONObject(i).getJSONObject("data").getString("c_update")));
                         cars.add(carFromJson);
                     }
+                    statusCode[0] = response.getInt("statusCode");
                     koniec[0] = true;
                     //System.out.println("Totoka je v JSONayrra:" + data.toString());
                     //JSONArray pole = data.getJSONArray("data");
@@ -183,12 +208,129 @@ public class WebSocket {
                     e.printStackTrace();
                 }
                 //System.out.println("Výpis JSONa:"+response);
-                }
+            }
         });
         while (!koniec[0]) {
 
         }
+        if(statusCode[0] == 200)
+            System.out.println("Všetko je okey");
+        else if(statusCode[0] == 400)
+            System.out.println("Bad Request - Input validation failed");
+        else if(statusCode[0] == 500)
+            System.out.println(" Server error - Server application error");
+
+
         return cars;
+    }
+
+
+    public String Update(Car car) {
+        IO.Options opts = new IO.Options();
+        opts.secure = false;
+        opts.port = 1341;
+        opts.reconnection = true;
+        opts.forceNew = true;
+        opts.timeout = 5000;
+        final int[] statusCode = new int[1];
+        Socket socket = null;
+        final boolean[] koniec = {false};
+        try {
+            socket = IO.socket("http://sandbox.touch4it.com:1341/?__sails_io_sdk_version=0.12.1", opts);
+            socket.connect();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        JSONObject js = new JSONObject();
+        try {
+            UUID uid = UUID.fromString("f14f9190-c21b-446a-9b84-9c9ea2c1dc76");
+            js.put("url", "/data/" + uid.toString() + "/" + car.getObjectId());
+            JSONObject obj = car.getJSON();
+            js.put("data", new JSONObject().put("data", obj));
+            System.out.println("URL do DETELE:" + "/data/" + uid.toString() + "/" + car.getObjectId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        assert socket != null;
+        socket.emit("put", js, new Ack() {
+            @Override
+            public void call(Object... args) {
+                System.out.println("Som v update jedna");
+                JSONObject response = (JSONObject) args[0];
+                System.out.println("Resposne create:" + response);
+                try {
+                    statusCode[0] = response.getInt("statusCode");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        System.out.println("Status code: " + statusCode[0]);
+        if(statusCode[0] == 200)
+            System.out.println("Všetko je okey");
+        else if(statusCode[0] == 400)
+            System.out.println("Bad Request - Input validation failed");
+        else if(statusCode[0] == 500)
+            System.out.println(" Server error - Server application error");
+        else if(statusCode[0] == 404)
+            System.out.println("Not Found - Data entry not found by ID and user");
+
+
+        return "";
+    }
+
+
+    public String Detele(String ID) {
+        IO.Options opts = new IO.Options();
+        opts.secure = false;
+        opts.port = 1341;
+        opts.reconnection = true;
+        opts.forceNew = true;
+        opts.timeout = 5000;
+        final int[] statusCode = new int[1];
+        Socket socket = null;
+        final boolean[] koniec = {false};
+        try {
+            socket = IO.socket("http://sandbox.touch4it.com:1341/?__sails_io_sdk_version=0.12.1", opts);
+            socket.connect();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        JSONObject js = new JSONObject();
+        try {
+            UUID uid = UUID.fromString("f14f9190-c21b-446a-9b84-9c9ea2c1dc76");
+            js.put("url", "/data/" + uid.toString() + "/" + ID);
+            System.out.println("URL do DETELE:" + "/data/" + uid.toString() + "/" + ID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        assert socket != null;
+        socket.emit("delete", js, new Ack() {
+            @Override
+            public void call(Object... args) {
+                System.out.println("Som v delete jedna");
+                JSONObject response = (JSONObject) args[0];
+                System.out.println("Resposne create:" + response);
+                try {
+                    statusCode[0] = response.getInt("statusCode");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+        System.out.println("Status code: " + statusCode[0]);
+        if(statusCode[0] == 200)
+            System.out.println("Všetko je okey");
+        else if(statusCode[0] == 400)
+            System.out.println("Bad Request - Input validation failed");
+        else if(statusCode[0] == 500)
+            System.out.println(" Server error - Server application error");
+        else if(statusCode[0] == 404)
+            System.out.println("Not Found - Data entry not found by ID and user");
+
+        return "";
     }
 
 }

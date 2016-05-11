@@ -34,6 +34,7 @@ import fiit.baranek.tomas.mtaa.MyAsyncTask;
 import fiit.baranek.tomas.mtaa.R;
 import fiit.baranek.tomas.mtaa.RequestParameters;
 import fiit.baranek.tomas.mtaa.ResponseParameters;
+import fiit.baranek.tomas.mtaa.WebSocket.WebSocket;
 
 public class EditScreenActivity extends AppCompatActivity implements AsyncResponse{
     @Override
@@ -212,6 +213,9 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
         }
 
         if(isOnline()) {
+            WebSocket socket = new WebSocket();
+            socket.Update(updatedCar);
+            /*
             db.updateCar(updatedCar);
             RequestParameters r = null;
             URL https = null;
@@ -226,7 +230,7 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
             asyncTask.delegate = this;
             asyncTask.execute(r);
             Toast.makeText(this,"Car was updated", Toast.LENGTH_SHORT).show();
-            toolbar.setTitle(brand.getText().toString() + " " + model.getText());
+            toolbar.setTitle(brand.getText().toString() + " " + model.getText());*/
         } else{
           showDialog();
         }
