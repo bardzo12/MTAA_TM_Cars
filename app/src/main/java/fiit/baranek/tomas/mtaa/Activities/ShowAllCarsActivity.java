@@ -56,7 +56,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         insertImageView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 System.out.println("Ahoj tu som");
-                cretaNew();
+                createNew();
 
             }
         });
@@ -86,12 +86,11 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
 
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.MyToolbar);
         toolbar.setTitle("TM CARS");
     }
 
-    private void cretaNew() {
+    private void createNew() {
         Intent intent = new Intent(this, CreateActivity.class);
         startActivity(intent);
     }
@@ -104,7 +103,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             RequestParameters r = null;
             URL https = null;
             try {
-                https = new URL("https://api.backendless.com/v1/data/Car/" + auto.getObjectId());
+                https = new URL("http://sandbox.touch4it.com:1341/?__sails_io_sdk_version=0.12.1" );
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -124,7 +123,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
         URL https = null;
         try {
-            https = new URL("https://api.backendless.com/v1/data/Car/" + auto.getObjectId());
+            https = new URL("http://sandbox.touch4it.com:1341/?__sails_io_sdk_version=0.12.1" );
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -144,7 +143,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         RequestParameters r = null;
         URL https = null;
         try {
-            https = new URL("https://api.backendless.com/v1/data/Car?pageSize=100");
+            https = new URL("http://sandbox.touch4it.com:1341/?__sails_io_sdk_version=0.12.1");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -172,14 +171,16 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
     @Override
     public void processFinish(ResponseParameters responseParameters) {//this methods override method from interface AsyncResponse
+        Log.i("Sprava", "cvratil som sa"+responseParameters.getResponseCode());
         if(responseParameters.getResponseCode() == 200) {// add list od Cars do ListView adapter
+
             if(responseParameters.getType().equals("GET")) {
                 if (responseParameters.getListOfCars() != null) {
-                    WebSocket socket = new WebSocket();
-                    adapter.addList(socket.GET());
-                    db.addCars(socket.GET());
+
+                    adapter.addList(responseParameters.getListOfCars());
+                    db.addCars(responseParameters.getListOfCars());
                     adapter.notifyDataSetChanged();
-            }else if(responseParameters.getCar() != null)
+                } else if(responseParameters.getCar() != null)
                 {
                     //offline update
                     if(responseParameters.getCar().getC_update() < publicCar.getC_update()){
@@ -206,11 +207,11 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
                             RequestParameters r = null;
                             URL https = null;
                             try {
-                                https = new URL("https://api.backendless.com/v1/data/Car/" + responseParameters.getCar().getObjectId());
+                                https = new URL("http://sandbox.touch4it.com:1341/?__sails_io_sdk_version=0.12.1" );
                             } catch (MalformedURLException e) {
                                 e.printStackTrace();
                             }
-                            r = new RequestParameters(https, "PUT", 1, isOnline(), this, "", car);
+                            r = new RequestParameters(https, "PUT", 1, isOnline(), this,  responseParameters.getCar().getObjectId(), car);
 
                             MyAsyncTask asyncTask = new MyAsyncTask(this);
                             asyncTask.delegate = this;
@@ -255,11 +256,11 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
     public boolean deleteCarById(Car CarID){
         db.deleteCar(CarID);
         if (isOnline()) {
-            /*RequestParameters r = null;
+            RequestParameters r = null;
 
             URL https = null;
             try {
-                https = new URL("https://api.backendless.com/v1/data/Car/" + CarID.getObjectId());
+                https = new URL("http://sandbox.touch4it.com:1341/?__sails_io_sdk_version=0.12.1");
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -267,9 +268,8 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
 
             MyAsyncTask asyncTask = new MyAsyncTask(this);
             asyncTask.delegate = this;
-            asyncTask.execute(r);*/
-            WebSocket socket = new WebSocket();
-            socket.Detele(CarID.getObjectId());
+            asyncTask.execute(r);
+
             getAllCars();
 
             return true;

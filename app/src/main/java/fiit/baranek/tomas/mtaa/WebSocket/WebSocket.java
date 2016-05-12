@@ -73,6 +73,12 @@ public class WebSocket {
     }
 
     public Car GETONE(String ID) {
+
+
+
+
+
+
         final Car car= new Car();
         IO.Options opts = new IO.Options();
         opts.secure = false;

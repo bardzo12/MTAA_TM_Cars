@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -171,69 +172,86 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
      */
     public void updateCar(){
 
-        JSONObject car = new JSONObject();
-        try {
-            car.put("c_engine", engine.getText());
+
+        boolean valid= true;
+
             updatedCar.setC_engine(engine.getText().toString());
-            car.put("c_phoneNumber", phone.getText());
+
             updatedCar.setC_phoneNumber(phone.getText().toString());
-            car.put("c_price", price.getText());
-            updatedCar.setC_price(Integer.parseInt(price.getText().toString()));
-            car.put("c_location", location.getText());
+
+        try {
+            int num = Integer.parseInt(price.getText().toString());
+            updatedCar.setC_price(num);
+            Log.i("", num + " is a number");
+        } catch (NumberFormatException e) {
+            valid=false;
+            price.setError("Nespravny format");
+        }
             updatedCar.setC_location(location.getText().toString());
             CategoryBrand categoryBrand;
             categoryBrand = CategoryBrand.fromString(brand.getText().toString());
-            car.put("c_categoryBrand", String.valueOf(categoryBrand.ordinal() + 1));
+
             updatedCar.setC_categoryBrand(categoryBrand.ordinal() + 1);
-            car.put("c_yearOfProduction", year.getText());
-            updatedCar.setC_yearOfProduction(Integer.parseInt(year.getText().toString()));
-            car.put("c_model", model.getText());
+
+        try {
+            int num = Integer.parseInt(year.getText().toString());
+            updatedCar.setC_yearOfProduction(num);
+            Log.i("", num + " is a number");
+        } catch (NumberFormatException e) {
+            valid=false;
+            year.setError("Nespravny format");
+        }
             updatedCar.setC_model(model.getText().toString());
-            car.put("c_mileAge", mile.getText());
-            updatedCar.setC_mileAge(Integer.parseInt(mile.getText().toString()));
-            car.put("c_photo", photo.getText());
-            updatedCar.setC_photo(photoS);
+
+        try {
+            int num = Integer.parseInt(mile.getText().toString());
+            updatedCar.setC_mileAge(num);
+            Log.i("", num + " is a number");
+        } catch (NumberFormatException e) {
+            valid=false;
+            mile.setError("Nespravny format");
+        }
+
+
+        updatedCar.setC_photo(photo.getText().toString());
             CategoryFuel categoryFuel;
             categoryFuel = CategoryFuel.fromString(fuel.getText().toString());
-            car.put("c_categoryFuel", String.valueOf(categoryFuel.ordinal() + 1));
+
             updatedCar.setC_categoryFuel(categoryFuel.ordinal() + 1);
             CategoryTransmission categoryTransmission;
             categoryTransmission = CategoryTransmission.fromString(transsmition.getText().toString());
-            car.put("c_categoryTransmission", String.valueOf(categoryTransmission.ordinal() + 1));
+
             updatedCar.setC_categoryTransmission(categoryTransmission.ordinal() + 1);
-            car.put("c_driveType", drive.getText());
+
             updatedCar.setC_driveType(drive.getText().toString());
-            car.put("c_interiorColor", color.getText());
+
            updatedCar.setC_interiorColor(color.getText().toString());
             updatedCar.setObjectId(CarID);
 
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
+if(valid){
+    if(isOnline()) {
+
+        db.updateCar(updatedCar);
+        RequestParameters r = null;
+        URL https = null;
+        try {
+            https = new URL("http://sandbox.touch4it.com:1341/?__sails_io_sdk_version=0.12.1");
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+        r = new RequestParameters(https, "PUT", 1, isOnline(), this, CarID, updatedCar.getJSON());
 
-        if(isOnline()) {
-            WebSocket socket = new WebSocket();
-            socket.Update(updatedCar);
-            /*
-            db.updateCar(updatedCar);
-            RequestParameters r = null;
-            URL https = null;
-            try {
-                https = new URL("https://api.backendless.com/v1/data/Car/" + CarID);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            r = new RequestParameters(https, "PUT", 1, isOnline(), this, "", car);
+        MyAsyncTask asyncTask = new MyAsyncTask(this);
+        asyncTask.delegate = this;
+        asyncTask.execute(r);
+        Toast.makeText(this,"Car was updated", Toast.LENGTH_SHORT).show();
+        toolbar.setTitle(brand.getText().toString() + " " + model.getText());
+    } else{
+        showDialog();
+    }
+}
 
-            MyAsyncTask asyncTask = new MyAsyncTask(this);
-            asyncTask.delegate = this;
-            asyncTask.execute(r);
-            Toast.makeText(this,"Car was updated", Toast.LENGTH_SHORT).show();
-            toolbar.setTitle(brand.getText().toString() + " " + model.getText());*/
-        } else{
-          showDialog();
-        }
+
 
 
 

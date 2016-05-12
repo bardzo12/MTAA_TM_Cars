@@ -74,71 +74,6 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         CarID = bundle.getString("CarID");
 
 
-        WebSocket socket = new WebSocket();
-        SelectCar = socket.GETONE(CarID);
-        System.out.println("GET socket" + SelectCar.getC_phoneNumber());
-
-
-        CarBrandInt = SelectCar.getC_categoryBrandInt();
-        CarFuelInt = SelectCar.getC_categoryFuelInt();
-        CarTransmissionInt = SelectCar.getC_categoryTransmissionInt();
-
-
-        collapsingToolbarLayout.setTitle(SelectCar.getC_categoryBrand() + " " + SelectCar.getC_model());
-
-        TextView location = (TextView) findViewById( R.id.textViewAddressValue);
-        location.setText(SelectCar.getC_location());
-
-        TextView year = (TextView) findViewById( R.id.textViewYearOfProductionValue);
-        year.setText(String.format(String.valueOf(SelectCar.getC_yearOfProduction())));
-
-        TextView mile = (TextView) findViewById( R.id.textViewMileAgeValue);
-        mile.setText(String.format(String.valueOf(SelectCar.getC_mileAge())));
-
-        TextView transsmition = (TextView) findViewById( R.id.textViewTransmissionValue);
-        transsmition.setText(SelectCar.getC_categoryTransmission());
-
-        TextView color = (TextView) findViewById( R.id.textViewColorValue);
-        color.setText(SelectCar.getC_interiorColor());
-
-        TextView engine = (TextView) findViewById( R.id.textViewEngineValue);
-        engine.setText(SelectCar.getC_engine());
-
-        TextView drive = (TextView) findViewById( R.id.textViewDriveTypeValue);
-        drive.setText(SelectCar.getC_driveType());
-
-        TextView fuel = (TextView) findViewById( R.id.textViewFuelValue);
-        fuel.setText(SelectCar.getC_categoryFuel());
-
-        TextView phone = (TextView) findViewById( R.id.textViewPhoneValue);
-        phone.setText(SelectCar.getC_phoneNumber());
-
-        TextView price = (TextView) findViewById( R.id.textViewPriceValue);
-        price.setText(String.format(String.valueOf(SelectCar.getC_price())) + "€");
-
-        fotecka = SelectCar.getC_image();
-
-        new DownloadImage().execute(SelectCar.getC_photo());
-
-        collapsingToolbarLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startDetailFoto(SelectCar.getC_photo(), SelectCar.getC_image());
-            }
-        });
-
-        Button button = (Button) findViewById(R.id.EditButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-                startEdit(SelectCar.getC_model(), SelectCar.getC_location(), SelectCar.getC_yearOfProduction(),
-                        SelectCar.getC_mileAge(), SelectCar.getC_interiorColor(), SelectCar.getC_engine(),
-                        SelectCar.getC_driveType(), SelectCar.getC_phoneNumber(), SelectCar.getC_price(),
-                        SelectCar.getC_photo(), CarID, CarBrandInt, CarFuelInt, CarTransmissionInt, SelectCar.getC_image());
-
-            }
-        });
-
         db = new DatabaseHandler(this);
 
 
@@ -168,13 +103,11 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
 
 
 
-        Log.i("Code", "" + responseParameters.getResponseCode());
-        if (responseParameters.getResponseCode() == 404) {// add list od Cars do ListView adapter
+        Log.i("Sprava","Navrat detail");
+        if (responseParameters.getResponseCode() == 200) {// add list od Cars do ListView adapter
             if(responseParameters.getType().equals("GET")) {
+                SelectCar = responseParameters.getCar();
 
-
-                WebSocket socket = new WebSocket();
-                SelectCar = socket.GETONE(CarID);
 
 
                 CarBrandInt = SelectCar.getC_categoryBrandInt();
@@ -214,16 +147,26 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                 TextView price = (TextView) findViewById(R.id.textViewPriceValue);
                 price.setText(String.format(String.valueOf(SelectCar.getC_price())) + "€");
 
+                fotecka = SelectCar.getC_image();
+
+                new DownloadImage().execute(SelectCar.getC_photo());
 
                 Button button = (Button) findViewById(R.id.EditButton);
                 button.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-
+                        Log.i("Sprava", "Upravit");
                         startEdit(SelectCar.getC_model(), SelectCar.getC_location(), SelectCar.getC_yearOfProduction(),
                                 SelectCar.getC_mileAge(), SelectCar.getC_interiorColor(), SelectCar.getC_engine(),
                                 SelectCar.getC_driveType(), SelectCar.getC_phoneNumber(), SelectCar.getC_price(),
                                 SelectCar.getC_photo(), CarID, CarBrandInt, CarFuelInt, CarTransmissionInt, SelectCar.getC_image());
 
+                    }
+                });
+
+                collapsingToolbarLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startDetailFoto(SelectCar.getC_photo(), SelectCar.getC_image());
                     }
                 });
 
@@ -274,6 +217,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         intent.putExtra("photo", photo);
         intent.putExtra("ID", ID);
         intent.putExtra("image",byteArray);
+        Log.i("Sprava", "idem upravit");
         startActivity(intent);
     }
 
@@ -290,12 +234,11 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
      */
 
     public void getDetail(String Id) {
-        /*WebSocket socket = new WebSocket();
-        SelectCar = socket.GETONE(Id);
+
         RequestParameters r = null;
         URL https = null;
         try {
-            https = new URL("https://api.backendless.com/v1/data/Car/" + Id);
+            https = new URL("http://sandbox.touch4it.com:1341/?__sails_io_sdk_version=0.12.1");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -303,7 +246,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
 
         MyAsyncTask asyncTask = new MyAsyncTask(this);
         asyncTask.delegate = this;
-        asyncTask.execute(r);*/
+        asyncTask.execute(r);
     }
 
     /**
@@ -328,10 +271,9 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
                         .setMessage("Naozaj chcete vymazat toto auto?")
                         .setPositiveButton("ANO", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                /*deleteCarById(SelectCar);*/
-                                WebSocket socket = new WebSocket();
-                                socket.Detele(CarID);
+                                deleteCarById(SelectCar);
                                 finish();
+
                             }
                         })
                         .setNegativeButton("NIE", new DialogInterface.OnClickListener() {
@@ -350,27 +292,30 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
     /**
      * Delete car by ID
      */
-    public boolean deleteCarById(Car CarID){
-        if(isOnline()) {
-            WebSocket socket = new WebSocket();
-            socket.Detele(CarID.getObjectId());
-            return true;
-            /*RequestParameters r = null;
+    public boolean deleteCarById(Car Car){
+        db.deleteCar(Car);
+        if (isOnline()) {
+            RequestParameters r = null;
+
             URL https = null;
             try {
-                https = new URL("https://api.backendless.com/v1/data/Car/" + CarID.getObjectId());
+                https = new URL("http://sandbox.touch4it.com:1341/?__sails_io_sdk_version=0.12.1");
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            r = new RequestParameters(https, "DELETE", 1, isOnline(), this, CarID.getObjectId());
+            r = new RequestParameters(https, "DELETE", 1, isOnline(), this, CarID);
 
             MyAsyncTask asyncTask = new MyAsyncTask(this);
             asyncTask.delegate = this;
             asyncTask.execute(r);
 
-            return true;*/
-        } else {
-            db.addCarDeleted(CarID);
+
+
+            return true;
+        }
+        else{
+            db.addCarDeleted(Car);
+
             return false;
         }
     }
