@@ -183,62 +183,145 @@ public class CreateActivity extends AppCompatActivity implements AsyncResponse {
     public void saveCar(){
 
 boolean valid= true;
+            if(!engine.getText().toString().equals("")){
+                updatedCar.setC_engine(engine.getText().toString());
+            }else{
+                valid=false;
+                engine.setError("Zadaj typ motora");
+            }
 
-            updatedCar.setC_engine(engine.getText().toString());
 
+
+
+        if(!phone.getText().toString().equals("")){
             updatedCar.setC_phoneNumber(phone.getText().toString());
-        try {
-            int num = Integer.parseInt(price.getText().toString());
-            updatedCar.setC_price(num);
-            Log.i("", num + " is a number");
-        } catch (NumberFormatException e) {
+        }else{
             valid=false;
-            price.setError("Nespravny format");
+            phone.setError("Zadaj telefonne cislo");
+        }
+
+        if(!price.getText().toString().equals("")){
+            try {
+                int num = Integer.parseInt(price.getText().toString());
+                updatedCar.setC_price(num);
+                Log.i("", num + " is a number");
+            } catch (NumberFormatException e) {
+                valid=false;
+                price.setError("Nespravny format");
+            }
+        }else{
+            valid=false;
+            price.setError("Zadaj cenu vozidla");
         }
 
 
+
+
+        if(!location.getText().toString().equals("")){
             updatedCar.setC_location(location.getText().toString());
+        }else{
+            valid=false;
+            location.setError("Zadaj miesto");
+        }
+
+        if(!brand.getText().toString().equals("")){
             CategoryBrand categoryBrand;
             categoryBrand = CategoryBrand.fromString(brand.getText().toString());
 
             updatedCar.setC_categoryBrand(categoryBrand.ordinal() + 1);
-
-
-
-
-        try {
-            int num = Integer.parseInt(year.getText().toString());
-            updatedCar.setC_yearOfProduction(num);
-            Log.i("", num + " is a number");
-        } catch (NumberFormatException e) {
+        }else{
             valid=false;
-            year.setError("Nespravny format");
+            brand.setError("Zadaj znacku");
         }
 
-        updatedCar.setC_model(model.getText().toString());
 
-        try {
-            int num = Integer.parseInt(mile.getText().toString());
-            updatedCar.setC_mileAge(num);
-            Log.i("", num + " is a number");
-        } catch (NumberFormatException e) {
+
+
+
+
+        if(!year.getText().toString().equals("")){
+            try {
+                int num = Integer.parseInt(year.getText().toString());
+                updatedCar.setC_yearOfProduction(num);
+                Log.i("", num + " is a number");
+            } catch (NumberFormatException e) {
+                valid=false;
+                year.setError("Nespravny format");
+            }
+        }else{
             valid=false;
-            mile.setError("Nespravny format");
+            year.setError("Zadaj rok vyroby");
         }
 
+        if(!model.getText().toString().equals("")){
+            updatedCar.setC_model(model.getText().toString());
+        }else{
+            valid=false;
+            model.setError("Zadaj model");
+        }
+
+
+
+
+        if(!mile.getText().toString().equals("")){
+            try {
+                int num = Integer.parseInt(mile.getText().toString());
+                updatedCar.setC_mileAge(num);
+                Log.i("", num + " is a number");
+            } catch (NumberFormatException e) {
+                valid=false;
+                mile.setError("Nespravny format");
+            }
+        }else{
+            valid=false;
+            mile.setError("Zadaj najazdene milometre");
+        }
+
+        if(!photo.getText().toString().equals("")){
             updatedCar.setC_photo(photo.getText().toString());
+
+        }else{
+            valid=false;
+            photo.setError("Zadaj fotku");
+        }
+
+        if(!fuel.getText().toString().equals("")){
             CategoryFuel categoryFuel;
             categoryFuel = CategoryFuel.fromString(fuel.getText().toString());
-
             updatedCar.setC_categoryFuel(categoryFuel.ordinal() + 1);
+
+        }else{
+            valid=false;
+            fuel.setError("Zadaj palivo");
+        }
+        if(!transsmition.getText().toString().equals("")){
             CategoryTransmission categoryTransmission;
             categoryTransmission = CategoryTransmission.fromString(transsmition.getText().toString());
 
             updatedCar.setC_categoryTransmission(categoryTransmission.ordinal() + 1);
 
+        }else{
+            valid=false;
+            transsmition.setError("Zadaj prevodovku");
+        }
+
+        if(!drive.getText().toString().equals("")){
             updatedCar.setC_driveType(drive.getText().toString());
 
+        }else{
+            valid=false;
+            drive.setError("Zadaj typ");
+        }
+
+        if(!color.getText().toString().equals("")){
             updatedCar.setC_interiorColor(color.getText().toString());
+
+        }else{
+            valid=false;
+            color.setError("Zadaj farbu");
+        }
+
+
 
 
 if(valid){
