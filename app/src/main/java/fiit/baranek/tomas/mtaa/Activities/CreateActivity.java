@@ -325,6 +325,7 @@ boolean valid= true;
 
 
 if(valid){
+    db.addCar(updatedCar);
     if(isOnline()) {
         //   db.updateCar(updatedCar);
         RequestParameters r = null;
@@ -334,7 +335,7 @@ if(valid){
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        r = new RequestParameters(https, "POST", 1, isOnline(), this, "", updatedCar.getJSON());
+        r = new RequestParameters(https, "POST", 1, isOnline(), this, db,"", updatedCar.getJSON());
 
         MyAsyncTask asyncTask = new MyAsyncTask(this);
         asyncTask.delegate = this;
@@ -389,11 +390,10 @@ if(valid){
      * This method update car when device is offline
      */
     private void updateOfline(){
-        db.updateCar(updatedCar);
         long unixTime = System.currentTimeMillis();
         System.out.println(unixTime);
         updatedCar.setC_update(unixTime);
-        db.addCarUpdated(updatedCar);
+        db.addCarCreated(updatedCar);
         Toast.makeText(this,"Car was updated", Toast.LENGTH_SHORT).show();
         toolbar.setTitle(brand.getText().toString() + " " + model.getText());
     }

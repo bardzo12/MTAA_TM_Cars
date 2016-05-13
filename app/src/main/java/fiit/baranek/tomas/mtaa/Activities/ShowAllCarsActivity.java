@@ -76,9 +76,17 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
                     List<Car> carList2 = db.getAllCarsUpdated();
                     for (Car auko2 : carList2) {
                         publicCar = auko2;
+                        System.out.println("Autko idčko: " + auko2.getObjectId());
                         update(auko2);
                     }
                     db.restartTableCarUpdated();
+
+                    List<Car> carList3 = db.getAllCarsCreated();
+                    for (Car auko2 : carList3) {
+                        System.out.println("Autko ktore vytvaram idčko: " + auko2.getObjectId());
+                        create(auko2);
+                    }
+                    db.restartTableCarCreated();
                 }
                 refresh();
             }
@@ -95,6 +103,26 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         startActivity(intent);
     }
 
+
+    /**
+     * offline create cars
+     */
+    public void create(Car auto){
+        RequestParameters r = null;
+        URL https = null;
+        try {
+            https = new URL("http://sandbox.touch4it.com:1341/?__sails_io_sdk_version=0.12.1");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        r = new RequestParameters(https, "POST", 1, isOnline(), this, db,"", auto.getJSON());
+
+        MyAsyncTask asyncTask = new MyAsyncTask(this);
+        asyncTask.delegate = this;
+        asyncTask.execute(r);
+        Toast.makeText(this,"Car was saved", Toast.LENGTH_SHORT).show();
+    }
+
     /**
      * offline update cars
      */
@@ -107,7 +135,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            r = new RequestParameters(https, "GET",2, isOnline(),this, auto.getObjectId());
+            r = new RequestParameters(https, "GET",2, isOnline(),this, db, auto.getObjectId());
 
             MyAsyncTask asyncTask =new MyAsyncTask(this);
             asyncTask.delegate = this;
@@ -127,7 +155,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        r = new RequestParameters(https, "DELETE", 1, isOnline(), this, auto.getObjectId());
+        r = new RequestParameters(https, "DELETE", 1, isOnline(), this, db, auto.getObjectId());
 
         MyAsyncTask asyncTask = new MyAsyncTask(this);
         asyncTask.delegate = this;
@@ -147,7 +175,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        r = new RequestParameters(https, "GET", 1, isOnline(), this, "");
+        r = new RequestParameters(https, "GET", 1, isOnline(), this,  db, "");
 
         MyAsyncTask asyncTask =new MyAsyncTask(this);
         asyncTask.delegate = this;
@@ -200,6 +228,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
                             car.put("c_driveType", publicCar.getC_driveType());
                             car.put("c_interiorColor", publicCar.getC_interiorColor());
                             car.put("objectId", publicCar.getObjectId());
+                            car.put("c_update", publicCar.getC_update());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -211,7 +240,8 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
                             } catch (MalformedURLException e) {
                                 e.printStackTrace();
                             }
-                            r = new RequestParameters(https, "PUT", 1, isOnline(), this,  responseParameters.getCar().getObjectId(), car);
+                            System.out.println("UPDATE ID: " + responseParameters.getCar().getObjectId());
+                            r = new RequestParameters(https, "PUT", 1, isOnline(), this,db,  responseParameters.getCar().getObjectId(), car);
 
                             MyAsyncTask asyncTask = new MyAsyncTask(this);
                             asyncTask.delegate = this;
@@ -227,7 +257,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             }
 
         }else if(responseParameters.getResponseCode() == 400){
-
+            System.out.println("Toto je ten zlý: " + responseParameters.getType());
             Toast.makeText(ShowAllCarsActivity.this, "BAD REQUEST ON DATABASE!", Toast.LENGTH_SHORT).show();
 
         }else if(responseParameters.getResponseCode() == 404){
@@ -264,7 +294,7 @@ public class ShowAllCarsActivity extends ListActivity implements AsyncResponse {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            r = new RequestParameters(https, "DELETE", 1, isOnline(), this, CarID.getObjectId());
+            r = new RequestParameters(https, "DELETE", 1, isOnline(), this,db, CarID.getObjectId());
 
             MyAsyncTask asyncTask = new MyAsyncTask(this);
             asyncTask.delegate = this;

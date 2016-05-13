@@ -1,6 +1,7 @@
 package fiit.baranek.tomas.mtaa;
 
 import android.content.Context;
+import android.provider.ContactsContract;
 
 import org.json.JSONObject;
 
@@ -17,10 +18,11 @@ public class RequestParameters {
     public int Type;
     public Boolean isOnline;
     public Context context;
+    public DatabaseHandler db;
     public String carId;
     public JSONObject json;
 
-    public RequestParameters(URL url, String requestType, int Type, Boolean isOnline, Context context, String carId, JSONObject json){
+    public RequestParameters(URL url, String requestType, int Type, Boolean isOnline, Context context,DatabaseHandler db, String carId, JSONObject json){
         this.isOnline = isOnline;
         this.url = url;
         this.requestType = requestType;
@@ -28,15 +30,17 @@ public class RequestParameters {
         this.context = context;
         this.carId = carId;
         this.json = json;
+        this.db = db;
     }
 
-    public RequestParameters(URL url, String requestType, int Type, Boolean isOnline, Context context, String carId){
+    public RequestParameters(URL url, String requestType, int Type, Boolean isOnline, Context context, DatabaseHandler db, String carId){
         this.isOnline = isOnline;
         this.url = url;
         this.requestType = requestType;
         this.Type = Type;
         this.context = context;
         this.carId = carId;
+        this.db = db;
 
     }
 

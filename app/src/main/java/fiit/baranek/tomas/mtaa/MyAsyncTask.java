@@ -45,6 +45,7 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
     private Activity activity;
     private ProgressDialog dialog;
     private Context context;
+    private DatabaseHandler db;
 
     public MyAsyncTask(Activity activity){
         this.activity = activity;
@@ -151,6 +152,8 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                                         JSONObject body = response.getJSONObject("body");
                                         JSONObject data = body.getJSONObject("data");
                                         responseParameters.setCar(getCarFromString(data));
+                                        responseParameters.getCar().setObjectId(body.getString("id"));
+                                        System.out.println("Getnute idečko: " + responseParameters.getCar().getObjectId());
                                         responseParameters.setType("GET");
                                         responseParameters.setResponseCode(response.getInt("statusCode"));
                                         koniec[0] = true;
@@ -171,7 +174,6 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                     try {
                         UUID uid = UUID.fromString("150d9dac-d42a-491c-be06-0c63552972dc");
                         js.put("url", "/data/" + uid.toString() + "/" + requestParameters.carId);
-                 //       System.out.println("URL do DETELE:" + "/data/" + uid.toString() + "/" + ID);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -179,12 +181,9 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                     socket.emit("delete", js, new Ack() {
                         @Override
                         public void call(Object... args) {
-                            System.out.println("Som v delete jedna");
                             JSONObject response = (JSONObject) args[0];
-                            System.out.println("Resposne create:" + response);
                             try {
                                 responseParameters.setResponseCode(response.getInt("statusCode"));
-                                Log.i("Sprava", "Vzmayujem"+responseParameters.getResponseCode());
                                 koniec[0] = true;
 
                             } catch (JSONException e) {
@@ -208,9 +207,7 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                     socket.emit("put", js, new Ack() {
                         @Override
                         public void call(Object... args) {
-                            System.out.println("Som v update jedna");
                             JSONObject response = (JSONObject) args[0];
-                            System.out.println("Resposne create:" + response);
                             try {
                                 responseParameters.setType(requestParameters.requestType);
                                 responseParameters.setResponseCode(response.getInt("statusCode"));
@@ -230,8 +227,6 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                         js.put("url", "/data/" + uid.toString());
                         JSONObject obj = requestParameters.json;
                         js.put("data", new JSONObject().put("data", obj));
-                        //js.put("user",R.string.user_uuid);
-                        //js.put("id","f9df2caa-aaf3-4399-ad20-0a8519921647");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -246,9 +241,9 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            System.out.println("Resposne create:" + response);
                         }
                     });
+                    responseParameters.setType(requestParameters.requestType);
                 }
              //   Log.i("Sprava", "URL: "+url);
 
@@ -266,10 +261,9 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
             if (requestParameters.requestType.equals("GET")) {
                 if (requestParameters.Type == 1) {
                     responseParameters.setResponseCode(200);
-                    DatabaseHandler db = new DatabaseHandler(requestParameters.context);
-                    if(db != null) {
+                    if(requestParameters.db != null) {
                         responseParameters.setType(requestParameters.requestType);
-                        responseParameters.setListOfCars(db.getAllCars());
+                        responseParameters.setListOfCars(requestParameters.db.getAllCars());
                         return responseParameters;
                     }
                     else
@@ -340,6 +334,41 @@ public class MyAsyncTask extends AsyncTask<RequestParameters, Integer, ResponseP
             carFromJson.setC_driveType(data.getJSONObject(i).getJSONObject("data").getString("c_driveType"));
             carFromJson.setC_interiorColor(data.getJSONObject(i).getJSONObject("data").getString("c_interiorColor"));
             carFromJson.setC_update(Long.parseLong(data.getJSONObject(i).getJSONObject("data").getString("c_update")));
+
+            URL url;
+            InputStream in;
+            BufferedInputStream buf;
+            ByteArrayOutputStream buffer = null;
+            try {
+                url = new URL(carFromJson.getC_photo());
+                in = url.openStream();
+
+                // Read the inputstream
+                buf = new BufferedInputStream(in);
+
+                buffer = new ByteArrayOutputStream();
+                int nRead;
+                byte[] data2 = new byte[16384];
+
+                while ((nRead = in.read(data2, 0, data2.length)) != -1) {
+                    buffer.write(data2, 0, nRead);
+                }
+
+                buffer.flush();
+                // Convert the BufferedInputStream to a Bitmap
+                Bitmap bMap = BitmapFactory.decodeStream(buf);
+                if (in != null) {
+                    in.close();
+                }
+                if (buf != null) {
+                    buf.close();
+                }
+
+            } catch (Exception e) {
+                Log.e("Error reading file", e.toString());
+            }
+            carFromJson.setC_image(buffer.toByteArray());
+
             cars.add(carFromJson);
         }
         return cars;

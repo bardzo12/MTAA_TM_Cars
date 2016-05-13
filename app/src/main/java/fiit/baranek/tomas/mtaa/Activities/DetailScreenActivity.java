@@ -242,7 +242,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        r = new RequestParameters(https, "GET", 2, isOnline(), this, Id);
+        r = new RequestParameters(https, "GET", 2, isOnline(), this,db, Id);
 
         MyAsyncTask asyncTask = new MyAsyncTask(this);
         asyncTask.delegate = this;
@@ -303,7 +303,7 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            r = new RequestParameters(https, "DELETE", 1, isOnline(), this, CarID);
+            r = new RequestParameters(https, "DELETE", 1, isOnline(), this, db, CarID);
 
             MyAsyncTask asyncTask = new MyAsyncTask(this);
             asyncTask.delegate = this;
@@ -327,8 +327,9 @@ public class DetailScreenActivity extends AppCompatActivity implements AsyncResp
             // This is done in a background thread
             if (isOnline())
                 return downloadImage(arg0[0]);
-            else
+            else if(fotecka != null && fotecka.length > 0)
                 return new BitmapDrawable(BitmapFactory.decodeByteArray(fotecka, 0, fotecka.length));
+            else return null;
         }
 
         /**

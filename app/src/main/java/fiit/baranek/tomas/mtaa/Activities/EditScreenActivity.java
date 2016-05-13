@@ -226,7 +226,10 @@ public class EditScreenActivity extends AppCompatActivity implements AsyncRespon
             updatedCar.setC_driveType(drive.getText().toString());
 
            updatedCar.setC_interiorColor(color.getText().toString());
-            updatedCar.setObjectId(CarID);
+            long unixTime = System.currentTimeMillis();
+            System.out.println(unixTime);
+        updatedCar.setC_update(unixTime);
+        updatedCar.setObjectId(CarID);
 
 if(valid){
     if(isOnline()) {
@@ -239,7 +242,7 @@ if(valid){
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        r = new RequestParameters(https, "PUT", 1, isOnline(), this, CarID, updatedCar.getJSON());
+        r = new RequestParameters(https, "PUT", 1, isOnline(), this, db,CarID, updatedCar.getJSON());
 
         MyAsyncTask asyncTask = new MyAsyncTask(this);
         asyncTask.delegate = this;

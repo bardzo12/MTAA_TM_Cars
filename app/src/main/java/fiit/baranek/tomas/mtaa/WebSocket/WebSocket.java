@@ -41,7 +41,7 @@ public class WebSocket {
         }
         JSONObject js = new JSONObject();
         try {
-            UUID uid = UUID.fromString("f14f9190-c21b-446a-9b84-9c9ea2c1dc76");
+            UUID uid = UUID.fromString("150d9dac-d42a-491c-be06-0c63552972dc");
             js.put("url", "/data/" + uid.toString());
             JSONObject obj = car.getJSON();
             js.put("data", new JSONObject().put("data", obj));
@@ -97,7 +97,7 @@ public class WebSocket {
         }
         JSONObject js = new JSONObject();
         try {
-            UUID uid = UUID.fromString("f14f9190-c21b-446a-9b84-9c9ea2c1dc76");
+            UUID uid = UUID.fromString("150d9dac-d42a-491c-be06-0c63552972dc");
             js.put("url", "/data/" + uid.toString() + "/" + ID);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -169,7 +169,7 @@ public class WebSocket {
         }
         JSONObject js = new JSONObject();
         try {
-            UUID uid = UUID.fromString("f14f9190-c21b-446a-9b84-9c9ea2c1dc76");
+            UUID uid = UUID.fromString("150d9dac-d42a-491c-be06-0c63552972dc");
             js.put("url", "/data/" + uid.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -249,7 +249,7 @@ public class WebSocket {
         }
         JSONObject js = new JSONObject();
         try {
-            UUID uid = UUID.fromString("f14f9190-c21b-446a-9b84-9c9ea2c1dc76");
+            UUID uid = UUID.fromString("150d9dac-d42a-491c-be06-0c63552972dc");
             js.put("url", "/data/" + uid.toString() + "/" + car.getObjectId());
             JSONObject obj = car.getJSON();
             js.put("data", new JSONObject().put("data", obj));
@@ -304,7 +304,7 @@ public class WebSocket {
         }
         JSONObject js = new JSONObject();
         try {
-            UUID uid = UUID.fromString("f14f9190-c21b-446a-9b84-9c9ea2c1dc76");
+            UUID uid = UUID.fromString("150d9dac-d42a-491c-be06-0c63552972dc");
             js.put("url", "/data/" + uid.toString() + "/" + ID);
             System.out.println("URL do DETELE:" + "/data/" + uid.toString() + "/" + ID);
         } catch (JSONException e) {
